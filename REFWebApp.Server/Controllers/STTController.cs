@@ -20,22 +20,22 @@ namespace REFWebApp.Server.Controllers
 
         [HttpPost(Name = "PostStt")]
         public IEnumerable<Stt> Post([FromBody] SttRequestModel request)
-        {
-            string[] text = request.Text;
+{
+    string[] text = request.Text;
 
             return Enumerable.Range(1, 5).Select(index => new Stt
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)],
-                Text = text[index]
-            })
-            .ToArray();
-        }
+    {
+        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+        TemperatureC = Random.Shared.Next(-20, 55),
+        Summary = Summaries[Random.Shared.Next(Summaries.Length)],
+        Text = text[index]
+    })
+    .ToArray();
+}
 
         public class SttRequestModel
-        {
-            public string[] Text { get; set; }
-        }
+{
+    public string[] Text { get; set; }
+}
     }
 }
