@@ -1,0 +1,68 @@
+.historyLine {
+  border: 1px solid #000;
+  border-top: 0;
+  background-color: #fff;
+  display: grid;
+  grid-template-columns: repeat(6, 150px);
+  max-width: fit-content;
+}
+
+.historyWrapper {
+  position: relative;
+}
+
+.xButton {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 40px;
+  width: 40px;
+  font-size: 20px;
+  border-radius: 8px;
+  background-color: white;
+  border: 1px solid #000;
+  border: none;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.xButton:hover {
+  background-color: #e7edfe;
+}
+
+.historyItems {
+  display: grid;
+  margin-top: 15px;
+  border-radius: 8px;
+  padding: 16px;
+  height: 300px;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  overflow: scroll;
+}
+
+.audioList {
+  display: grid;
+  grid-template-columns: repeat(5, 174px);
+  max-width: fit-content;
+  text-align: center;
+}
+
+.audioList:hover {
+  background-color: #e7edfe;
+}
+
+.evalsText {
+  font-size: 16px;
+  font-weight: 400;
+  color: #333;
+  padding: 4px;
+}
+
+.audioPlayer {
+  max-width: 160px;
+}
+
+.historyPlusMinus {
+  transform: translateY(-2px);
+}

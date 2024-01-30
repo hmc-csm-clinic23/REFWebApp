@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REFWebApp.Server", "REFWebApp.Server\REFWebApp.Server.csproj", "{B1DD3C47-AB53-401B-B780-972E78EF07A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "REFWebApp.Server", "REFWebApp.Server\REFWebApp.Server.csproj", "{B1DD3C47-AB53-401B-B780-972E78EF07A1}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "refwebapp.client", "refwebapp.client\refwebapp.client.esproj", "{30EE2017-62B2-442C-AE23-71773BF4F807}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "REFApplication", "..\..\..\Desktop\oldREF\REFApplication\REFApplication\REFApplication.csproj", "{B5525056-1B2B-4CD6-A9BD-F417CF84BA3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{30EE2017-62B2-442C-AE23-71773BF4F807}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30EE2017-62B2-442C-AE23-71773BF4F807}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30EE2017-62B2-442C-AE23-71773BF4F807}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B5525056-1B2B-4CD6-A9BD-F417CF84BA3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5525056-1B2B-4CD6-A9BD-F417CF84BA3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5525056-1B2B-4CD6-A9BD-F417CF84BA3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5525056-1B2B-4CD6-A9BD-F417CF84BA3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

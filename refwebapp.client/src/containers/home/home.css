@@ -1,0 +1,68 @@
+.homePage {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+}
+@media (max-width: 991px) {
+  .homePage {
+    padding: 0;
+  }
+}
+.homeTitle {
+  color: var(--colour-main-blue-900, #091133);
+  font-feature-settings:
+    "clig" off,
+    "liga" off;
+  align-self: center;
+  text-align: center;
+  width: 520px;
+  max-width: 100%;
+  margin: 150px 0 0 0px;
+  font:
+    500 36px/48px Roboto,
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
+}
+
+.homeSubtitle {
+  color: var(--colour-main-blue-400, #6f7cb2);
+  font-feature-settings:
+    "clig" off,
+    "liga" off;
+  align-self: center;
+  text-align: center;
+  width: 520px;
+  max-width: 100%;
+  margin: 20px 0 0 0;
+  font:
+    400 16px/26px Roboto,
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
+}
+
+.tryButton {
+  color: #fff;
+  white-space: initial;
+  margin-bottom: 40px;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+  background-color: #000;
+  align-self: center;
+  width: 520px;
+  max-width: 100%;
+  margin: 28px 0 0 0;
+  padding: 12px 20px;
+  font:
+    600 20px/24px Inter,
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
+  text-align: center;
+}

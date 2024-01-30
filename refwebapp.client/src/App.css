@@ -1,19 +1,14 @@
-﻿#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+﻿/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
 }
 
-tr:nth-child(even) {
-    background: #F2F2F2;
+code {
+    color: #e01a76;
 }
 
-tr:nth-child(odd) {
-    background: #FFF;
-}
-
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
