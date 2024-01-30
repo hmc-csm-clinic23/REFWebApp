@@ -23,4 +23,8 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Python\" />
+  </ItemGroup>
+
 </Project>

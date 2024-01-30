@@ -1,0 +1,82 @@
+.rankingPage {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.rankingContainer {
+  border-top: 1px solid #000;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  max-width: fit-content;
+  margin-top: 40px;
+}
+
+.rankingLine {
+  border: 1px solid #000;
+  border-top: 0;
+  background-color: #fff;
+  display: grid;
+  grid-template-columns: repeat(7, 150px);
+  max-width: fit-content;
+}
+@media (max-width: 991px) {
+  .rankingHeader {
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+.fieldHeader {
+  color: #000;
+  font-feature-settings:
+    "clig" off,
+    "liga" off;
+  font:
+    500 16px/19px Inter,
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
+  text-align: center;
+  padding: 12px 0px;
+  border-radius: 5px;
+}
+.fieldHeader:hover {
+  background-color: #e7edfe;
+  cursor: pointer;
+}
+.rankingLine {
+  border: 1px solid #000;
+  border-top: 0;
+  background-color: #fff;
+  display: grid;
+  grid-template-columns: repeat(7, 150px);
+}
+@media (max-width: 991px) {
+  .rankingLine {
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+.rankingField {
+  color: #000;
+  font-feature-settings:
+    "clig" off,
+    "liga" off;
+  font:
+    500 16px/19px Inter,
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
+  text-align: center;
+  padding: 12px 0px;
+}
+.fieldHeader:hover ~ .rankingField {
+  border-left: 1px solid #e7edfe;
+  border-right: 1px solid #e7edfe;
+}

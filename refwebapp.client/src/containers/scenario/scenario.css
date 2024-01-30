@@ -1,0 +1,50 @@
+.scenarioPage {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.searchAudio {
+  align-self: center;
+  height: 50px;
+  padding: 0 16px;
+  margin: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.audioItems {
+  align-self: center;
+  width: 60%;
+  margin-top: 15px;
+  border-radius: 8px;
+  padding: 16px;
+  height: 300px;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  overflow: scroll;
+}
+
+.addScenarioItem {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  height: 50px;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 0 15px;
+  border-radius: 8px;
+  justify-content: space-between;
+}
+
+.addScenarioItem:hover {
+  background-color: #e7edfe;
+}
+
+.leftSide {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
