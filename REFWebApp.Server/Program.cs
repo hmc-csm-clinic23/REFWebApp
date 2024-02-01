@@ -1,4 +1,10 @@
+using REFWebApp.Server;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+builder.Services.AddSingleton<FakeDataStore>();
 
 // Add services to the container.
 

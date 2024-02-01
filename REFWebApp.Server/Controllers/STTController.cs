@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using REFWebApp.Server.Model;
 
 namespace REFWebApp.Server.Controllers
 {
@@ -22,6 +23,8 @@ namespace REFWebApp.Server.Controllers
 public IEnumerable<STT> Post([FromBody] STTRequestModel request)
 {
     string[] text = request.Text;
+    GoogleCloud x = new GoogleCloud();
+    x.Run();
 
     return Enumerable.Range(1, 5).Select(index => new STT
     {

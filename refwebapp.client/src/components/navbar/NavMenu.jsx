@@ -54,6 +54,11 @@ const NavMenu = () => {
                 Guide
               </NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink tag={Link} className="text-dark" to="/fetchData">
+                FetchData
+              </NavLink>
+            </NavItem>
           </ul>
         </Collapse>
       </Navbar>
