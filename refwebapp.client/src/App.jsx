@@ -8,6 +8,7 @@ import {
   History,
   Scenario,
   Guide,
+  FetchData,
 } from "./containers";
 import { NavMenu } from "./components";
 import "./app.css";
@@ -42,6 +43,9 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/guide" element={<Guide />} />
+        </Routes>
+        <Routes>
+          <Route path="/fetchData" element={<FetchData />} />
         </Routes>
       </div>
     </div>
