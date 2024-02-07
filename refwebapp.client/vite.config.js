@@ -61,6 +61,10 @@ export default defineConfig({
             '^/scenariolist': {
                 target: 'https://localhost:7164/',
                 secure: false
+            },
+            '^/addscenario': {
+                target: 'https://localhost:7164/',
+                secure: false
             }
         },
         port: 5173,

@@ -6,7 +6,6 @@ function Scenario() {
   const [audioList, setAudioList] = useState([]);
   const [search, setSearch] = useState("");
   const [scenarioName, setScenarioName] = useState("");
-  const [newScenario, setNewScenario] = useState([]);
   const audioSubmit = audioList.filter((audio) => audio.checked === true);
 
   const audios = [
@@ -60,14 +59,20 @@ function Scenario() {
     );
   };
 
-  const updateScenarios = () => {
+  const updateScenarios = async () => {
     console.log(scenarioName);
     console.log(audioSubmit);
-    setNewScenario((newScenario) => ({
-      ...newScenario,
-      name: scenarioName,
-      audio: audioSubmit,
-    }));
+    await fetch('addscenario',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: scenarioName,
+                audios: audioSubmit.map((audioSubmit) => audioSubmit.name),
+            })
+        });
     setAudioList(
       audioList.map((audio) => ({
         ...audio,
