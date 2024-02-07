@@ -1,5 +1,8 @@
 using REFWebApp.Server;
 
+FakeDataStore x = new FakeDataStore();
+x.Connect();
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));

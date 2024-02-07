@@ -1,4 +1,7 @@
-﻿namespace REFWebApp.Server
+﻿using Amazon.S3;
+using Amazon.S3.Model;
+using System.Net;
+namespace REFWebApp.Server
 {
     public class FakeDataStore
     {
@@ -18,6 +21,15 @@
             await Task.CompletedTask;
         }
         public async Task<IEnumerable<Product>> GetAllProducts() => await Task.FromResult(_products);
+
+        public async Task Connect()
+        {
+            string awsAccessKey = "AKIA3XQL3GCM6IK4NJYK";
+            string awsSecretKey = "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";
+            var client = new AmazonS3Client(awsAccessKey, awsSecretKey);
+            Console.WriteLine(client);
+
+        }
 
 
         /// <summary>
