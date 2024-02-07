@@ -81,17 +81,22 @@ function Ranking() {
       api: "yes",
     },
   ];
-
-  useEffect(() => {
-    // fetch call to API goes here, where you then get access to `scenarios`
-    // then set your scenarioList state
+  async function populateScenarioData() {
+    const response = await fetch('scenariolist');
+    const data = await response.json();
     setScenarioList(
-      scenarios.map((scenario) => ({
+        data.map((scenario) => ({
         ...scenario,
         checked: false,
         weight: 0,
       })),
     );
+  }
+
+  useEffect(() => {
+    // fetch call to API goes here, where you then get access to `scenarios`
+    // then set your scenarioList state
+    populateScenarioData();
     setRankingList(
       rankings.map((ranking) => ({
         ...ranking,

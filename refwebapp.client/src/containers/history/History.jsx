@@ -12,30 +12,6 @@ function History() {
   const [clickToggle, setClickToggle] = useState(null);
   const [closeToggle, setCloseToggle] = useState(false);
 
-  const stts = [
-    {
-      name: "OpenAI Whisper",
-    },
-    {
-      name: "Google Chirp",
-    },
-    {
-      name: "Meta MMS",
-    },
-    {
-      name: "DeepGram",
-    },
-    {
-      name: "PaddleSpeech",
-    },
-    {
-      name: "Amazon Transcribe",
-    },
-    {
-      name: "Microsoft Azure",
-    },
-  ];
-
   const scenarioEval1 = [
     {
       name: "Eval 1",
@@ -142,16 +118,20 @@ function History() {
       eval: scenarioEval3,
     },
   ];
-
-  useEffect(() => {
-    // fetch call to API goes here, where you then get access to `stts`
-    // then set your sttList state
+  async function populateSttData() {
+    const response = await fetch('sttlist');
+    const data = await response.json();
     setSttList(
-      stts.map((stt) => ({
+      data.map((stt) => ({
         ...stt,
         checked: false,
       })),
     );
+  }
+  useEffect(() => {
+    // fetch call to API goes here, where you then get access to `stts`
+    // then set your sttList state
+    populateSttData();
     setRankingList(
       rankings.map((ranking) => ({
         ...ranking,

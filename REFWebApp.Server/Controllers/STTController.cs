@@ -4,38 +4,38 @@ namespace REFWebApp.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class STTController : ControllerBase
+    public class SttController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<STTController> _logger;
+        private readonly ILogger<SttController> _logger;
 
-        public STTController(ILogger<STTController> logger)
+        public SttController(ILogger<SttController> logger)
         {
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostSTT")]
-public IEnumerable<STT> Post([FromBody] STTRequestModel request)
-{
-    string[] text = request.Text;
+        [HttpPost(Name = "PostStt")]
+        public IEnumerable<Stt> Post([FromBody] SttRequestModel request)
+        {
+            string[] text = request.Text;
 
-    return Enumerable.Range(1, 5).Select(index => new STT
-    {
-        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        TemperatureC = Random.Shared.Next(-20, 55),
-        Summary = Summaries[Random.Shared.Next(Summaries.Length)],
-        Text = text[index]
-    })
-    .ToArray();
-}
+            return Enumerable.Range(1, 5).Select(index => new Stt
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)],
+                Text = text[index]
+            })
+            .ToArray();
+        }
 
-public class STTRequestModel
-{
-    public string[] Text { get; set; }
-}
+        public class SttRequestModel
+        {
+            public string[] Text { get; set; }
+        }
     }
 }
