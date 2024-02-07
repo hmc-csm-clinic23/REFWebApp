@@ -5,11 +5,6 @@ namespace REFWebApp.Server.Model.STTs
 {
     public class GoogleCloud : ISTT
     {
-        static void Main(string[] args)
-        {
-
-            Console.WriteLine("hello");
-        }
 
         public Audio ProcessInput(Audio audio)
         {
