@@ -1,7 +1,7 @@
 ﻿using Python.Runtime;
 
 
-namespace REFApplication.Model
+namespace REFWebApp.Server.Model
 {
     public class Evaluator
     {
