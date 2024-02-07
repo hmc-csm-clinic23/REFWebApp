@@ -20,69 +20,31 @@ function Tool() {
     (scenario) => scenario.checked === true,
   );
 
-  const stts = [
-    {
-      name: "OpenAI Whisper",
-    },
-    {
-      name: "Google Chirp",
-    },
-    {
-      name: "Meta MMS",
-    },
-    {
-      name: "DeepGram",
-    },
-    {
-      name: "PaddleSpeech",
-    },
-    {
-      name: "Amazon Transcribe",
-    },
-    {
-      name: "Microsoft Azure",
-    },
-  ];
-  const scenarios = [
-    {
-      name: "Loud",
-    },
-    {
-      name: "Quiet",
-    },
-    {
-      name: "Noisy",
-    },
-    {
-      name: "Sparse",
-    },
-    {
-      name: "Windy",
-    },
-    {
-      name: "Space",
-    },
-    {
-      name: "Clear",
-    },
-  ];
-
-  useEffect(() => {
-    // fetch call to API goes here, where you then get access to `objects`
-    // then set your toggles state
+  async function populateSttData() {
+    const response = await fetch('sttlist');
+    const data = await response.json();
     setSttList(
-      stts.map((stt) => ({
+      data.map((stt) => ({
         ...stt,
         checked: false,
       })),
     );
+  }
+  async function populateScenarioData() {
+    const response = await fetch('scenariolist');
+    const data = await response.json();
     setScenarioList(
-      scenarios.map((scenario) => ({
+        data.map((scenario) => ({
         ...scenario,
         checked: false,
         weight: 0,
       })),
     );
+  }
+
+  useEffect(() => {
+    populateSttData();
+    populateScenarioData();
   }, []);
 
   const updateSelections = () => {

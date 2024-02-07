@@ -1,6 +1,6 @@
 namespace REFWebApp.Server
 {
-    public class STT
+    public class Stt
     {
         public DateOnly Date { get; set; }
 

@@ -53,6 +53,14 @@ export default defineConfig({
             '^/stt': {
                 target: 'https://localhost:7164/',
                 secure: false
+            },
+            '^/sttlist': {
+                target: 'https://localhost:7164/',
+                secure: false
+            },
+            '^/scenariolist': {
+                target: 'https://localhost:7164/',
+                secure: false
             }
         },
         port: 5173,
