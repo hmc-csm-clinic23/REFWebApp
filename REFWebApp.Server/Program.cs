@@ -1,3 +1,7 @@
+using REFWebApp.Server.Model;
+GoogleCloud x = new GoogleCloud();
+x.Run();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
