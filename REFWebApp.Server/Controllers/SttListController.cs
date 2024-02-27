@@ -21,7 +21,7 @@ namespace REFWebApp.Server.Controllers
         [HttpGet(Name = "GetSttList")]
         public IEnumerable<SttList> Get()
         {
-            return Enumerable.Range(0, Stts.Length - 1).Select(index => new SttList
+            return Enumerable.Range(0, Stts.Length-1).Select(index => new SttList
             {
                 Name = Stts[index]
             })

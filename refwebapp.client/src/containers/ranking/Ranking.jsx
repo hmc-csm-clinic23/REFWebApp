@@ -10,6 +10,30 @@ function Ranking() {
   const [sort, setSort] = useState("score");
   const [sortToggle, setSortToggle] = useState(1);
 
+  const scenarios = [
+    {
+      name: "Loud",
+    },
+    {
+      name: "Quiet",
+    },
+    {
+      name: "Noisy",
+    },
+    {
+      name: "Sparse",
+    },
+    {
+      name: "Windy",
+    },
+    {
+      name: "Space",
+    },
+    {
+      name: "Clear",
+    },
+  ];
+
   const rankings = [
     {
       stt: "Whisper",
@@ -143,8 +167,8 @@ function Ranking() {
             API
           </div>
         </div>
-        {rankingList.sort(compare).map((ranking) => (
-            <RankingLine
+        {rankingList.sort(compare).map((ranking, index) => (
+          <RankingLine
             stt={ranking.stt}
             score={ranking.score}
             accuracy={ranking.accuracy}
