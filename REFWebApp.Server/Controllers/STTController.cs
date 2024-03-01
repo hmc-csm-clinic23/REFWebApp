@@ -24,7 +24,7 @@ namespace REFWebApp.Server.Controllers
         {
             string[] text = request.Text;
             GoogleCloud x = new GoogleCloud();
-            x.Run();
+            //x.Run();
             x.Metrics();
 
             return Enumerable.Range(1, 5).Select(index => new STT
