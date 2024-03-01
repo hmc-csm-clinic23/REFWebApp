@@ -7,6 +7,7 @@ nest_asyncio.apply()
 
 import pandas as pd
 import csv
+from num2words import num2words
 
 # csv_0 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-000.csv'
 # csv_1 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-001.csv'
@@ -20,36 +21,7 @@ def evaluate(list):
 
     df = pd.read_csv(groundtruth_file)
     print(df)
-    # df_1 = pd.read_csv(csv_1)
-    # df_2 = pd.read_csv(csv_2)
-    # df_3 = pd.read_csv(csv_3)
-
-    #df['Wav'] = df['Wav'].replace(regex=r':', value='_') << WILL NEED THIS ONCE NOT WORKING W MOCK DATA ANYMORE!!
-    # df_1['Wav'] = df_1['Wav'].replace(regex=r':', value='_')
-    # df_2['Wav'] = df_2['Wav'].replace(regex=r':', value='_')
-    # df_3['Wav'] = df_3['Wav'].replace(regex=r':', value='_')
-
-
-
-
-    #create dict containing wav as key and text as value
-    # def create_times_dict(df : pd.DataFrame):
-    #     times = {}
-    #     for row, col in df.iterrows():
-    #         try:
-    #             filename = df.iloc[row][1].replace(':', '_')
-    #             times[filename] = df.iloc[row][2]
-    #         except IndexError:
-    #             print('')
-    #     return times
-    # times = create_times_dict(df)
-    #print(times_0)
-
-    # times_1 = create_times_dict(df_1)
-    # times_2 = create_times_dict(df_2)
-    # times_3 = create_times_dict(df_3)
-
-    # Code for similarity metric
+    
     from difflib import SequenceMatcher
     from jiwer import wer, mer, wil
     from Levenshtein import distance
@@ -72,15 +44,6 @@ def evaluate(list):
     transcript_dict.dropna(subset=['Transcription'], inplace=True)
     
 
-    #print(transcript_dict)
-
-
-
-    # with open('/Users/sathv/Desktop/REFApplication/REFApplication/transcriptions.csv', mode='r') as infile:
-    #     reader = csv.reader(infile)
-    #     transcriptdict = {rows[0]:rows[1] for rows in reader if len(rows[1]) > 0}
-
-
     def evaluate_transcr(transcripts: pd.DataFrame, groundtruthdf):
         #lists to contain metrics for both ASR scores
         # groundtruthdict = groundtruthdf.groupby('Wav',group_keys=True)[['Transcription']].apply(list).to_dict()
@@ -100,23 +63,14 @@ def evaluate(list):
             print(key)
 
             if key in transcriptdict.keys():
-                #run transcription function
                 groundtruth = groundtruthdict[key]
-                
                 model_transcription_text = transcriptdict[key]
-
-                #print(model_transcription_text)
-            
-                #print results from both ASRs
 
                 print('Ground Truth:', groundtruth, '\n' )
                 print('Model Transcription:', model_transcription_text, '\n')
 
-                #print ASR metrics
                 wer, mer, wil, sim, dist = metrics('Model', groundtruth, model_transcription_text)
-
-                #append metrics to ASR score lists
-
+                
                 model_wer.append(wer)
                 model_mer.append(mer)
                 model_wil.append(wil)
@@ -132,4 +86,12 @@ def evaluate(list):
 
 
     evaluate_transcr(transcript_dict, df)
-    
+
+def normalize(result):
+  newResult = []
+  for word in result.split():
+    if word.isdigit():
+      newResult.append(num2words(word))
+    else:
+      newResult.append(word)
+  return (' '.join(newResult))

@@ -24,7 +24,7 @@ def transcribe_file(wav_file: str) -> speech.RecognizeResponse:
     audio = speech.RecognitionAudio(content=content)
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        sample_rate_hertz=48000,
+        sample_rate_hertz=16000,
         language_code="en-US",
     )
 
