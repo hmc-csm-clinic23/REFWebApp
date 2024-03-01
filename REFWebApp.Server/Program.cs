@@ -1,5 +1,19 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Database Connection 
+ConfigureServices(
+    builder.Services,
+    builder.Configuration
+);
+
+void ConfigureServices(IServiceCollection services, ConfigurationManager configManager) {
+    services.AddDbContext<PostgresContext>(
+        opts => {
+            opts.UseNpgsql(configManager.GetConnectionString("REFDb"));
+
+        }, ServiceLifetime.Transient);
+}
+
 // Add services to the container.
 
 builder.Services.AddControllers();
