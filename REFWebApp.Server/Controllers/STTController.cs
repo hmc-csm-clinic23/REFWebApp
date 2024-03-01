@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using REFWebApp.Server.Data;
 using REFWebApp.Server.Model.STTs;
+using REFWebApp.Server.Models;
 
 namespace REFWebApp.Server.Controllers
 {
@@ -22,17 +24,19 @@ namespace REFWebApp.Server.Controllers
         [HttpPost(Name = "PostStt")]
         public IEnumerable<STT> Post([FromBody] SttRequestModel request)
         {
-            string[] text = request.Text;
-            GoogleCloud x = new GoogleCloud();
+            //string[] text = request.Text;
+            //GoogleCloud x = new GoogleCloud();
             //x.Run();
-            x.Metrics();
+            //x.Metrics();
+            using PostgresContext context = new PostgresContext();
+            List<AudioFile> audios = context.AudioFiles.ToList();
 
             return Enumerable.Range(1, 5).Select(index => new STT
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)],
-                Text = text[index]
+                Text = audios[index].Path
             })
     .ToArray();
         }

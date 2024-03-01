@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using REFWebApp.Server.Data;
+using REFWebApp.Server.Models;
 using System.Xml.Linq;
 
 namespace REFWebApp.Server.Controllers
@@ -7,10 +9,6 @@ namespace REFWebApp.Server.Controllers
     [Route("[controller]")]
     public class ScenarioListController : ControllerBase
     {
-        private static readonly string[] Scenarios = new[]
-        {
-            "Loud", "Quiet", "Noisy", "Sparse", "Windy", "Space", "Clear"
-        };
 
         private readonly ILogger<ScenarioListController> _logger;
 
@@ -22,9 +20,11 @@ namespace REFWebApp.Server.Controllers
         [HttpGet(Name = "GetScenarioList")]
         public IEnumerable<ScenarioList> Get()
         {
-            return Enumerable.Range(0, Scenarios.Length - 1).Select(index => new ScenarioList
+            using PostgresContext context = new PostgresContext();
+            List<Scenario> scenarios = context.Scenarios.ToList();
+            return Enumerable.Range(0, scenarios.Count).Select(index => new ScenarioList
             {
-                Name = Scenarios[index]
+                Name = scenarios[index].Name
             })
             .ToArray();
         }
