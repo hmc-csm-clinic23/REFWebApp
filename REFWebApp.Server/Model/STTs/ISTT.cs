@@ -3,7 +3,7 @@
     public interface ISTT
     {
         Audio ProcessInput(Audio audio);
-        void Run();
+        public void Run(string[] filenames);
         void Metrics();
         string[] ProcessOutput(string[] args);
     }
