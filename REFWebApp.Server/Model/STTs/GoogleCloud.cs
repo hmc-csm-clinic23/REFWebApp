@@ -44,6 +44,8 @@ namespace REFWebApp.Server.Model.STTs
                 //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
                 var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
+
+                string[] mylist = (string[])resu;
                 Console.WriteLine(result);
                 //                                        //scriptCompiled.InvokeMethod("returndict");
                 //                                    // PyObject Pythonnet = scope.Get("Pythonnet"); // Lets get an instance of the class in python
@@ -55,14 +57,15 @@ namespace REFWebApp.Server.Model.STTs
         }
 
 
-        public void Metrics()
+        public float[] Metrics()
         {
             // {
             //     var speed = Speed.SpeedCalc();
             //     var memory = Memory.MemoryCalc();
             //     Console.WriteLine("metrics works");
             Evaluator y = new Evaluator();
-            y.Run("transcriptions.csv");
+            float[] metrics = y.Run("transcriptions.csv");
+            return metrics;
         }
 
         public string[] ProcessOutput(string[] args)

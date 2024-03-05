@@ -41,8 +41,11 @@ namespace REFWebApp.Server.Model
                 string[] message = new string[] { transcriptions_file, "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\ground_truth.csv" };
                 Console.WriteLine(message);
                 var result = scriptCompiled.InvokeMethod("evaluate", message.ToPython());
+                // List<float> metricslist = (List<float>)result;
+                //List<float> metricslist = new List<string>((IEnumerable<string>) result);
+                //List<string> mylist = ((string[])result).ToList<string>();
 
-                Console.WriteLine(result);
+                // Console.WriteLine(result);
 
                 // string code = File.ReadAllText(file); // Get the python file as raw text
                 // var scriptCompiled = PythonEngine.Compile(code, file); // Compile the code/file
@@ -51,8 +54,8 @@ namespace REFWebApp.Server.Model
                 // PyObject pythongReturn = exampleClass.InvokeMethod("sayHello"); // Call the sayHello function on the exampleclass object
                 // string? result = pythongReturn.AsManagedObject(typeof(string)) as string; // convert the returned string to managed string object
             }
-            
-            return result;
+
+            return metricslist;
         }
     }
 
