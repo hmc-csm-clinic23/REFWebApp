@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using REFWebApp.Server.Data;
+using REFWebApp.Server.Models;
 
 namespace REFWebApp.Server.Controllers
 {
@@ -21,9 +23,11 @@ namespace REFWebApp.Server.Controllers
         [HttpGet(Name = "GetSttList")]
         public IEnumerable<SttList> Get()
         {
-            return Enumerable.Range(0, Stts.Length - 1).Select(index => new SttList
+            using PostgresContext context = new PostgresContext();
+            List<Stt> stts = context.Stts.ToList();
+            return Enumerable.Range(0, stts.Count).Select(index => new SttList
             {
-                Name = Stts[index]
+                Name = stts[index].Name
             })
             .ToArray();
         }
