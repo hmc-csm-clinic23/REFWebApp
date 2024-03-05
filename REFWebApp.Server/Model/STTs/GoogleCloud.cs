@@ -61,8 +61,6 @@ namespace REFWebApp.Server.Model.STTs
             //     var speed = Speed.SpeedCalc();
             //     var memory = Memory.MemoryCalc();
             //     Console.WriteLine("metrics works");
-
-
             Evaluator y = new Evaluator();
             y.Run("transcriptions.csv");
         }

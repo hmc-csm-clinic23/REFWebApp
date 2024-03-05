@@ -51,6 +51,8 @@ namespace REFWebApp.Server.Model
                 // PyObject pythongReturn = exampleClass.InvokeMethod("sayHello"); // Call the sayHello function on the exampleclass object
                 // string? result = pythongReturn.AsManagedObject(typeof(string)) as string; // convert the returned string to managed string object
             }
+            
+            return result;
         }
     }
 
