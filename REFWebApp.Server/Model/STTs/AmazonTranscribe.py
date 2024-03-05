@@ -1,11 +1,15 @@
 import boto3
 import time
 import pandas as pd
+import csv
 
 transcribe = boto3.client('transcribe',
                           aws_access_key_id = "AKIAZI2LDMYOI5O3ENFU",
                           aws_secret_access_key = "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",
-                          region_name = "us-east-2")
+                          region_name = "us-west-1")
+
+bucket_name = 'nbl-audio-files'
+file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_2_1-0_2_5.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_4-0_2_7.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_23-0_2_25.wav"]
 
 def check_job_name(job_name):
   job_verification = True
@@ -51,8 +55,22 @@ def runAmazon(job_uri, audio_file_name):
 
 def transcribe_all(files_dir): 
     wavfiles = files_dir
+
+    client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+
     transcript_dict = {}
-    for i in wavfiles: 
-        transcript_dict[i] = runAmazon(i)
+    for i in range(len(file_paths)): 
+        job_uri = "s3://"+bucket_name+"/"+file_paths[i]
+        audio_file_name = file_paths[i].split('/')[-1]
+        print(job_uri)
+        transcript = runAmazon(job_uri, audio_file_name)
+        transcript_dict[file_paths[i]] = transcript
+        print(transcript)
+        with open('transcriptions.csv', 'w') as csv_file:  
+            writer = csv.writer(csv_file)
+            for key, value in transcript_dict.items():
+                writer.writerow([key.replace('_', ':'), value])  
 
     return transcript_dict
+
+transcribe_all(file_paths)

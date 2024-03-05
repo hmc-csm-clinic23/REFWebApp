@@ -1,7 +1,6 @@
 import csv
 import whisper
-
-
+import csv
 import boto3
 import json
 import io
