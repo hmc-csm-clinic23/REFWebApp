@@ -1,6 +1,5 @@
 import whisper
-
-
+import csv
 import boto3
 import json
 import io
@@ -28,17 +27,17 @@ def transcribe_all(files_dir):
     transcript_dict = {}
     for i in range(len(file_paths)): 
     #wavfiles = listdir(CURRENTPATH)
-    response = client.get_object(Bucket='nbl-audio-files', Key=file_paths[i],)
-    data = response["Body"].read()
-        # print(type(data))
-        # print(data)
-    transcript = runWhisper(data)
-    transcript_dict[file_paths[i]] = transcript
-    print(transcript)
-    #print(transcript_dict[i])
-    with open('transcriptions.csv', 'w') as csv_file:  
-        writer = csv.writer(csv_file)
-        for key, value in transcript_dict.items():
-            writer.writerow([key.replace('_', ':'), value])  
+        response = client.get_object(Bucket='nbl-audio-files', Key=file_paths[i],)
+        data = response["Body"].read()
+            # print(type(data))
+            # print(data)
+        transcript = runWhisper(data)
+        transcript_dict[file_paths[i]] = transcript
+        print(transcript)
+        #print(transcript_dict[i])
+        with open('transcriptions.csv', 'w') as csv_file:  
+            writer = csv.writer(csv_file)
+            for key, value in transcript_dict.items():
+                writer.writerow([key.replace('_', ':'), value])  
 
     return transcript_dict
