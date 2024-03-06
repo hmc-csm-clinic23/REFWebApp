@@ -30,7 +30,8 @@ namespace REFWebApp.Server.Controllers
 
             return Enumerable.Range(0, metrics.Count).Select(index => new MetricList
             {
-                Metrics = metrics[index]
+                Metrics = metrics[index],
+                Transcriptions = transcriptions[index]
             })
             .ToArray();
         }
