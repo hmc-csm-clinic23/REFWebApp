@@ -42,7 +42,7 @@ namespace REFWebApp.Server.Model
                 Console.WriteLine(message);
                 var result = scriptCompiled.InvokeMethod("evaluate", message.ToPython());
                 // List<float> metricslist = (List<float>)result;
-                //List<float> metricslist = new List<string>((IEnumerable<string>) result);
+                List<float> metricslist = new List<float>((IEnumerable<float>) result);
                 //List<string> mylist = ((string[])result).ToList<string>();
 
                 // Console.WriteLine(result);

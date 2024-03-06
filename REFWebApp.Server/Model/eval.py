@@ -82,6 +82,7 @@ def evaluate(list):
         #print overall ASR metrics
         print('Average ASR Metrics - WER:', avg(model_wer), 'MER:', avg(model_mer), 'WIL:', avg(model_wil), 'SIM:', avg(model_sim), 'L-DIST:', avg(model_dist), '\n')
         model_metrics = {'wer': float(avg(model_wer)), 'mer': float(avg(model_mer)), 'wil' : float(avg(model_wil)), 'sim' : float(avg(model_sim)), 'l_dist' : float(avg(model_dist))}
+        modelList = [float(avg(model_wer)), float(avg(model_mer)), float(avg(model_wil)), float(avg(model_sim)), float(avg(model_dist))]
         return model_metrics
 
 
