@@ -40,7 +40,19 @@ function Tool() {
         weight: 0,
       })),
     );
-  }
+    }
+
+  /*async function postMetrics() {
+    const response = await fetch('metrics');
+    const data = await response.json();
+    setScenarioList(
+        data.map((scenario) => ({
+        ...scenario,
+        checked: false,
+        weight: 0,
+      })),
+    );
+  }*/
 
   useEffect(() => {
     populateSttData();
@@ -55,6 +67,7 @@ function Tool() {
       useStore: useStoreToggle,
       updateStore: updateStoreToggle,
     }));
+    //postMetrics();
   };
 
   return (

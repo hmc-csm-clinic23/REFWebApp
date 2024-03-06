@@ -13,7 +13,7 @@ import csv
 # csv_2 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-002.csv'
 # csv_3 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-003.csv'
 
-def evaluate(list):
+def evaluate(list, glist):
     transcription_file = list[0]
    
     groundtruth_file = list[1]
@@ -89,7 +89,7 @@ def evaluate(list):
         transcriptdict = dict(zip(transcripts.Wav, transcripts.Transcription))
 
         print(groundtruthdict)
-        #print(transcriptdict)
+        print(transcriptdict)
         model_wer = []
         model_mer = []
         model_wil = []
@@ -128,8 +128,14 @@ def evaluate(list):
         #print overall ASR metrics
         print('Average ASR Metrics - WER:', avg(model_wer), 'MER:', avg(model_mer), 'WIL:', avg(model_wil), 'SIM:', avg(model_sim), 'L-DIST:', avg(model_dist), '\n')
         model_metrics = {'wer': float(avg(model_wer)), 'mer': float(avg(model_mer)), 'wil' : float(avg(model_wil)), 'sim' : float(avg(model_sim)), 'l_dist' : float(avg(model_dist))}
-        return model_metrics
+        metrics_avg_list = [float(avg(model_wer)), float(avg(model_mer)), float(avg(model_wil)), float(avg(model_sim)), float(avg(model_dist))]
+        metrics_list = []
+        for i in range(len(model_dist)):
+            metrics_list.append([model_wer[i], model_mer[i], model_mer[i], model_sim[i], model_dist[i]])
+        print('METRICS FROM PYTHON: ', metrics_list)
+        return metrics_list
 
 
-    evaluate_transcr(transcript_dict, df)
+    metrics = evaluate_transcr(transcript_dict, df)
+    return metrics
     

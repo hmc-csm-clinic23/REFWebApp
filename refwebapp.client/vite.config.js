@@ -65,6 +65,10 @@ export default defineConfig({
             '^/addscenario': {
                 target: 'https://localhost:7164/',
                 secure: false
+            },
+            '^/metrics': {
+                target: 'https://localhost:7164/',
+                secure: false
             }
         },
         port: 5173,

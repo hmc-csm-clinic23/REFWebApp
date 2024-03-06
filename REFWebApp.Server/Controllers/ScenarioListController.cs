@@ -24,7 +24,8 @@ namespace REFWebApp.Server.Controllers
             List<Scenario> scenarios = context.Scenarios.ToList();
             return Enumerable.Range(0, scenarios.Count).Select(index => new ScenarioList
             {
-                Name = scenarios[index].Name
+                Name = scenarios[index].Name,
+                Audios = scenarios[index].Audios
             })
             .ToArray();
         }
