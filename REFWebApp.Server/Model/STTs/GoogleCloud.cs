@@ -45,7 +45,7 @@ namespace REFWebApp.Server.Model.STTs
 
                 var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
 
-                string[] mylist = (string[])resu;
+                string[] mylist = (string[]);
                 Console.WriteLine(result);
                 //                                        //scriptCompiled.InvokeMethod("returndict");
                 //                                    // PyObject Pythonnet = scope.Get("Pythonnet"); // Lets get an instance of the class in python
