@@ -39,10 +39,10 @@ namespace REFWebApp.Server.Model
 
                 var scriptCompiled = Py.Import(scriptname);
                 //string[] message = new string[] {transcriptions_file, "/Users/sathv/Desktop/REFApplication/REFApplication/ground_truth.csv"};
-                List<string> tra = new List<string> { transcriptions_file };
-                Listm<string> gt = new List<string> { groundtruth }
-                Console.WriteLine(message);
-                var result = scriptCompiled.InvokeMethod("evaluate", tra.ToPython(), get.ToPython());
+                List<string> tra = transcriptions_file;
+                List<string> gt =groundtruth ;
+                //Console.WriteLine(message);
+                var result = scriptCompiled.InvokeMethod("evaluate", tra.ToPython(), gt.ToPython());
                 Console.WriteLine("RESULT: " + result);
                 PyObject[] pyOuterlist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
 

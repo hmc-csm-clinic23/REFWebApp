@@ -20,6 +20,11 @@ namespace REFWebApp.Server.Controllers
         [HttpGet(Name = "GetScenarioList")]
         public IEnumerable<ScenarioList> Get()
         {
+            /*using (var context = new PostgresContext())
+            {
+                List<Scenario> scenarios = context.Scenarios.Include(s => s.Audios).ToList();
+            }
+             */
             using PostgresContext context = new PostgresContext();
             List<Scenario> scenarios = context.Scenarios.ToList();
             return Enumerable.Range(0, scenarios.Count).Select(index => new ScenarioList

@@ -49,18 +49,22 @@ def transcribe_all(files_dir):
     
     #wavfiles = listdir(CURRENTPATH)
     wavfiles = files_dir
-    transcript_dict = {}
+    transcript_list = []
     for i in wavfiles: 
         print(i)
         # if librosa.get_duration(path = join(CURRENTPATH, i)) < 60:
         #     transcript_dict[i] = transcribe_file(join(CURRENTPATH, i))
         #     print(transcript_dict[i])
         #if librosa.get_duration(i) < 60:
-        transcript_dict[i] = transcribe_file(i)
+        # transcript_dict[i] = transcribe_file(i)
+        transcript_list.append(transcribe_file(i))
         #print(transcript_dict[i])
         # with open('transcriptions.csv', 'w') as csv_file:  
         #     writer = csv.writer(csv_file)
         #     for key, value in transcript_dict.items():
         #     writer.writerow([key.replace('_', ':'), value])  
+    print("TRANSCRIPTLIST: ", transcript_list)
+    return transcript_list
 
-    return transcript_dict
+# filenames = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Model\\test.wav"]
+# print(transcribe_all(filenames))

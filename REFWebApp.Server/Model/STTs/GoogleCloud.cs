@@ -44,6 +44,8 @@ namespace REFWebApp.Server.Model.STTs
                 //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
                 var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
+                Console.WriteLine("GOOGLECLOUD_OUTPUT: " + result);
+
                 PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
 
                 List<string> transcriptions = new List<string>();
@@ -54,7 +56,7 @@ namespace REFWebApp.Server.Model.STTs
                     transcriptions.Add(transcript);
 
                 }
-                Console.WriteLine(result); 
+                //Console.WriteLine(transcriptions); 
                 return transcriptions;
                 //scriptCompiled.InvokeMethod("returndict");
                 //                                    // PyObject Pythonnet = scope.Get("Pythonnet"); // Lets get an instance of the class in python
