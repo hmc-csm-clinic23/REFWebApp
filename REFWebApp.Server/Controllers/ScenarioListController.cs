@@ -23,6 +23,7 @@ namespace REFWebApp.Server.Controllers
             /*using (var context = new PostgresContext())
             {
                 List<Scenario> scenarios = context.Scenarios.Include(s => s.Audios).ToList();
+                ICollection<AudioFile> audios = scenarios[0].Audios;
             }
              */
             using PostgresContext context = new PostgresContext();
