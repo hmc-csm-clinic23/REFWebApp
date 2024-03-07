@@ -16,4 +16,6 @@ public partial class Transcription
     public virtual AudioFile? Audio { get; set; }
 
     public virtual Stt? Stt { get; set; }
+
+    public virtual String? Transcript { get; set; }
 }
