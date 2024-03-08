@@ -1,5 +1,10 @@
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.Json;
+using Npgsql.Replication;
 using REFWebApp.Server.Data;
 using REFWebApp.Server.Models;
 
@@ -52,6 +57,7 @@ app.Run();
 // be able to get data from database 
 Console.WriteLine("audio files:");
 
+/*
 using PostgresContext context = new PostgresContext();
 List<AudioFile> audios = context.AudioFiles.ToList();
 
@@ -61,3 +67,44 @@ foreach (AudioFile a in audios) {
     Console.WriteLine("-------------------------------------------------------");
 }
 Console.WriteLine("audio files have been printed");
+*/
+
+using (var context = new PostgresContext())
+{
+    /*
+    List<Scenario> scenarios = context.Scenarios
+                                  .Include(s => s.Audios)
+                                  .ToList();
+
+    ICollection<AudioFile> audios = scenarios[0].Audios;
+
+    Console.WriteLine(audios.Count);
+    foreach (AudioFile a in audios) {
+        Console.WriteLine(a.Path);
+        Console.WriteLine(a.GroundTruth);
+        Console.WriteLine("-------------------------------------------------------");
+    }
+    Console.WriteLine("audio files have been printed");
+*/
+    string fileName = "Test/transcriptions.json";
+    string jsonString = File.ReadAllText(fileName);
+    var transcriptions = JsonSerializer.Deserialize<List<Transcription>>(jsonString);
+    /* creating transciption object 
+    Transcription test = new Transcription()
+    {
+        AudioId = 1818,
+        SttId = 1,
+        Timestamp = DateTime.Now,
+        Transcript = "aaaaa"
+    };
+    */
+
+    foreach (var t in transcriptions) { 
+        Console.WriteLine(t.AudioId);
+        Console.WriteLine(t.SttId);
+    }
+    context.BulkInsert(transcriptions);
+    context.SaveChanges();
+
+
+}
