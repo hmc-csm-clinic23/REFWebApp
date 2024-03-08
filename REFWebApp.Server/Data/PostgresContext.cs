@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using Microsoft.EntityFrameworkCore;
 using REFWebApp.Server.Models;
 
@@ -9,6 +10,7 @@ public partial class PostgresContext : DbContext
 {
     public PostgresContext()
     {
+        this.ChangeTracker.LazyLoadingEnabled = false;
     }
 
     public PostgresContext(DbContextOptions<PostgresContext> options)
@@ -41,6 +43,8 @@ public partial class PostgresContext : DbContext
             entity.HasKey(e => e.Id).HasName("audio_files_pkey");
 
             entity.ToTable("audio_files");
+
+            entity.HasIndex(e => e.Path, "unique_path").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.FormatId).HasColumnName("format_id");
@@ -163,6 +167,7 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.Timestamp)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("timestamp");
+            entity.Property(e => e.Transcript).HasColumnName("transcript");
 
             entity.HasOne(d => d.Audio).WithMany(p => p.Transcriptions)
                 .HasForeignKey(d => d.AudioId)
