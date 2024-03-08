@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EFCore.BulkExtensions;
+using Microsoft.AspNetCore.Mvc;
 using REFWebApp.Server.Data;
 using REFWebApp.Server.Model.STTs;
 using REFWebApp.Server.Models;
@@ -41,10 +42,10 @@ namespace REFWebApp.Server.Controllers
             Console.WriteLine("time taken: "+ elapsed_time.ToString());
 
             // put transcription info into Json format
-            List<Transcription> transcriptions_class_list = new List<Transcription>();
+            List<Transcription> transcription_objects = new List<Transcription>();
             for (int i = 0; i < transcriptions.Count; i++)
             {
-                transcriptions_class_list.Add(new Transcription
+                transcription_objects.Add(new Transcription
                 {
                     Timestamp = starting_time,
                     Transcript = transcriptions[i],
@@ -56,10 +57,15 @@ namespace REFWebApp.Server.Controllers
 
                 }) ;
             }
-            // serialize into json format
-            string json_transcriptions = JsonSerializer.Serialize(transcriptions_class_list);
 
-            Console.WriteLine(json_transcriptions); 
+            // Add transcriptions to database
+            this.AddTranscriptionsToDB(transcription_objects);
+
+
+            // serialize into json format
+            // string json_transcriptions = JsonSerializer.Serialize(transcriptions_class_list);
+
+            // Console.WriteLine(json_transcriptions); 
 
 
             Console.WriteLine("from metrics controller: " + transcriptions[0]);
@@ -73,6 +79,15 @@ namespace REFWebApp.Server.Controllers
                 Transcriptions = transcriptions[index]
             })
             .ToArray();
+        }
+
+        [NonAction]
+        public void AddTranscriptionsToDB(List<Transcription> transcriptions) { 
+            using (var context = new PostgresContext())
+            {
+                context.BulkInsert(transcriptions);
+            }
+
         }
 
         public class MetricsRequestModel
