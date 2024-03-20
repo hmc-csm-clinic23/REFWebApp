@@ -44,12 +44,6 @@ namespace REFWebApp.Server.Model.STTs
                 //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
                 var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
-<<<<<<< HEAD:REFWebApp.Server/Model/STTs/GoogleCloud.cs
-
-                string[] mylist = (string[]);
-                Console.WriteLine(result);
-                //                                        //scriptCompiled.InvokeMethod("returndict");
-=======
                 Console.WriteLine("GOOGLECLOUD_OUTPUT: " + result);
 
                 PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
@@ -65,7 +59,6 @@ namespace REFWebApp.Server.Model.STTs
                 //Console.WriteLine(transcriptions); 
                 return transcriptions;
                 //scriptCompiled.InvokeMethod("returndict");
->>>>>>> master:REFWebApp.Server/Evaluation/STTs/GoogleCloud.cs
                 //                                    // PyObject Pythonnet = scope.Get("Pythonnet"); // Lets get an instance of the class in python
                 //                                    // PyObject pythongReturn = Pythonnet.InvokeMethod("returndict"); // Call the sayHello function on the exampleclass object
                 //                                    // string? result = pythongReturn.AsManagedObject(typeof(string)) as string; // convert the returned string to managed string object
@@ -75,24 +68,15 @@ namespace REFWebApp.Server.Model.STTs
         }
 
 
-<<<<<<< HEAD:REFWebApp.Server/Model/STTs/GoogleCloud.cs
-        public float[] Metrics()
-=======
         public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
->>>>>>> master:REFWebApp.Server/Evaluation/STTs/GoogleCloud.cs
         {
             // {
             //     var speed = Speed.SpeedCalc();
             //     var memory = Memory.MemoryCalc();
             //     Console.WriteLine("metrics works");
             Evaluator y = new Evaluator();
-<<<<<<< HEAD:REFWebApp.Server/Model/STTs/GoogleCloud.cs
-            float[] metrics = y.Run("transcriptions.csv");
-            return metrics;
-=======
             List<List<float>> metricslist = y.Run(transcriptions, groundtruths);
             return metricslist;
->>>>>>> master:REFWebApp.Server/Evaluation/STTs/GoogleCloud.cs
         }
 
         public string[] ProcessOutput(string[] args)
