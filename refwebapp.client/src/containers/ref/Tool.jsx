@@ -7,6 +7,8 @@ import "./tool.css";
 
 function Tool() {
   const { setSelections } = useContext(Context);
+  //const { setDisplay } = useContext(Context);
+  //const { selections, setSelections } = useState([]);
   const [sttToggle, setSttToggle] = useState(false);
   const [scenarioToggle, setScenarioToggle] = useState(false);
   const [useStoreToggle, setUseStoreToggle] = useState(false);
@@ -15,10 +17,8 @@ function Tool() {
   const [scenarioSearch, setScenarioSearch] = useState("");
   const [sttList, setSttList] = useState([]);
   const [scenarioList, setScenarioList] = useState([]);
-  const sttSubmit = sttList.filter((stt) => stt.checked === true);
-  const scenarioSubmit = scenarioList.filter(
-    (scenario) => scenario.checked === true,
-  );
+  const sttSubmit = sttList.filter((stt) => stt.checked === true).map(({checked, ...stt}) => stt);
+  const scenarioSubmit = scenarioList.filter((scenario) => scenario.checked === true,).map(({checked, ...stt}) => stt);
 
   async function populateSttData() {
     const response = await fetch('sttlist');
@@ -40,21 +40,41 @@ function Tool() {
         weight: 0,
       })),
     );
-  }
+    }
+
+  /*async function postMetrics() {
+    const response = await fetch('metrics',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                request: selections
+            })
+        });
+    const data = await response.json();
+    setDisplay(
+        "hello"
+    );
+  }*/
 
   useEffect(() => {
     populateSttData();
     populateScenarioData();
   }, []);
 
-  const updateSelections = () => {
+    const updateSelections = () => {
+        //const {checked, ...sttSelections} = sttSubmit;
+        //const {checked, ...scenarioSelections} = scenarioSubmit;
+        //delete sttSubmit.checked;
+        //delete scenarioSubmit.checked;
     setSelections((prevState) => ({
       ...prevState,
-      stts: sttSubmit,
-      scenarios: scenarioSubmit,
-      useStore: useStoreToggle,
-      updateStore: updateStoreToggle,
+        SttList: sttSubmit,
+        ScenarioList: scenarioSubmit,
     }));
+    //postMetrics();
   };
 
   return (

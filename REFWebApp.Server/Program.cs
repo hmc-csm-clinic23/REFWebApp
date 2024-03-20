@@ -1,9 +1,12 @@
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.Xml;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.Json;
+using Newtonsoft.Json;
 using Npgsql.Replication;
 using REFWebApp.Server.Data;
 using REFWebApp.Server.Models;
@@ -28,6 +31,8 @@ void ConfigureServices(IServiceCollection services, ConfigurationManager configM
 // Add services to the container.
 
 builder.Services.AddControllers();
+    //.AddJsonOptions(x => 
+    //                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -71,7 +76,7 @@ Console.WriteLine("audio files have been printed");
 
 using (var context = new PostgresContext())
 {
-    /*
+
     List<Scenario> scenarios = context.Scenarios
                                   .Include(s => s.Audios)
                                   .ToList();
@@ -84,12 +89,11 @@ using (var context = new PostgresContext())
         Console.WriteLine(a.GroundTruth);
         Console.WriteLine("-------------------------------------------------------");
     }
-    Console.WriteLine("audio files have been printed");
-*/
+    /*
     string fileName = "Test/transcriptions.json";
     string jsonString = File.ReadAllText(fileName);
     var transcriptions = JsonSerializer.Deserialize<List<Transcription>>(jsonString);
-    /* creating transciption object 
+    // creating transciption object 
     Transcription test = new Transcription()
     {
         AudioId = 1818,
@@ -97,7 +101,7 @@ using (var context = new PostgresContext())
         Timestamp = DateTime.Now,
         Transcript = "aaaaa"
     };
-    */
+    
 
     foreach (var t in transcriptions) { 
         Console.WriteLine(t.AudioId);
@@ -105,6 +109,6 @@ using (var context = new PostgresContext())
     }
     context.BulkInsert(transcriptions);
     context.SaveChanges();
-
+    */
 
 }
