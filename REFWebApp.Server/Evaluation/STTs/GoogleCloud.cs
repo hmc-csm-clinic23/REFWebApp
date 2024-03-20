@@ -21,7 +21,7 @@ namespace REFWebApp.Server.Model.STTs
             PythonEngine.Initialize();
             Py.GIL();
 
-            //string file = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"/GoogleCloud.py";
+            // string file = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"/GoogleCloud.py";
             // throw new NotImplementedException();
 
             if (!PythonEngine.IsInitialized)// Since using asp.net, we may need to re-initialize
@@ -33,7 +33,7 @@ namespace REFWebApp.Server.Model.STTs
             using (var scope = Py.CreateScope())
             {
                 dynamic sys = Py.Import("sys");
-                sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Model\STTs");
+                sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Evaluation\STTs\");
                 //sys.path.append(@"/Users/sathv/Desktop/REFApplication/REFApplication/Model/STTs");
 
                 //            // string code = File.ReadAllText(file); // Get the python file as raw text

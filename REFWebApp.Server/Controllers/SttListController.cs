@@ -21,11 +21,11 @@ namespace REFWebApp.Server.Controllers
         }
 
         [HttpGet(Name = "GetSttList")]
-        public IEnumerable<SttList> Get()
+        public IEnumerable<IndividualStt> Get()
         {
             using PostgresContext context = new PostgresContext();
             List<Stt> stts = context.Stts.ToList();
-            return Enumerable.Range(0, stts.Count).Select(index => new SttList
+            return Enumerable.Range(0, stts.Count).Select(index => new IndividualStt
             {
                 Name = stts[index].Name
             })

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using REFWebApp.Server.Data;
 using REFWebApp.Server.Models;
 using System.Xml.Linq;
@@ -18,22 +19,37 @@ namespace REFWebApp.Server.Controllers
         }
 
         [HttpGet(Name = "GetScenarioList")]
-        public IEnumerable<ScenarioList> Get()
+        public IEnumerable<IndividualScenario> Get()
         {
-            /*using (var context = new PostgresContext())
-            {
-                List<Scenario> scenarios = context.Scenarios.Include(s => s.Audios).ToList();
-                ICollection<AudioFile> audios = scenarios[0].Audios;
-            }
-             */
             using PostgresContext context = new PostgresContext();
-            List<Scenario> scenarios = context.Scenarios.ToList();
-            return Enumerable.Range(0, scenarios.Count).Select(index => new ScenarioList
+            List<Scenario> scenarios = context.Scenarios.ToList();//.Include(s => s.Audios).ToList();
+
+
+            //using PostgresContext context = new PostgresContext();
+            //List<Scenario> scenarios = context.Scenarios.ToList();
+
+            /*
+             return Enumerable.Range(0, scenarios.Count).Select(index => new IndividualScenario
             {
                 Name = scenarios[index].Name,
-                Audios = scenarios[index].Audios
+                Audios = Enumerable.Range(0, scenarios.Count).Select(i => new IndividualAudioFile
+                {
+                    Id = context.AudioFiles.FromSql($"SELECT id FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {i + 1})").ToList();
+                    Path = context.AudioFiles.FromSql($"SELECT path FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {i + 1})").ToList();
+                    GroundTruth= context.AudioFiles.FromSql($"SELECT ground_truth FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {i + 1})").ToList();
+                    FormatId = context.AudioFiles.FromSql($"SELECT format_id FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {i + 1})").ToList();
+                }
+            })
+            .ToArray();
+             */
+
+            return Enumerable.Range(0, scenarios.Count).Select(index => new IndividualScenario
+            {
+                Name = scenarios[index].Name,
+                Audios = context.AudioFiles.FromSql($"SELECT * FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {index+1})").ToList()
             })
             .ToArray();
         }
+
     }
 }

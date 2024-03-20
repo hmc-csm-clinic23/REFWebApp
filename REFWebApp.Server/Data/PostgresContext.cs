@@ -56,7 +56,7 @@ public partial class PostgresContext : DbContext
             entity.HasOne(d => d.Format).WithMany(p => p.AudioFiles)
                 .HasForeignKey(d => d.FormatId)
                 .HasConstraintName("fk_format");
-
+            
             entity.HasMany(d => d.Scenarios).WithMany(p => p.Audios)
                 .UsingEntity<Dictionary<string, object>>(
                     "AudioScenario",
@@ -75,6 +75,7 @@ public partial class PostgresContext : DbContext
                         j.IndexerProperty<int>("AudioId").HasColumnName("audio_id");
                         j.IndexerProperty<int>("ScenarioId").HasColumnName("scenario_id");
                     });
+            
         });
 
         modelBuilder.Entity<FileFormat>(entity =>

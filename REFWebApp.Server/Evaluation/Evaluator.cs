@@ -34,7 +34,7 @@ namespace REFWebApp.Server.Model
             using (var scope = Py.CreateScope())
             {
                 dynamic sys = Py.Import("sys");
-                sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Model");
+                sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Evaluation\");
                 //sys.path.append(@"/Users/sathv/Desktop/REFApplication/REFApplication/Model");
 
                 var scriptCompiled = Py.Import(scriptname);

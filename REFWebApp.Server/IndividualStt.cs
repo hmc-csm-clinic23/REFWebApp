@@ -1,6 +1,6 @@
 ﻿namespace REFWebApp.Server
 {
-    public class SttList
+    public class IndividualStt
     {
         public string? Name { get; set; }
     }

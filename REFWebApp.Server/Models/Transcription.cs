@@ -13,8 +13,6 @@ public partial class Transcription
 
     public DateTime? Timestamp { get; set; }
     
-    public virtual String? Transcript { get; set; }
-
     public string? Transcript { get; set; }
 
     public virtual AudioFile? Audio { get; set; }

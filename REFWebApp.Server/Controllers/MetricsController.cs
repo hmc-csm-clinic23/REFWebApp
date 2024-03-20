@@ -25,16 +25,43 @@ namespace REFWebApp.Server.Controllers
         [HttpPost(Name = "PostMetrics")]
         public IEnumerable<MetricList> Post([FromBody] MetricsRequestModel request)
         {
-            GoogleCloud x = new GoogleCloud();
+            List<string> scenarioNames = new List<string>();
+            List<string> paths = new List<string>();
+            List<string> groundTruths = new List<string>();
+
+            for (int i = 0; i < request.ScenarioList?.Length; i++)
+            {
+                if (request.ScenarioList?[i].Name != null) 
+                { 
+                    scenarioNames.Add(request.ScenarioList?[i].Name);
+                };
+                for (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
+                {
+                    if (request.ScenarioList?[i].Audios?[j].Path != null && request.ScenarioList?[i].Audios?[j].GroundTruth != null)
+                    {
+                        paths.Add(request.ScenarioList?[i].Audios?[j].Path);
+                        groundTruths.Add(request.ScenarioList?[i].Audios?[j].GroundTruth);
+                    };
+                }
+            }
+            for (int i = 0; i < request.SttList?.Length; i++)
+            { 
+            //Choose stts
+            }
+                GoogleCloud x = new GoogleCloud();
+            var hi = request.SttList?[0].Name;
+            var bye = request.ScenarioList?[0].Name;
+            var cry = request.ScenarioList?[0].Audios?[0].Path;
+
 
             // for timing
             var stopwatch = new Stopwatch();
             var starting_time = new DateTime(Stopwatch.GetTimestamp());
             stopwatch.Start();
 
-            string[] audiofiles = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Model\\test.wav"];
+            //string[] audiofiles = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Evaluation\\test.wav"];
             // Run the STT with audio files
-            List<string> transcriptions = x.Run(audiofiles);
+            List<string> transcriptions = x.Run(paths.ToArray());
 
             // get time for running the STT
             stopwatch.Stop();
@@ -49,17 +76,14 @@ namespace REFWebApp.Server.Controllers
                 {
                     Timestamp = starting_time,
                     Transcript = transcriptions[i],
-                    Audio = null, //audiofiles[i], 
                     AudioId = i,
-                    Id = i,
                     SttId = null, 
-                    Stt = null, 
 
                 }) ;
             }
 
             // Add transcriptions to database
-            this.AddTranscriptionsToDB(transcription_objects);
+            // this.AddTranscriptionsToDB(transcription_objects);
 
 
             // serialize into json format
@@ -70,8 +94,8 @@ namespace REFWebApp.Server.Controllers
 
             Console.WriteLine("from metrics controller: " + transcriptions[0]);
             // ground truths should be a list from the database for the specific audio files
-            List<string> groundtruths = ["The colorful autumn leaves rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
-            List<List<float>> metrics = x.Metrics(transcriptions, groundtruths);
+            //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
+            List<List<float>> metrics = x.Metrics(transcriptions, groundTruths);
 
             return Enumerable.Range(0, metrics.Count).Select(index => new MetricList
             {
@@ -92,7 +116,8 @@ namespace REFWebApp.Server.Controllers
 
         public class MetricsRequestModel
         {
-            public string[] Text { get; set; }
+            public IndividualStt[]? SttList { get; set; }
+            public IndividualScenarioRequest[]? ScenarioList { get; set; }
         }
     }
 }
