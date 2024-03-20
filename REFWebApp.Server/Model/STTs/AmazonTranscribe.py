@@ -3,10 +3,15 @@ import time
 import pandas as pd
 import csv
 
+# transcribe = boto3.client('transcribe',
+#                           aws_access_key_id = "AKIAZI2LDMYOI5O3ENFU",
+#                           aws_secret_access_key = "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",
+#                           region_name = "us-west-1")
+
 transcribe = boto3.client('transcribe',
                           aws_access_key_id = "AKIAZI2LDMYOI5O3ENFU",
                           aws_secret_access_key = "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",
-                          region_name = "us-west-1")
+                          region_name = "us-east-2")
 
 bucket_name = 'nbl-audio-files'
 file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_2_1-0_2_5.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_4-0_2_7.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_23-0_2_25.wav"]
@@ -33,7 +38,7 @@ def runAmazon(job_uri, audio_file_name):
 
   # file format
   file_format = audio_file_name.split('.')[1]
-
+  print("AMAZON HERE")
   # check if name is taken or not
   job_name = check_job_name(job_name)
   transcribe.start_transcription_job(
@@ -56,11 +61,15 @@ def runAmazon(job_uri, audio_file_name):
 def transcribe_all(files_dir): 
     wavfiles = files_dir
 
-    client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+    # client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+    client = boto3.client('transcribe',
+                          aws_access_key_id = "AKIAZI2LDMYOI5O3ENFU",
+                          aws_secret_access_key = "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",
+                          region_name = "us-east-2")
 
     transcript_dict = {}
     for i in range(len(file_paths)): 
-        job_uri = "s3://"+bucket_name+"/"+file_paths[i]
+        job_uri = "s3://transcript-yin/EV1-MAURER-2021-04-02_08-37-06-000/0_1_5-0_1_8.wav"
         audio_file_name = file_paths[i].split('/')[-1]
         print(job_uri)
         transcript = runAmazon(job_uri, audio_file_name)

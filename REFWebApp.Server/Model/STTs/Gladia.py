@@ -44,3 +44,4 @@ def transcribe_all(files_dir):
         print(i)
         transcript_dict[i] = runGladia(i)
     return transcript_dict
+
