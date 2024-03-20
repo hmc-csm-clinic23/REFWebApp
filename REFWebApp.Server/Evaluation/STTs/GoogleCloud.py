@@ -7,6 +7,19 @@ import boto3
 
 from google.cloud import speech
 
+
+import boto3
+import json
+import io
+
+# access key: AKIA3XQL3GCMUFJ3ILUV
+# secret: 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
+
+
+file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_2_1-0_2_5.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_4-0_2_7.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_23-0_2_25.wav"]
+
+# file_paths = ["/Users/sathv/REFWebApp/REFWebApp.Server/Model/test.wav"]
+
 # audio_segments_path_0 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-000'
 # audio_segments_path_1 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-001'
 # audio_segments_path_2 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-002'
