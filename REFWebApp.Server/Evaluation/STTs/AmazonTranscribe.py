@@ -6,6 +6,7 @@ import csv
 # transcribe = boto3.client('transcribe',
 #                           aws_access_key_id = "AKIAZI2LDMYOI5O3ENFU",
 #                           aws_secret_access_key = "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",
+#                           region_name = "us-west-1")
 
 transcribe = boto3.client('transcribe',
                           aws_access_key_id = "AKIAZI2LDMYOI5O3ENFU",
