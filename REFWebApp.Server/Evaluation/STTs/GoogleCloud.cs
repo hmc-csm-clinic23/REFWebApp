@@ -29,6 +29,7 @@ namespace REFWebApp.Server.Model.STTs
                 PythonEngine.Initialize();
                 Py.GIL();
             }
+            
 
             using (var scope = Py.CreateScope())
             {
@@ -58,7 +59,7 @@ namespace REFWebApp.Server.Model.STTs
 
                 }
                 Console.WriteLine(transcriptions);
-                PythonEngine.Shutdown();
+                //PythonEngine.Shutdown();
 
                 return transcriptions;
 

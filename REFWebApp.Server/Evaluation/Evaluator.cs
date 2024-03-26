@@ -31,6 +31,8 @@ namespace REFWebApp.Server.Model
                 Py.GIL();
             }
 
+           // var m_threadState = PythonEngine.BeginAllowThreads();
+
             using (var scope = Py.CreateScope())
             {
                 dynamic sys = Py.Import("sys");
@@ -69,6 +71,9 @@ namespace REFWebApp.Server.Model
                 //}
 
                 Console.WriteLine("metricslist: " + metricslist);
+
+               // PythonEngine.EndAllowThreads(m_threadState);
+                //PythonEngine.Shutdown();
 
                 // string code = File.ReadAllText(file); // Get the python file as raw text
                 // var scriptCompiled = PythonEngine.Compile(code, file); // Compile the code/file
