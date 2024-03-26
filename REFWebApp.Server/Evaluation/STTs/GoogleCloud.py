@@ -2,6 +2,7 @@ from os import listdir
 from os.path import isfile, join
 import argparse
 import librosa
+import soundfile as sf
 import csv
 
 from google.cloud import speech
@@ -15,8 +16,7 @@ import io
 # secret: +a78202oJayeWhrn511k3Etj1jxWxKyOQtMDqPyE
 # region: us-west-1
 
-
-file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_2_1-0_2_5.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_4-0_2_7.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_23-0_2_25.wav"]
+#file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_39_18-0_39_21.wav"]
 
 # file_paths = ["/Users/sathv/REFWebApp/REFWebApp.Server/Model/test.wav"]
 
@@ -68,32 +68,38 @@ def transcribe_all(files_dir):
 
 
     #wavfiles = listdir(CURRENTPATH)
-    wavfiles = files_dir
+    wavfiles = list(files_dir)
     client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
     # response = client.get_object(Bucket='nbl-audio-files', Key=files_dir[1],)
     # data = response["Body"].read()
     # print(data)
 
     transcript_dict = {}
-    for i in range(len(file_paths)): 
-        # print(i)
-        # if librosa.get_duration(path = join(CURRENTPATH, i)) < 60:
-        #     transcript_dict[i] = transcribe_file(join(CURRENTPATH, i))
-        #     print(transcript_dict[i])
-        #if librosa.get_duration(i) < 60:
-        response = client.get_object(Bucket='nbl-audio-files', Key=file_paths[i],)
+    for i in range(len(wavfiles)): 
+        print(i)
+        print(wavfiles[i])
+        try:
+            response = client.get_object(Bucket='nbl-audio-files', Key=wavfiles[i].strip(),)
+        except: 
+            print("file does not exist")
+            continue
+        
         data = response["Body"].read()
-        # print(type(data))
-        # print(data)
-        transcript = transcribe_file(data)
-        transcript_dict[file_paths[i]] = transcript
-        print(transcript)
-        #print(transcript_dict[i])
-        with open('transcriptions.csv', 'w') as csv_file:  
-            writer = csv.writer(csv_file)
-            for key, value in transcript_dict.items():
-                writer.writerow([key.replace('_', ':'), value])  
+        audio_io = io.BytesIO(data)
+        pcm, samplerate = sf.read(audio_io)
+        
+        if librosa.get_duration(y=pcm, sr=samplerate) < 60:
+            # print(type(data))
+            # print(data)
+            transcript = transcribe_file(data)
+            transcript_dict[wavfiles[i]] = transcript
+            print(transcript)
+            #print(transcript_dict[i])
+            with open('transcriptions.csv', 'w') as csv_file:  
+                writer = csv.writer(csv_file)
+                for key, value in transcript_dict.items():
+                    writer.writerow([key.replace('_', ':'), value])
+    print(transcript_dict)
+    return transcript_dict.values()
 
-    return transcript_dict
-
-transcribe_all(file_paths)
+#transcribe_all(file_paths)

@@ -63,8 +63,8 @@ namespace REFWebApp.Server.Model.STTs
             //     Console.WriteLine("metrics works");
 
 
-            Evaluator y = new Evaluator();
-            y.Run("transcriptions.csv");
+           // Evaluator y = new Evaluator();
+           // y.Run("transcriptions.csv");
         }
 
         public string[] ProcessOutput(string[] args)

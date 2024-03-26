@@ -31,6 +31,8 @@ namespace REFWebApp.Server.Model
                 Py.GIL();
             }
 
+           // var m_threadState = PythonEngine.BeginAllowThreads();
+
             using (var scope = Py.CreateScope())
             {
                 dynamic sys = Py.Import("sys");
@@ -39,8 +41,8 @@ namespace REFWebApp.Server.Model
 
                 var scriptCompiled = Py.Import(scriptname);
                 //string[] message = new string[] {transcriptions_file, "/Users/sathv/Desktop/REFApplication/REFApplication/ground_truth.csv"};
-                List<string> tra = transcriptions_file;
-                List<string> gt =groundtruth ;
+                List<string> tra =transcriptions_file;
+                List<string> gt = groundtruth ;
                 //Console.WriteLine(message);
                 var result = scriptCompiled.InvokeMethod("evaluate", tra.ToPython(), gt.ToPython());
                 Console.WriteLine("RESULT: " + result);
@@ -70,6 +72,9 @@ namespace REFWebApp.Server.Model
 
                 Console.WriteLine("metricslist: " + metricslist);
 
+               // PythonEngine.EndAllowThreads(m_threadState);
+                //PythonEngine.Shutdown();
+
                 // string code = File.ReadAllText(file); // Get the python file as raw text
                 // var scriptCompiled = PythonEngine.Compile(code, file); // Compile the code/file
                 // scope.Execute(scriptCompiled); // Execute the compiled python so we can start calling it.
@@ -79,7 +84,7 @@ namespace REFWebApp.Server.Model
                 return metricslist;
             }
 
-            return metricslist;
+          //return metricslist;
         }
     }
 
