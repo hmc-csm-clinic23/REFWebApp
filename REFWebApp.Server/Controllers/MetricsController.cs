@@ -96,6 +96,9 @@ namespace REFWebApp.Server.Controllers
             // ground truths should be a list from the database for the specific audio files
             //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
             List<List<float>> metrics = x.Metrics(transcriptions, groundTruths);
+            
+            Console.WriteLine("metrics: " + metrics);
+
 
             return Enumerable.Range(0, metrics.Count).Select(index => new MetricList
             {

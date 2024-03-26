@@ -2,6 +2,7 @@
 # %pip install jiwer
 # %pip install nest-asyncio
 # !pip3 install pydub
+from asyncio.windows_events import NULL
 import nest_asyncio
 nest_asyncio.apply()
 
@@ -64,6 +65,8 @@ def evaluate(transcriptionlist, groundtruthlist):
             # if key in transcriptdict.keys():
             #run transcription function
             groundtruth = groundtruths[i]
+            if groundtruth == NULL: 
+                groundtruth = ''
             
             model_transcription_text = transcripts[i]
 

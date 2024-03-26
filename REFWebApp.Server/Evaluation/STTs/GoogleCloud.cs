@@ -53,17 +53,22 @@ namespace REFWebApp.Server.Model.STTs
                 foreach (PyObject pyobject in pylist)
                 {
                     string transcript = (string)pyobject.AsManagedObject(typeof(string));
+                    Console.WriteLine(transcript);
                     transcriptions.Add(transcript);
 
                 }
-                //Console.WriteLine(transcriptions); 
+                Console.WriteLine(transcriptions);
+                PythonEngine.Shutdown();
+
                 return transcriptions;
+
                 //scriptCompiled.InvokeMethod("returndict");
                 //                                    // PyObject Pythonnet = scope.Get("Pythonnet"); // Lets get an instance of the class in python
                 //                                    // PyObject pythongReturn = Pythonnet.InvokeMethod("returndict"); // Call the sayHello function on the exampleclass object
                 //                                    // string? result = pythongReturn.AsManagedObject(typeof(string)) as string; // convert the returned string to managed string object
                 //                                    // //Console.WriteLine(result)
             }
+
             Console.WriteLine("run works");
         }
 
@@ -73,9 +78,10 @@ namespace REFWebApp.Server.Model.STTs
             // {
             //     var speed = Speed.SpeedCalc();
             //     var memory = Memory.MemoryCalc();
-            //     Console.WriteLine("metrics works");
+           
             Evaluator y = new Evaluator();
             List<List<float>> metricslist = y.Run(transcriptions, groundtruths);
+            Console.WriteLine("metrics works : " + metricslist);
             return metricslist;
         }
 
