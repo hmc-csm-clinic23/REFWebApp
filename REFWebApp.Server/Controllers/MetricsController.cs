@@ -6,6 +6,8 @@ using REFWebApp.Server.Models;
 using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics;
 using System.Text.Json;
+using System.IO;
+using System;
 
 
 namespace REFWebApp.Server.Controllers
@@ -26,23 +28,29 @@ namespace REFWebApp.Server.Controllers
         public IEnumerable<MetricList> Post([FromBody] MetricsRequestModel request)
         {
             List<string> scenarioNames = new List<string>();
-            List<string> paths = new List<string>();
-            List<string> groundTruths = new List<string>();
+            List<List<string>> paths = new List<List<string>>();
+            List<List<string>> groundTruths = new List<List<string>>();
 
-            for (int i = 0; i < request.ScenarioList?.Length; i++)
+            for (int i = 0; i < request.ScenarioList?.Length; i++) // (int i = 0; i < request.ScenarioList?.Length; i++)
             {
                 if (request.ScenarioList?[i].Name != null) 
                 { 
                     scenarioNames.Add(request.ScenarioList?[i].Name);
-                };
-                for (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
-                {
-                    if (request.ScenarioList?[i].Audios?[j].Path != null && request.ScenarioList?[i].Audios?[j].GroundTruth != null)
+                    List<string> path = new List<string>();
+                    List<string> groundTruth = new List<string>();
+
+                    for (int j = 0; j < 5; j++) // (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
                     {
-                        paths.Add(request.ScenarioList?[i].Audios?[j].Path);
-                        groundTruths.Add(request.ScenarioList?[i].Audios?[j].GroundTruth);
-                    };
-                }
+                        if (request.ScenarioList?[i].Audios?[j].Path != null && request.ScenarioList?[i].Audios?[j].GroundTruth != null)
+                        {
+                            path.Add(request.ScenarioList?[i].Audios?[j].Path);
+                            groundTruth.Add(request.ScenarioList?[i].Audios?[j].GroundTruth);
+                        };
+                    }
+
+                    paths.Add(path);
+                    groundTruths.Add(groundTruth);
+                };
             }
             for (int i = 0; i < request.SttList?.Length; i++)
             { 
@@ -61,7 +69,7 @@ namespace REFWebApp.Server.Controllers
 
             //string[] audiofiles = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Evaluation\\test.wav"];
             // Run the STT with audio files
-            List<string> transcriptions = x.Run(paths.ToArray());
+            List<string> transcriptions = x.Run(paths[0].ToArray());
 
             // get time for running the STT
             stopwatch.Stop();
@@ -95,7 +103,7 @@ namespace REFWebApp.Server.Controllers
             Console.WriteLine("from metrics controller: " + transcriptions[0]);
             // ground truths should be a list from the database for the specific audio files
             //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
-            List<List<float>> metrics = x.Metrics(transcriptions, groundTruths);
+            List<List<float>> metrics = x.Metrics(transcriptions, groundTruths[0]);
             
             Console.WriteLine("metrics: " + metrics);
 
@@ -114,7 +122,6 @@ namespace REFWebApp.Server.Controllers
             {
                 context.BulkInsert(transcriptions);
             }
-
         }
 
         public class MetricsRequestModel
