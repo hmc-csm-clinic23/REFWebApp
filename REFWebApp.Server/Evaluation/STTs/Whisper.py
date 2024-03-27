@@ -1,5 +1,6 @@
 import csv
 import whisper
+import librosa
 import csv
 import boto3
 import json
@@ -21,24 +22,22 @@ def runWhisper(file_content):
 def transcribe_all(files_dir): 
     wavfiles = files_dir
     client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
-    # response = client.get_object(Bucket='nbl-audio-files', Key=files_dir[1],)
-    # data = response["Body"].read()
-    # print(data)
 
     transcript_dict = {}
-    for i in range(len(file_paths)): 
-    #wavfiles = listdir(CURRENTPATH)
-        response = client.get_object(Bucket='nbl-audio-files', Key=file_paths[i],)
+    for i in range(len(wavfiles)): 
+        response = client.get_object(Bucket='nbl-audio-files', Key=wavfiles[i],)
         data = response["Body"].read()
-            # print(type(data))
-            # print(data)
-        transcript = runWhisper(data)
-        transcript_dict[file_paths[i]] = transcript
+        audio_array, sample_rate = librosa.load(io.BytesIO(data), sr=None, mono=True)
+
+        transcript = runWhisper(audio_array)
+        transcript_dict[wavfiles[i]] = transcript
         print(transcript)
-        #print(transcript_dict[i])
         with open('transcriptions.csv', 'w') as csv_file:  
             writer = csv.writer(csv_file)
             for key, value in transcript_dict.items():
                 writer.writerow([key.replace('_', ':'), value])  
 
     return transcript_dict
+
+# file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_39_18-0_39_21.wav"]
+# transcribe_all(file_paths)

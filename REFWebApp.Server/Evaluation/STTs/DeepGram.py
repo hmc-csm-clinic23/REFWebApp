@@ -27,13 +27,12 @@ def dgTranscript(response):
 
 
 def transcribe_all(files_dir): 
-    client = boto3.client('s3',
-                          aws_access_key_id = "AKIAZI2LDMYOI5O3ENFU",
-                          aws_secret_access_key = "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",
-                          region_name = "us-east-2")
+    client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+
     transcript_dict = {}
+    file_paths = list(files_dir)
     for i in range(len(file_paths)): 
-        response = client.get_object(Bucket='transcript-yin', Key=file_paths[i],)
+        response = client.get_object(Bucket='nbl-audio-files', Key=file_paths[i],)
         data = response["Body"].read()
         transcript = runDeepgram(data)
         transcript_dict[file_paths[i]] = transcript
@@ -41,7 +40,7 @@ def transcribe_all(files_dir):
             writer = csv.writer(csv_file)
             for key, value in transcript_dict.items():
                 writer.writerow([key.replace('_', ':'), value])
-        
     return transcript_dict
 
-transcribe_all(file_paths)
+# file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_39_18-0_39_21.wav"]
+# transcribe_all(file_paths)

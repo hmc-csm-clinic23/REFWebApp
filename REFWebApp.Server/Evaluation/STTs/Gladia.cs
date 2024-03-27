@@ -13,7 +13,7 @@ namespace REFWebApp.Server.Model.STTs
             return audio;
         }
 
-        public void Run(string[] filenames)
+        public List<string> Run(string[] filenames)
         {
             string scriptname = "Gladia";
             //Runtime.PythonDLL = @"/Users/sathv/opt/anaconda3/lib/libpython3.9.dylib";
@@ -44,27 +44,39 @@ namespace REFWebApp.Server.Model.STTs
                 //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
                 var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
-                Console.WriteLine(result);
+                Console.WriteLine("GLADIAOUTPUT: " + result);
                 //                                        //scriptCompiled.InvokeMethod("returndict");
                 //                                    // PyObject Pythonnet = scope.Get("Pythonnet"); // Lets get an instance of the class in python
                 //                                    // PyObject pythongReturn = Pythonnet.InvokeMethod("returndict"); // Call the sayHello function on the exampleclass object
                 //                                    // string? result = pythongReturn.AsManagedObject(typeof(string)) as string; // convert the returned string to managed string object
                 //                                    // //Console.WriteLine(result)
+
+                PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
+
+                List<string> transcriptions = new List<string>();
+
+                foreach (PyObject pyobject in pylist)
+                {
+                    string transcript = (string)pyobject.AsManagedObject(typeof(string));
+                    Console.WriteLine(transcript);
+                    transcriptions.Add(transcript);
+
+                }
+                Console.WriteLine(transcriptions);
+
+                return transcriptions;
             }
+
             Console.WriteLine("run works");
         }
 
 
-        public void Metrics()
+        public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
         {
-            // {
-            //     var speed = Speed.SpeedCalc();
-            //     var memory = Memory.MemoryCalc();
-            //     Console.WriteLine("metrics works");
-
-
-          //  Evaluator y = new Evaluator();
-           // y.Run("transcriptions.csv");
+            Evaluator y = new Evaluator();
+            List<List<float>> metricslist = y.Run(transcriptions, groundtruths);
+            Console.WriteLine("Gladia metrics works : " + metricslist);
+            return metricslist;
         }
 
         public string[] ProcessOutput(string[] args)

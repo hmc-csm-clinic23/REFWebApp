@@ -14,7 +14,6 @@ transcribe = boto3.client('transcribe',
                           region_name = "us-east-2")
 
 bucket_name = 'nbl-audio-files'
-file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_2_1-0_2_5.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_4-0_2_7.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_23-0_2_25.wav"]
 
 def check_job_name(job_name):
   job_verification = True
@@ -38,7 +37,6 @@ def runAmazon(job_uri, audio_file_name):
 
   # file format
   file_format = audio_file_name.split('.')[1]
-  print("AMAZON HERE")
   # check if name is taken or not
   job_name = check_job_name(job_name)
   transcribe.start_transcription_job(
@@ -68,12 +66,12 @@ def transcribe_all(files_dir):
                           region_name = "us-east-2")
 
     transcript_dict = {}
-    for i in range(len(file_paths)): 
-        job_uri = "s3://transcript-yin/EV1-MAURER-2021-04-02_08-37-06-000/0_1_5-0_1_8.wav"
-        audio_file_name = file_paths[i].split('/')[-1]
+    for i in range(len(wavfiles)): 
+        job_uri = "s3://transcript-yin/" + wavfiles[i]
+        audio_file_name = wavfiles[i].split('/')[-1]
         print(job_uri)
         transcript = runAmazon(job_uri, audio_file_name)
-        transcript_dict[file_paths[i]] = transcript
+        transcript_dict[wavfiles[i]] = transcript
         print(transcript)
         with open('transcriptions.csv', 'w') as csv_file:  
             writer = csv.writer(csv_file)
@@ -82,4 +80,5 @@ def transcribe_all(files_dir):
 
     return transcript_dict
 
-transcribe_all(file_paths)
+# file_paths = ["EV1-MAURER-2021-04-02_08-37-06-000/0_1_5-0_1_8.wav"]
+# transcribe_all(file_paths)

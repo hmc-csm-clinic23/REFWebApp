@@ -66,18 +66,11 @@ def transcribe_file(file_content) -> speech.RecognizeResponse:
 
 def transcribe_all(files_dir): 
 
-
-    #wavfiles = listdir(CURRENTPATH)
     wavfiles = list(files_dir)
     client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
-    # response = client.get_object(Bucket='nbl-audio-files', Key=files_dir[1],)
-    # data = response["Body"].read()
-    # print(data)
 
     transcript_dict = {}
     for i in range(len(wavfiles)): 
-        print(i)
-        print(wavfiles[i])
         try:
             response = client.get_object(Bucket='nbl-audio-files', Key=wavfiles[i].strip(),)
         except: 
@@ -89,8 +82,6 @@ def transcribe_all(files_dir):
         pcm, samplerate = sf.read(audio_io)
         
         if librosa.get_duration(y=pcm, sr=samplerate) < 60:
-            # print(type(data))
-            # print(data)
             transcript = transcribe_file(data)
             transcript_dict[wavfiles[i]] = transcript
             print(transcript)
@@ -102,4 +93,5 @@ def transcribe_all(files_dir):
     print(transcript_dict)
     return transcript_dict.values()
 
-#transcribe_all(file_paths)
+file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_39_18-0_39_21.wav"]
+transcribe_all(file_paths)
