@@ -121,6 +121,21 @@ namespace REFWebApp.Server.Controllers
                 Console.WriteLine("time taken: " + elapsed_time.ToString());
             }
 
+            /* use time now for this one and start and stop for the invidual scenario speeds above
+            // put transcription info into Json format
+            List<Transcription> transcription_objects = new List<Transcription>();
+            for (int i = 0; i < transcriptions.Count; i++)
+            {
+                transcription_objects.Add(new Transcription
+                {
+                    Timestamp = starting_time,
+                    Transcript = transcriptions[i],
+                    AudioId = i,
+                    SttId = null,
+
+                });
+            }*/
+
             Console.WriteLine("from metrics controller: " + transcriptions[0][0]);
             // ground truths should be a list from the database for the specific audio files
             //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
@@ -139,19 +154,6 @@ namespace REFWebApp.Server.Controllers
                 Transcriptions = transcriptions
             };
 
-            /*// put transcription info into Json format
-            List<Transcription> transcription_objects = new List<Transcription>();
-            for (int i = 0; i < transcriptions.Count; i++)
-            {
-                transcription_objects.Add(new Transcription
-                {
-                    Timestamp = starting_time,
-                    Transcript = transcriptions[i],
-                    AudioId = i,
-                    SttId = null,
-
-                });
-            }*/
         }
 
         public class MetricObject
