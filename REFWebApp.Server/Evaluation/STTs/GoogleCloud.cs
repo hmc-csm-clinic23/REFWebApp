@@ -3,7 +3,7 @@ using Python.Runtime;
 namespace REFWebApp.Server.Model.STTs
 // export IRONPYTHONPATH=/Library/Frameworks/IronPython.framework/Versions/3.4.1/
 {
-    public class GoogleCloud
+    public class GoogleCloud : ISTT
     {
 
         public Audio ProcessInput(Audio audio)
@@ -17,15 +17,16 @@ namespace REFWebApp.Server.Model.STTs
         {
             string scriptname = "GoogleCloud";
             //Runtime.PythonDLL = @"/Users/sathv/opt/anaconda3/lib/libpython3.9.dylib";
-            Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python39\python39.dll";
-            PythonEngine.Initialize();
-            Py.GIL();
+            //Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python39\python39.dll";
+            //PythonEngine.Initialize();
+            //Py.GIL();
 
             // string file = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"/GoogleCloud.py";
             // throw new NotImplementedException();
 
             if (!PythonEngine.IsInitialized)// Since using asp.net, we may need to re-initialize
             {
+                Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python39\python39.dll";
                 PythonEngine.Initialize();
                 Py.GIL();
             }
@@ -74,7 +75,7 @@ namespace REFWebApp.Server.Model.STTs
         }
 
 
-        public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
+        public List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
         {
             // {
             //     var speed = Speed.SpeedCalc();

@@ -3,7 +3,7 @@ using Python.Runtime;
 namespace REFWebApp.Server.Model.STTs
 // export IRONPYTHONPATH=/Library/Frameworks/IronPython.framework/Versions/3.4.1/
 {
-    public class Gladia : ISTT
+    public class Gladia //: ISTT
     {
 
         public Audio ProcessInput(Audio audio)
