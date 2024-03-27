@@ -8,6 +8,10 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.IO;
 using System;
+using Microsoft.Identity.Client;
+using REFWebApp.Server.Model;
+using Azure.Core;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 
 namespace REFWebApp.Server.Controllers
@@ -25,7 +29,52 @@ namespace REFWebApp.Server.Controllers
         }
 
         [HttpPost(Name = "PostMetrics")]
-        public IEnumerable<MetricList> Post([FromBody] MetricsRequestModel request)
+        public IEnumerable<MetricResponseModel> Post([FromBody] MetricsRequestModel request)
+        {
+            List<MetricObject> refData = new List<MetricObject>();
+            for (int i = 0; i < request.SttList?.Length; i++)
+            {
+                //Choose stts
+                switch (request.SttList?[i].Name)
+                {
+                    case "Google Cloud":
+                        ISTT GoogleCloud = new GoogleCloud();
+                        refData.Add(runMetrics(request, GoogleCloud));
+                        break;
+                    /*case "Deepgram":
+                        ISTT DeepGram = new DeepGram();
+                        refData.Add(runMetrics(request, DeepGram));
+                        break;
+                    case "Amazon Transcribe":
+                        ISTT AmazonTranscribe = new AmazonTranscribe();
+                        refData.Add(runMetrics(request, AmazonTranscribe));
+                        break;
+                    case "Gladia":
+                        ISTT Gladia = new Gladia();
+                        refData.Add(runMetrics(request, Gladia));
+                        break;*/
+                    default:
+                        break;
+                }
+            }
+            return Enumerable.Range(0, (int)request.SttList?.Length).Select(index => new MetricResponseModel
+            {
+                SttName = request.SttList?[index].Name,
+                RefData = refData[index]
+            })
+            .ToArray();
+        }
+
+        [NonAction]
+        public void AddTranscriptionsToDB(List<Transcription> transcriptions) { 
+            using (var context = new PostgresContext())
+            {
+                context.BulkInsert(transcriptions);
+            }
+        }
+
+        [NonAction]
+        public MetricObject runMetrics(MetricsRequestModel request, ISTT STT)
         {
             List<string> scenarioNames = new List<string>();
             List<List<string>> paths = new List<List<string>>();
@@ -33,8 +82,8 @@ namespace REFWebApp.Server.Controllers
 
             for (int i = 0; i < request.ScenarioList?.Length; i++) // (int i = 0; i < request.ScenarioList?.Length; i++)
             {
-                if (request.ScenarioList?[i].Name != null) 
-                { 
+                if (request.ScenarioList?[i].Name != null)
+                {
                     scenarioNames.Add(request.ScenarioList?[i].Name);
                     List<string> path = new List<string>();
                     List<string> groundTruth = new List<string>();
@@ -52,31 +101,45 @@ namespace REFWebApp.Server.Controllers
                     groundTruths.Add(groundTruth);
                 };
             }
-            for (int i = 0; i < request.SttList?.Length; i++)
-            { 
-            //Choose stts
+
+            List<List<string>> transcriptions = new List<List<string>>();
+
+            for (int i = 0; i < request.ScenarioList?.Length; i++)
+            {
+                // for timing
+                var stopwatch = new Stopwatch();
+                var starting_time = new DateTime(Stopwatch.GetTimestamp());
+                stopwatch.Start();
+
+                //string[] audiofiles = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Evaluation\\test.wav"];
+                // Run the STT with audio files
+                transcriptions.Add(STT.Run(paths[i].ToArray()));
+
+                // get time for running the STT
+                stopwatch.Stop();
+                var elapsed_time = stopwatch.Elapsed.Seconds;
+                Console.WriteLine("time taken: " + elapsed_time.ToString());
             }
-                GoogleCloud x = new GoogleCloud();
-            var hi = request.SttList?[0].Name;
-            var bye = request.ScenarioList?[0].Name;
-            var cry = request.ScenarioList?[0].Audios?[0].Path;
 
+            Console.WriteLine("from metrics controller: " + transcriptions[0][0]);
+            // ground truths should be a list from the database for the specific audio files
+            //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
+            List<List<List<float>>> metrics = new List<List<List<float>>>();
 
-            // for timing
-            var stopwatch = new Stopwatch();
-            var starting_time = new DateTime(Stopwatch.GetTimestamp());
-            stopwatch.Start();
+            for (int i = 0; i < request.ScenarioList?.Length; i++)
+            {
+                metrics.Add(STT.Metrics(transcriptions[i], groundTruths[i]));
+            }
 
-            //string[] audiofiles = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Evaluation\\test.wav"];
-            // Run the STT with audio files
-            List<string> transcriptions = x.Run(paths[0].ToArray());
+            Console.WriteLine("metrics: " + metrics);
 
-            // get time for running the STT
-            stopwatch.Stop();
-            var elapsed_time = stopwatch.Elapsed.Seconds;
-            Console.WriteLine("time taken: "+ elapsed_time.ToString());
+            return new MetricObject
+            {
+                Metrics = metrics,
+                Transcriptions = transcriptions
+            };
 
-            // put transcription info into Json format
+            /*// put transcription info into Json format
             List<Transcription> transcription_objects = new List<Transcription>();
             for (int i = 0; i < transcriptions.Count; i++)
             {
@@ -85,49 +148,28 @@ namespace REFWebApp.Server.Controllers
                     Timestamp = starting_time,
                     Transcript = transcriptions[i],
                     AudioId = i,
-                    SttId = null, 
+                    SttId = null,
 
-                }) ;
-            }
-
-            // Add transcriptions to database
-            // this.AddTranscriptionsToDB(transcription_objects);
-
-
-            // serialize into json format
-            // string json_transcriptions = JsonSerializer.Serialize(transcriptions_class_list);
-
-            // Console.WriteLine(json_transcriptions); 
-
-
-            Console.WriteLine("from metrics controller: " + transcriptions[0]);
-            // ground truths should be a list from the database for the specific audio files
-            //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
-            List<List<float>> metrics = x.Metrics(transcriptions, groundTruths[0]);
-            
-            Console.WriteLine("metrics: " + metrics);
-
-
-            return Enumerable.Range(0, metrics.Count).Select(index => new MetricList
-            {
-                Metrics = metrics[index],
-                Transcriptions = transcriptions[index]
-            })
-            .ToArray();
+                });
+            }*/
         }
 
-        [NonAction]
-        public void AddTranscriptionsToDB(List<Transcription> transcriptions) { 
-            using (var context = new PostgresContext())
-            {
-                context.BulkInsert(transcriptions);
-            }
+        public class MetricObject
+        {
+            public List<List<List<float>>>? Metrics { get; set; }
+            public List<List<string>>? Transcriptions { get; set; }
         }
 
         public class MetricsRequestModel
         {
             public IndividualStt[]? SttList { get; set; }
             public IndividualScenarioRequest[]? ScenarioList { get; set; }
+        }
+
+        public class MetricResponseModel
+        {
+            public string? SttName { get; set; }
+            public MetricObject? RefData { get; set; }
         }
     }
 }
