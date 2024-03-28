@@ -1,24 +1,70 @@
-
-.rankingField {
-    color: #000;
-    font-feature-settings:
-      "clig" off,
-      "liga" off;
-    font:
-      500 16px/19px Inter,
-      -apple-system,
-      Roboto,
-      Helvetica,
-      sans-serif;
-    text-align: center;
-    padding: 12px 0px;
+.evalContainer {
+  align-self: center;
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 8px;
+  padding: 16px;
+  height: 300px;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  overflow: scroll;
 }
 
-.rankingLine {
-    border: 1px solid #000;
-    border-top: 0;
-    background-color: #fff;
-    display: grid;
-    grid-template-columns: repeat(2, 150px);
-    max-width: fit-content;
+.evalItem {
+  display: grid;
+  align-items: center;
+  list-style: none;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 8px 8px;
+  border-radius: 8px;
+  justify-items: center;
+  gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+}
+
+.evalItem:hover {
+  background-color: #e7edfe;
+}
+
+.evalSearchItem {
+  display: grid;
+  align-items: center;
+  list-style: none;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 8px 8px;
+  border-radius: 8px;
+  justify-items: center;
+  gap: 8px;
+  grid-template-columns: repeat(1, 1fr);
+  justify-content: center;
+}
+
+.evalSearchItem:hover {
+  background-color: #e7edfe;
+}
+
+.evalText {
+  font-size: 16px;
+  font-weight: 400;
+  color: #333;
+}
+
+.evalScenarioText {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.searchAudio {
+  align-self: center;
+  height: 50px;
+  padding: 0 16px;
+  margin: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
