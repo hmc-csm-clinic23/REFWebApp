@@ -9,3 +9,5 @@ export { default as HistoryDropdown } from "./helpers/HistoryDropdown";
 export { default as RankingLine } from "./helpers/RankingLine";
 export { default as HistoryLine } from "./helpers/HistoryLine";
 export { default as WeightSlider } from "./helpers/WeightSlider";
+export { default as EvalDisplay } from "./helpers/EvalDisplay";
+export { default as Evals } from "./helpers/Evals";

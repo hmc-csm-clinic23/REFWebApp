@@ -56,7 +56,8 @@ def transcribe_all(files_dir):
     for i in wavfiles: 
         print(i)
         transcript_dict[i] = runGladia(i, data)
-    return transcript_dict
+    print(transcript_dict)
+    return transcript_dict.values()
 
 # file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_39_18-0_39_21.wav"]
 # transcribe_all(file_paths)

@@ -4,7 +4,6 @@ from deepgram import DeepgramClient, PrerecordedOptions
 
 # The API key we created in step 3
 DEEPGRAM_API_KEY = '45b4ab38dc898ee8ea4b237e8edda5747a1288e4'
-file_paths = ["EV1-MAURER-2021-04-02_08-37-06-000/0_1_5-0_1_8.wav"]
 
 def runDeepgram(filepath):
     deepgram = DeepgramClient(DEEPGRAM_API_KEY)
@@ -40,7 +39,8 @@ def transcribe_all(files_dir):
             writer = csv.writer(csv_file)
             for key, value in transcript_dict.items():
                 writer.writerow([key.replace('_', ':'), value])
-    return transcript_dict
+    print(transcript_dict)
+    return transcript_dict.values()
 
 # file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_39_18-0_39_21.wav"]
 # transcribe_all(file_paths)
