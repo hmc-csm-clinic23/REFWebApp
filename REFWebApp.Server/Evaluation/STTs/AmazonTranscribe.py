@@ -78,7 +78,8 @@ def transcribe_all(files_dir):
             for key, value in transcript_dict.items():
                 writer.writerow([key.replace('_', ':'), value])  
 
-    return transcript_dict
+    print(transcript_dict)
+    return transcript_dict.values()
 
 # file_paths = ["EV1-MAURER-2021-04-02_08-37-06-000/0_1_5-0_1_8.wav"]
 # transcribe_all(file_paths)

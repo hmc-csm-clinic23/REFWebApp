@@ -3,7 +3,7 @@ using Python.Runtime;
 namespace REFWebApp.Server.Model.STTs
 // export IRONPYTHONPATH=/Library/Frameworks/IronPython.framework/Versions/3.4.1/
 {
-    public class Gladia //: ISTT
+    public class Gladia : ISTT
     {
 
         public Audio ProcessInput(Audio audio)
@@ -17,15 +17,15 @@ namespace REFWebApp.Server.Model.STTs
         {
             string scriptname = "Gladia";
             //Runtime.PythonDLL = @"/Users/sathv/opt/anaconda3/lib/libpython3.9.dylib";
-            Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python39\python39.dll";
-            PythonEngine.Initialize();
-            Py.GIL();
+            // PythonEngine.Initialize();
+            // Py.GIL();
 
             //string file = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"/Gladia.py";
             // throw new NotImplementedException();
 
             if (!PythonEngine.IsInitialized)// Since using asp.net, we may need to re-initialize
             {
+                Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python39\python39.dll";
                 PythonEngine.Initialize();
                 Py.GIL();
             }
@@ -33,7 +33,7 @@ namespace REFWebApp.Server.Model.STTs
             using (var scope = Py.CreateScope())
             {
                 dynamic sys = Py.Import("sys");
-                sys.path.append(@"C:\Users\micro\Desktop\oldREF\REFApplication\REFApplication\Model\STTs");
+                sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Evaluation\STTs\");
                 //sys.path.append(@"/Users/sathv/Desktop/REFApplication/REFApplication/Model/STTs");
 
                 //            // string code = File.ReadAllText(file); // Get the python file as raw text

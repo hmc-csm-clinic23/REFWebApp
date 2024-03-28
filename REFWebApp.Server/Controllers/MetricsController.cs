@@ -41,7 +41,7 @@ namespace REFWebApp.Server.Controllers
                         ISTT GoogleCloud = new GoogleCloud();
                         refData.Add(runMetrics(request, GoogleCloud));
                         break;
-                    /*case "Deepgram":
+                    case "Deepgram":
                         ISTT DeepGram = new DeepGram();
                         refData.Add(runMetrics(request, DeepGram));
                         break;
@@ -52,7 +52,7 @@ namespace REFWebApp.Server.Controllers
                     case "Gladia":
                         ISTT Gladia = new Gladia();
                         refData.Add(runMetrics(request, Gladia));
-                        break;*/
+                        break;
                     default:
                         break;
                 }
@@ -88,7 +88,7 @@ namespace REFWebApp.Server.Controllers
                     List<string> path = new List<string>();
                     List<string> groundTruth = new List<string>();
 
-                    for (int j = 0; j < 5; j++) // (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
+                    for (int j = 0; j < 1; j++) // (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
                     {
                         if (request.ScenarioList?[i].Audios?[j].Path != null && request.ScenarioList?[i].Audios?[j].GroundTruth != null)
                         {

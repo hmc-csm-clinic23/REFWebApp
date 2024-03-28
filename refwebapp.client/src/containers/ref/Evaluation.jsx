@@ -1,5 +1,7 @@
 import { React, useState, useEffect, useContext } from "react";
 import { Context } from "../../App";
+import { EvalDisplay } from "../.././components";
+import "../ranking/ranking.css";
 
 function Evaluation() {
   const { selections } = useContext(Context);
@@ -45,12 +47,19 @@ function Evaluation() {
       </h1>
       <h1>{selections.useStore.toString()}</h1>
       <h1>{selections.updateStore.toString()}</h1>
-  */
-  return (
-    <div>
       <h1>{metricsList.map(metricsList => metricsList.sttName)}</h1>
       <h1>{metricsList.map(metricsList => metricsList.refData.metrics)}</h1>
       <h1>{metricsList.map(metricsList => metricsList.refData.transcriptions)}</h1>
+  */
+  return (
+    <div>
+      {metricsList.map(metricsList => (
+        <EvalDisplay
+        stt={metricsList.sttName}
+        metrics={metricsList.refData.metrics}
+        transcriptions={metricsList.refData.transcriptions}
+        />
+      ))}
     </div>
   );
 }
