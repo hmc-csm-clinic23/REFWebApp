@@ -88,7 +88,7 @@ namespace REFWebApp.Server.Controllers
                     List<string> path = new List<string>();
                     List<string> groundTruth = new List<string>();
 
-                    for (int j = 0; j < 1; j++) // (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
+                    for (int j = 0; j < 5; j++) // (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
                     {
                         if (request.ScenarioList?[i].Audios?[j].Path != null && request.ScenarioList?[i].Audios?[j].GroundTruth != null)
                         {
@@ -151,7 +151,8 @@ namespace REFWebApp.Server.Controllers
             return new MetricObject
             {
                 Metrics = metrics,
-                Transcriptions = transcriptions
+                Transcriptions = transcriptions,
+                GroundTruths = groundTruths
             };
 
         }
@@ -160,6 +161,7 @@ namespace REFWebApp.Server.Controllers
         {
             public List<List<List<float>>>? Metrics { get; set; }
             public List<List<string>>? Transcriptions { get; set; }
+            public List<List<string>>? GroundTruths { get; set; }
         }
 
         public class MetricsRequestModel

@@ -1,7 +1,7 @@
 import { React, useState, useEffect, useContext } from "react";
 import { Context } from "../../App";
 import { EvalDisplay } from "../.././components";
-import "../ranking/ranking.css";
+import "./evaluation.css";
 
 function Evaluation() {
   const { selections } = useContext(Context);
@@ -58,6 +58,8 @@ function Evaluation() {
         stt={metricsList.sttName}
         metrics={metricsList.refData.metrics}
         transcriptions={metricsList.refData.transcriptions}
+        groundTruths={metricsList.refData.groundTruths}
+        scenarios={selections.ScenarioList}
         />
       ))}
     </div>
