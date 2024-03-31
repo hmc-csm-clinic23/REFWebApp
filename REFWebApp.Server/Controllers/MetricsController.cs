@@ -103,38 +103,58 @@ namespace REFWebApp.Server.Controllers
             }
 
             List<List<string>> transcriptions = new List<List<string>>();
+            List<string> elapsed_times = new List<string>();
+            List<System.DateTime> timestamps = new List<System.DateTime>();
 
             for (int i = 0; i < request.ScenarioList?.Length; i++)
             {
-                // for timing
+                DateTime timestamp = DateTime.Now;
                 var stopwatch = new Stopwatch();
-                var starting_time = new DateTime(Stopwatch.GetTimestamp());
                 stopwatch.Start();
 
                 //string[] audiofiles = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Evaluation\\test.wav"];
                 // Run the STT with audio files
-                transcriptions.Add(STT.Run(paths[i].ToArray()));
+                var transcription = STT.Run(paths[i].ToArray());
+                transcriptions.Add(transcription);
 
                 // get time for running the STT
                 stopwatch.Stop();
-                var elapsed_time = stopwatch.Elapsed.Seconds;
-                Console.WriteLine("time taken: " + elapsed_time.ToString());
+                TimeSpan ts = stopwatch.Elapsed;
+                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+                elapsed_times.Add(elapsedTime);
+                Console.WriteLine("time taken: " + elapsedTime);
+
+                timestamps.Add(timestamp);
+                Console.WriteLine("timestamp: " + timestamp.ToString());
             }
 
-            /* use time now for this one and start and stop for the invidual scenario speeds above
-            // put transcription info into Json format
+            // Json Format: Scenarios
+            //List<Transcription> scenario_objects = new List<Transcription>();
+            //for (int i = 0; i < request.ScenarioList?.Length; i++)
+            //{
+            //    scenario_objects.Add(new Scenario
+            //    {
+            //        ElapsedTime = elapsed_times[i],
+            //        Transcript = string.Join("", transcriptions[i]),
+            //        AudioId = i,
+            //        SttId = null,
+
+            //    });
+            //}
+
+            // Json Format: Transcriptions 
             List<Transcription> transcription_objects = new List<Transcription>();
             for (int i = 0; i < transcriptions.Count; i++)
             {
                 transcription_objects.Add(new Transcription
                 {
-                    Timestamp = starting_time,
-                    Transcript = transcriptions[i],
+                    Timestamp = timestamps[i],
+                    Transcript = string.Join("", transcriptions[i]),
                     AudioId = i,
                     SttId = null,
 
                 });
-            }*/
+            }
 
             Console.WriteLine("from metrics controller: " + transcriptions[0][0]);
             // ground truths should be a list from the database for the specific audio files
