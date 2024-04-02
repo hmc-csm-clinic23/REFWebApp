@@ -41,10 +41,10 @@ namespace REFWebApp.Server.Controllers
                     //    ISTT AmazonTranscribe = new AmazonTranscribe();
                     //    refData.Add(runMetrics(request, AmazonTranscribe, 1));
                     //    break;
-                    case "Google Cloud":
-                        ISTT GoogleCloud = new GoogleCloud();
-                        refData.Add(runMetrics(request, GoogleCloud, 2));
-                        break;
+                    //case "Google Cloud":
+                    //    ISTT GoogleCloud = new GoogleCloud();
+                    //    refData.Add(runMetrics(request, GoogleCloud, 2));
+                    //    break;
                     //case "Deepgram":
                     //    ISTT DeepGram = new DeepGram();
                     //    refData.Add(runMetrics(request, DeepGram, 3));
@@ -116,13 +116,16 @@ namespace REFWebApp.Server.Controllers
                             elapsed_times.Add(elapsedTime);
                             Console.WriteLine("time taken: " + elapsedTime);
 
+                            List<float> metricResult = STT.Metrics(runResult, request.ScenarioList?[i].Audios?[j].GroundTruth);
+
+                            metric.Add(metricResult);
                             transcription.Add(runResult);
-                            /*
-                            List<Transcription> transcription_objects = new List<Transcription>();
+                            
+                            /*List<Transcription> transcription_objects = new List<Transcription>();
                             transcription_objects.Add(new Transcription
                             {
                                 Timestamp = timestamp,
-                                Transcript = string.Join("", transcription[i]),
+                                Transcript = string.Join("", runResult),
                                 AudioId = request.ScenarioList?[i].Audios?[j].Id,
                                 SttId = sttId,
                                 //wer,
@@ -138,7 +141,6 @@ namespace REFWebApp.Server.Controllers
                     paths.Add(path);
                     groundTruths.Add(groundTruth);
                     transcriptions.Add(transcription);
-                    metric = STT.Metrics(transcription, groundTruth);
                     metrics.Add(metric);
 
                     /*List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();

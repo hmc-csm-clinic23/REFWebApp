@@ -57,10 +57,10 @@ namespace REFWebApp.Server.Model.STTs
         }
 
 
-        public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
+        public  List<float> Metrics(string transcriptions, string groundtruths)
         {
             Evaluator y = new Evaluator();
-            List<List<float>> metricslist = y.Run(transcriptions, groundtruths);
+            List<float> metricslist = y.Run(transcriptions, groundtruths);
             Console.WriteLine("Gladia metrics works : " + metricslist);
             return metricslist;
         }

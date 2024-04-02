@@ -68,7 +68,7 @@ namespace REFWebApp.Server.Model.STTs
         }
 
 
-        public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
+        /*public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
         {
             // {
             //     var speed = Speed.SpeedCalc();
@@ -78,7 +78,7 @@ namespace REFWebApp.Server.Model.STTs
             List<List<float>> metricslist = y.Run(transcriptions, groundtruths);
             Console.WriteLine("metrics works : " + metricslist);
             return metricslist;
-        }
+        }*/
 
         public string[] ProcessOutput(string[] args)
         {

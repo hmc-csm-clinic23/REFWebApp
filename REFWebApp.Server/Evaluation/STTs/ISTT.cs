@@ -4,7 +4,7 @@
     {
         Audio ProcessInput(Audio audio);
         public string Run(string filenames);
-        List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths);
+        List<float> Metrics(string transcriptions, string groundtruths);
         string[] ProcessOutput(string[] args);
     }
 }
