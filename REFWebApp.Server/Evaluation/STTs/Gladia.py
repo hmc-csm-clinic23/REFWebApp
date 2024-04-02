@@ -41,9 +41,9 @@ def transcribe_one(file):
     data = response["Body"].read()
     audio_io = io.BytesIO(data)
     pcm, samplerate = sf.read(audio_io)
-    transcript_dict = runGladia(file, data)
-    print(transcript_dict)
-    return transcript_dict
+    transcript = runGladia(file, data)
+    print(transcript)
+    return transcript
 
 def transcribe_all(files_dir): 
   
