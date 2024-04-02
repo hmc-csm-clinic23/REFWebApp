@@ -83,7 +83,7 @@ namespace REFWebApp.Server.Model.STTs
            
             Evaluator y = new Evaluator();
             List<List<float>> metricslist = y.Run(transcriptions, groundtruths);
-            Console.WriteLine("metrics works : " + metricslist);
+            Console.WriteLine("Google Cloud metrics works : " + metricslist);
             return metricslist;
         }
 

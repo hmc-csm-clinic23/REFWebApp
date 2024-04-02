@@ -45,12 +45,7 @@ namespace REFWebApp.Server.Model.STTs
 
                 var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
                 Console.WriteLine("GLADIAOUTPUT: " + result);
-                //                                        //scriptCompiled.InvokeMethod("returndict");
-                //                                    // PyObject Pythonnet = scope.Get("Pythonnet"); // Lets get an instance of the class in python
-                //                                    // PyObject pythongReturn = Pythonnet.InvokeMethod("returndict"); // Call the sayHello function on the exampleclass object
-                //                                    // string? result = pythongReturn.AsManagedObject(typeof(string)) as string; // convert the returned string to managed string object
-                //                                    // //Console.WriteLine(result)
-
+                
                 PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
 
                 List<string> transcriptions = new List<string>();

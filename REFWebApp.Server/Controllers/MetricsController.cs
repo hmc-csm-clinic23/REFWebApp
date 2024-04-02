@@ -53,6 +53,10 @@ namespace REFWebApp.Server.Controllers
                         ISTT Gladia = new Gladia();
                         refData.Add(runMetrics(request, Gladia));
                         break;
+                    case "Whisper":
+                        ISTT Whisper = new Whisper();
+                        refData.Add(runMetrics(request, Whisper));
+                        break;
                     default:
                         break;
                 }
@@ -112,7 +116,6 @@ namespace REFWebApp.Server.Controllers
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                //string[] audiofiles = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Evaluation\\test.wav"];
                 // Run the STT with audio files
                 var transcription = STT.Run(paths[i].ToArray());
                 transcriptions.Add(transcription);
@@ -128,20 +131,6 @@ namespace REFWebApp.Server.Controllers
                 Console.WriteLine("timestamp: " + timestamp.ToString());
             }
 
-            // Json Format: Scenarios
-            //List<Transcription> scenario_objects = new List<Transcription>();
-            //for (int i = 0; i < request.ScenarioList?.Length; i++)
-            //{
-            //    scenario_objects.Add(new Scenario
-            //    {
-            //        ElapsedTime = elapsed_times[i],
-            //        Transcript = string.Join("", transcriptions[i]),
-            //        AudioId = i,
-            //        SttId = null,
-
-            //    });
-            //}
-
             // Json Format: Transcriptions 
             List<Transcription> transcription_objects = new List<Transcription>();
             for (int i = 0; i < transcriptions.Count; i++)
@@ -155,6 +144,12 @@ namespace REFWebApp.Server.Controllers
 
                 });
             }
+
+            // Adding to the Database???
+            //using (var context = new PostgresContext())
+            //{
+            //    context.BulkInsert(transcription_objects);
+            //}
 
             Console.WriteLine("from metrics controller: " + transcriptions[0][0]);
             // ground truths should be a list from the database for the specific audio files
