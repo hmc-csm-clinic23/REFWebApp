@@ -13,7 +13,7 @@ namespace REFWebApp.Server.Model.STTs
             return audio;
         }
 
-        public List<string> Run(string[] filenames)
+        public string Run(string filename)
         {
             string scriptname = "GoogleCloud";
             //Runtime.PythonDLL = @"/Users/sathv/opt/anaconda3/lib/libpython3.9.dylib";
@@ -42,27 +42,17 @@ namespace REFWebApp.Server.Model.STTs
                 //            // var scriptCompiled = PythonEngine.Compile(code, file); 
                 var scriptCompiled = Py.Import(scriptname);
                 // string[] message = new string[] { "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\Model\\test.wav" };
-                string[] message = filenames;
+                string message = filename;
                 //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
-                var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
+                var result = scriptCompiled.InvokeMethod("transcribe_one", message.ToPython());
                 Console.WriteLine("GOOGLECLOUD_OUTPUT: " + result);
 
-                PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
+                PyObject pyobject = result.AsManagedObject(typeof(PyObject)) as PyObject;
 
-                List<string> transcriptions = new List<string>();
-
-                foreach (PyObject pyobject in pylist)
-                {
-                    string transcript = (string)pyobject.AsManagedObject(typeof(string));
-                    Console.WriteLine(transcript);
-                    transcriptions.Add(transcript);
-
-                }
-                Console.WriteLine(transcriptions);
-                //PythonEngine.Shutdown();
-
-                return transcriptions;
+                string transcription = (string)pyobject.AsManagedObject(typeof(string));
+                Console.WriteLine(transcription);
+                return transcription;
 
                 //scriptCompiled.InvokeMethod("returndict");
                 //                                    // PyObject Pythonnet = scope.Get("Pythonnet"); // Lets get an instance of the class in python
@@ -75,15 +65,15 @@ namespace REFWebApp.Server.Model.STTs
         }
 
 
-        public List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
+        public List<float> Metrics(string transcriptions, string groundtruths)
         {
             // {
             //     var speed = Speed.SpeedCalc();
             //     var memory = Memory.MemoryCalc();
            
             Evaluator y = new Evaluator();
-            List<List<float>> metricslist = y.Run(transcriptions, groundtruths);
-            Console.WriteLine("metrics works : " + metricslist);
+            List<float> metricslist = y.Run(transcriptions, groundtruths);
+            Console.WriteLine("Google Cloud metrics works : " + metricslist);
             return metricslist;
         }
 

@@ -35,6 +35,15 @@ def gladiaTranscript(response):
       result += prediction[i]["words"][j]["word"]
   return result
 
+def transcribe_one(file): 
+    client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+    response = client.get_object(Bucket='nbl-audio-files', Key=file.strip(),)
+    data = response["Body"].read()
+    audio_io = io.BytesIO(data)
+    pcm, samplerate = sf.read(audio_io)
+    transcript_dict = runGladia(file, data)
+    print(transcript_dict)
+    return transcript_dict
 
 def transcribe_all(files_dir): 
   
@@ -43,21 +52,15 @@ def transcribe_all(files_dir):
 
     transcript_dict = {}
     for i in range(len(wavfiles)): 
-        try:
-            response = client.get_object(Bucket='nbl-audio-files', Key=wavfiles[i].strip(),)
-        except: 
-            print("file does not exist")
-            continue
-        
-    data = response["Body"].read()
-    audio_io = io.BytesIO(data)
-    pcm, samplerate = sf.read(audio_io)
-        
-    for i in wavfiles: 
-        print(i)
-        transcript_dict[i] = runGladia(i, data)
+        print(wavfiles[i])
+        response = client.get_object(Bucket='nbl-audio-files', Key=wavfiles[i].strip(),)
+        data = response["Body"].read()
+        audio_io = io.BytesIO(data)
+        pcm, samplerate = sf.read(audio_io)
+        transcript_dict[i] = runGladia(wavfiles[i], data)
+ 
     print(transcript_dict)
     return transcript_dict.values()
 
-# file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_39_18-0_39_21.wav"]
+# file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_2_4-0_2_7.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_23-0_2_25.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_26-0_2_31.wav"]
 # transcribe_all(file_paths)

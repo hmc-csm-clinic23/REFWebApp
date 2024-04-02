@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using Microsoft.EntityFrameworkCore;
 using REFWebApp.Server.Models;
 
@@ -10,7 +9,6 @@ public partial class PostgresContext : DbContext
 {
     public PostgresContext()
     {
-        this.ChangeTracker.LazyLoadingEnabled = false;
     }
 
     public PostgresContext(DbContextOptions<PostgresContext> options)
@@ -56,7 +54,7 @@ public partial class PostgresContext : DbContext
             entity.HasOne(d => d.Format).WithMany(p => p.AudioFiles)
                 .HasForeignKey(d => d.FormatId)
                 .HasConstraintName("fk_format");
-            
+
             entity.HasMany(d => d.Scenarios).WithMany(p => p.Audios)
                 .UsingEntity<Dictionary<string, object>>(
                     "AudioScenario",
@@ -75,7 +73,6 @@ public partial class PostgresContext : DbContext
                         j.IndexerProperty<int>("AudioId").HasColumnName("audio_id");
                         j.IndexerProperty<int>("ScenarioId").HasColumnName("scenario_id");
                     });
-            
         });
 
         modelBuilder.Entity<FileFormat>(entity =>
@@ -141,11 +138,17 @@ public partial class PostgresContext : DbContext
             entity.ToTable("stt_aggregate_metrics");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dist).HasColumnName("dist");
+            entity.Property(e => e.Mer).HasColumnName("mer");
+            entity.Property(e => e.Rawtime).HasColumnName("rawtime");
             entity.Property(e => e.ScenarioId).HasColumnName("scenario_id");
+            entity.Property(e => e.Sim).HasColumnName("sim");
             entity.Property(e => e.SttId).HasColumnName("stt_id");
             entity.Property(e => e.Timestamp)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("timestamp");
+            entity.Property(e => e.Wer).HasColumnName("wer");
+            entity.Property(e => e.Wil).HasColumnName("wil");
 
             entity.HasOne(d => d.Scenario).WithMany(p => p.SttAggregateMetrics)
                 .HasForeignKey(d => d.ScenarioId)
@@ -164,11 +167,17 @@ public partial class PostgresContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AudioId).HasColumnName("audio_id");
+            entity.Property(e => e.Dist).HasColumnName("dist");
+            entity.Property(e => e.Mer).HasColumnName("mer");
+            entity.Property(e => e.Rawtime).HasColumnName("rawtime");
+            entity.Property(e => e.Sim).HasColumnName("sim");
             entity.Property(e => e.SttId).HasColumnName("stt_id");
             entity.Property(e => e.Timestamp)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("timestamp");
             entity.Property(e => e.Transcript).HasColumnName("transcript");
+            entity.Property(e => e.Wil).HasColumnName("wil");
+            entity.Property(e => e.Wip).HasColumnName("wip");
 
             entity.HasOne(d => d.Audio).WithMany(p => p.Transcriptions)
                 .HasForeignKey(d => d.AudioId)

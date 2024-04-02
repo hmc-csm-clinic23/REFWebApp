@@ -8,6 +8,9 @@ nest_asyncio.apply()
 
 import pandas as pd
 import csv
+from difflib import SequenceMatcher
+from jiwer import wer, mer, wil
+from Levenshtein import distance
 
 # csv_0 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-000.csv'
 # csv_1 = '/Users/sathv/Desktop/NBL_GroundTruth_DataSet/EV1-MAURER-2021-04-02_08-37-06-001.csv'
@@ -16,6 +19,15 @@ import csv
 # t = ["hello"]
 # g = ["Hello!"]
 
+def metrics(ground_truth : str, transcr : str):
+        m_wer = round(wer(ground_truth, transcr),2)
+        m_mer = round(mer(ground_truth, transcr),2)
+        m_wil = round(wil(ground_truth, transcr),2)
+        m_sim = round(SequenceMatcher(None, ground_truth, transcr).ratio(),2)
+        m_dist = round(distance(transcr, ground_truth),2)
+        print('-','WER:',m_wer, 'MER:',m_mer,'WIL:',m_wil,'SIM:',m_sim,'L-DIST:',m_dist)
+        print(m_wer, m_mer, m_wil, m_sim, m_dist)
+        return [m_wer, m_mer, m_wil, m_sim, m_dist]
 
 def evaluate(transcriptionlist, groundtruthlist):
     transcriptions = transcriptionlist
@@ -24,10 +36,6 @@ def evaluate(transcriptionlist, groundtruthlist):
 
     # df = pd.asDataFrame(transcriptions)
     # print(df)
-   
-    from difflib import SequenceMatcher
-    from jiwer import wer, mer, wil
-    from Levenshtein import distance
 
     def metrics(asr, ground_truth : str, transcr : str):
         m_wer = round(wer(ground_truth, transcr),2)

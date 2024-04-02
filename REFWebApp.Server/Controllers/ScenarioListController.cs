@@ -46,6 +46,7 @@ namespace REFWebApp.Server.Controllers
             return Enumerable.Range(0, scenarios.Count).Select(index => new IndividualScenario
             {
                 Name = scenarios[index].Name,
+                Id = scenarios[index].Id,
                 Audios = context.AudioFiles.FromSql($"SELECT * FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {index+1})").ToList()
             })
             .ToArray();

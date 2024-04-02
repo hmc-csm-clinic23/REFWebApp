@@ -3,7 +3,7 @@ using Python.Runtime;
 namespace REFWebApp.Server.Model.STTs
 // export IRONPYTHONPATH=/Library/Frameworks/IronPython.framework/Versions/3.4.1/
 {
-    public class AmazonTranscribe : ISTT
+    public class AmazonTranscribe //: ISTT
     {
 
         public Audio ProcessInput(Audio audio)
@@ -67,7 +67,7 @@ namespace REFWebApp.Server.Model.STTs
         }
 
 
-        public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
+        /*public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
         {
             // {
             //     var speed = Speed.SpeedCalc();
@@ -77,7 +77,7 @@ namespace REFWebApp.Server.Model.STTs
             List<List<float>> metricslist = y.Run(transcriptions, groundtruths);
             Console.WriteLine("metrics works : " + metricslist);
             return metricslist;
-        }
+        }*/
 
 
         public string[] ProcessOutput(string[] args)

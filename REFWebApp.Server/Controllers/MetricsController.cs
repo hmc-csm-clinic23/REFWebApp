@@ -12,6 +12,8 @@ using Microsoft.Identity.Client;
 using REFWebApp.Server.Model;
 using Azure.Core;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 
 
 namespace REFWebApp.Server.Controllers
@@ -37,21 +39,25 @@ namespace REFWebApp.Server.Controllers
                 //Choose stts
                 switch (request.SttList?[i].Name)
                 {
+                    //case "Amazon Transcribe":
+                    //    ISTT AmazonTranscribe = new AmazonTranscribe();
+                    //    refData.Add(runMetrics(request, AmazonTranscribe, 1));
+                    //    break;
                     case "Google Cloud":
                         ISTT GoogleCloud = new GoogleCloud();
-                        refData.Add(runMetrics(request, GoogleCloud));
+                        refData.Add(runMetrics(request, GoogleCloud, 2));
                         break;
-                    case "Deepgram":
-                        ISTT DeepGram = new DeepGram();
-                        refData.Add(runMetrics(request, DeepGram));
-                        break;
-                    case "Amazon Transcribe":
-                        ISTT AmazonTranscribe = new AmazonTranscribe();
-                        refData.Add(runMetrics(request, AmazonTranscribe));
-                        break;
+                    //case "Deepgram":
+                    //    ISTT DeepGram = new DeepGram();
+                    //    refData.Add(runMetrics(request, DeepGram, 3));
+                    //    break;
+                    //case "Whisper":
+                    //    ISTT Whisper = new Whisper();
+                    //    refData.Add(runMetrics(request, Whisper, 4));
+                    //    break;
                     case "Gladia":
                         ISTT Gladia = new Gladia();
-                        refData.Add(runMetrics(request, Gladia));
+                        refData.Add(runMetrics(request, Gladia, 5));
                         break;
                     default:
                         break;
@@ -74,19 +80,31 @@ namespace REFWebApp.Server.Controllers
         }
 
         [NonAction]
-        public MetricObject runMetrics(MetricsRequestModel request, ISTT STT)
+        public MetricObject runMetrics(MetricsRequestModel request, ISTT STT, int sttId)
         {
-            List<string> scenarioNames = new List<string>();
-            List<List<string>> paths = new List<List<string>>();
-            List<List<string>> groundTruths = new List<List<string>>();
+            List<string?> scenarioNames = new List<string?>();
+            List<List<string?>> paths = new List<List<string?>>();
+            List<List<string?>> groundTruths = new List<List<string?>>();
+            List<List<string?>> transcriptions = new List<List<string?>>();
+            List<List<List<float>>> metrics = new List<List<List<float>>>();
+            DateTime timestamp = DateTime.Now;
 
             for (int i = 0; i < request.ScenarioList?.Length; i++) // (int i = 0; i < request.ScenarioList?.Length; i++)
             {
                 if (request.ScenarioList?[i].Name != null)
                 {
                     scenarioNames.Add(request.ScenarioList?[i].Name);
-                    List<string> path = new List<string>();
-                    List<string> groundTruth = new List<string>();
+                    List<string?> path = new List<string?>();
+                    List<string?> groundTruth = new List<string?>();
+                    List<string?> transcription = new List<string?>();
+                    List<List<float>> metric = new List<List<float>>();
+                    List<string> elapsed_times = new List<string>();
+                    List<float> wer = new List<float>();
+                    List<float> mer = new List<float>();
+                    List<float> wil = new List<float>();
+                    List<float> sim = new List<float>();
+                    List<float> dist = new List<float>();
+
 
                     for (int j = 0; j < 5; j++) // (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
                     {
@@ -94,59 +112,73 @@ namespace REFWebApp.Server.Controllers
                         {
                             path.Add(request.ScenarioList?[i].Audios?[j].Path);
                             groundTruth.Add(request.ScenarioList?[i].Audios?[j].GroundTruth);
+
+                            var stopwatch = new Stopwatch();
+                            stopwatch.Start();
+
+                            string runResult = STT.Run(request.ScenarioList?[i].Audios?[j].Path);
+
+                            stopwatch.Stop();
+                            TimeSpan ts = stopwatch.Elapsed;
+                            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+                            elapsed_times.Add(elapsedTime);
+                            Console.WriteLine("time taken: " + elapsedTime);
+
+                            List<float> metricResult = STT.Metrics(runResult, request.ScenarioList?[i].Audios?[j].GroundTruth);
+
+                            metric.Add(metricResult);
+                            transcription.Add(runResult);
+
+                            wer.Add(metricResult[0]);
+                            mer.Add(metricResult[1]);
+                            wil.Add(metricResult[2]);
+                            sim.Add(metricResult[3]);
+                            dist.Add(metricResult[4]);
+
+                            List<Transcription> transcription_objects = new List<Transcription>();
+                            transcription_objects.Add(new Transcription
+                            {
+                                Timestamp = timestamp,
+                                Transcript = string.Join("", runResult),
+                                AudioId = request.ScenarioList?[i].Audios?[j].Id,
+                                SttId = sttId,
+                                //Wer = metricResult[0],
+                                Mer = metricResult[1],
+                                Wil = metricResult[2],
+                                Sim = metricResult[3],
+                                Dist = metricResult[4],
+                                //Rawtime = elapsedTime,
+                            });
                         };
                     }
 
                     paths.Add(path);
                     groundTruths.Add(groundTruth);
-                };
+                    transcriptions.Add(transcription);
+                    metrics.Add(metric);
+
+                    List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();
+                    aggregate.Add(new SttAggregateMetric
+                    {
+                        ScenarioId = request.ScenarioList?[i].Id,
+                        SttId = sttId,
+                        Timestamp = timestamp,
+                        Wer = wer.Sum()/wer.Count,
+                        Mer = mer.Sum() / mer.Count,
+                        Wil = wil.Sum() / wil.Count,
+                        Sim = sim.Sum() / sim.Count,
+                        Dist = dist.Sum() / dist.Count,
+                        //Rawtime = elapsed_times.Sum(),
+                    });
+                }
             }
-
-            List<List<string>> transcriptions = new List<List<string>>();
-
-            for (int i = 0; i < request.ScenarioList?.Length; i++)
-            {
-                // for timing
-                var stopwatch = new Stopwatch();
-                var starting_time = new DateTime(Stopwatch.GetTimestamp());
-                stopwatch.Start();
-
-                //string[] audiofiles = ["C:\\Users\\micro\\source\\repos\\REFWebApp\\REFWebApp.Server\\Evaluation\\test.wav"];
-                // Run the STT with audio files
-                transcriptions.Add(STT.Run(paths[i].ToArray()));
-
-                // get time for running the STT
-                stopwatch.Stop();
-                var elapsed_time = stopwatch.Elapsed.Seconds;
-                Console.WriteLine("time taken: " + elapsed_time.ToString());
-            }
-
-            /* use time now for this one and start and stop for the invidual scenario speeds above
-            // put transcription info into Json format
-            List<Transcription> transcription_objects = new List<Transcription>();
-            for (int i = 0; i < transcriptions.Count; i++)
-            {
-                transcription_objects.Add(new Transcription
-                {
-                    Timestamp = starting_time,
-                    Transcript = transcriptions[i],
-                    AudioId = i,
-                    SttId = null,
-
-                });
-            }*/
-
-            Console.WriteLine("from metrics controller: " + transcriptions[0][0]);
+            // Adding to the Database???
+            //using (var context = new PostgresContext())
+            //{
+            //    context.BulkInsert(transcription_objects);
+            //}
             // ground truths should be a list from the database for the specific audio files
             //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
-            List<List<List<float>>> metrics = new List<List<List<float>>>();
-
-            for (int i = 0; i < request.ScenarioList?.Length; i++)
-            {
-                metrics.Add(STT.Metrics(transcriptions[i], groundTruths[i]));
-            }
-
-            Console.WriteLine("metrics: " + metrics);
 
             return new MetricObject
             {

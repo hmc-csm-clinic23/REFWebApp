@@ -12,11 +12,22 @@ public partial class Transcription
     public int? SttId { get; set; }
 
     public DateTime? Timestamp { get; set; }
-    
+
     public string? Transcript { get; set; }
+
+    public double? Sim { get; set; }
+
+    public double? Mer { get; set; }
+
+    public double? Wil { get; set; }
+
+    public double? Wip { get; set; }
+
+    public double? Dist { get; set; }
+
+    public long? Rawtime { get; set; }
 
     public virtual AudioFile? Audio { get; set; }
 
     public virtual Stt? Stt { get; set; }
-
 }
