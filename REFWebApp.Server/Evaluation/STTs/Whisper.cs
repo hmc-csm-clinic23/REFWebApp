@@ -3,7 +3,7 @@ using Python.Runtime;
 namespace REFWebApp.Server.Model.STTs
 // export IRONPYTHONPATH=/Library/Frameworks/IronPython.framework/Versions/3.4.1/
 {
-    public class Whisper //: ISTT
+    public class Whisper : ISTT
     {
 
         public Audio ProcessInput(Audio audio)
@@ -13,7 +13,7 @@ namespace REFWebApp.Server.Model.STTs
             return audio;
         }
 
-        public List<string> Run(string[] filenames)
+        public string Run(string filename)
         {
             string scriptname = "Whisper";
             //Runtime.PythonDLL = @"/Users/sathv/opt/anaconda3/lib/libpython3.9.dylib";
@@ -41,32 +41,49 @@ namespace REFWebApp.Server.Model.STTs
                 //            // var scriptCompiled = PythonEngine.Compile(code, file); 
                 var scriptCompiled = Py.Import(scriptname);
                 // string[] message = new string[] { "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\Model\\test.wav" };
-                string[] message = filenames;
+                string message = filename;
                 //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
-                var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
+                var result = scriptCompiled.InvokeMethod("transcribe_one", message.ToPython());
                 Console.WriteLine("WHISPEROUTPUT: " + result);
 
-                PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
 
-                List<string> transcriptions = new List<string>();
+                PyObject pyobject = result.AsManagedObject(typeof(PyObject)) as PyObject;
 
-                foreach (PyObject pyobject in pylist)
-                {
-                    string transcript = (string)pyobject.AsManagedObject(typeof(string));
-                    Console.WriteLine(transcript);
-                    transcriptions.Add(transcript);
+                string transcription = (string)pyobject.AsManagedObject(typeof(string));
+                Console.WriteLine(transcription);
+                return transcription;
 
-                }
-                Console.WriteLine(transcriptions);
-                //PythonEngine.Shutdown();
+                //PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
 
-                return transcriptions;
+                //List<string> transcriptions = new List<string>();
+
+                //foreach (PyObject pyobject in pylist)
+                //{
+                //    string transcript = (string)pyobject.AsManagedObject(typeof(string));
+                //    Console.WriteLine(transcript);
+                //    transcriptions.Add(transcript);
+
+                //}
+                //Console.WriteLine(transcriptions);
+                ////PythonEngine.Shutdown();
+
+                //return transcriptions;
             }
             Console.WriteLine("run works");
         }
 
+        public List<float> Metrics(string transcriptions, string groundtruths)
+        {
+            // {
+            //     var speed = Speed.SpeedCalc();
+            //     var memory = Memory.MemoryCalc();
 
+            Evaluator y = new Evaluator();
+            List<float> metricslist = y.Run(transcriptions, groundtruths);
+            Console.WriteLine("Whisper metrics works : " + metricslist);
+            return metricslist;
+        }
         /*public  List<List<float>> Metrics(List<string> transcriptions, List<string> groundtruths)
         {
             // {

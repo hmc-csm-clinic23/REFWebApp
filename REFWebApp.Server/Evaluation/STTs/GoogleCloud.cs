@@ -30,7 +30,6 @@ namespace REFWebApp.Server.Model.STTs
                 PythonEngine.Initialize();
                 Py.GIL();
             }
-            
 
             using (var scope = Py.CreateScope())
             {

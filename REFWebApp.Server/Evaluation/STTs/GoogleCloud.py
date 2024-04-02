@@ -70,12 +70,12 @@ def transcribe_one(file):
     audio_io = io.BytesIO(data)
     pcm, samplerate = sf.read(audio_io)
     if librosa.get_duration(y=pcm, sr=samplerate) < 60:
-            transcript_dict = transcribe_file(data)
+            transcript = transcribe_file(data)
             with open('transcriptions.csv', 'w') as csv_file:  
                 writer = csv.writer(csv_file)
-                writer.writerow(transcript_dict)
-    print(transcript_dict)
-    return transcript_dict
+                writer.writerow(transcript)
+    print(transcript)
+    return transcript
 
 def transcribe_all(files_dir): 
 
