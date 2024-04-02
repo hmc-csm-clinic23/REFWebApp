@@ -13,7 +13,7 @@ namespace REFWebApp.Server.Model.STTs
             return audio;
         }
 
-        public List<string> Run(string[] filenames)
+        public string Run(string filename)
         {
             string scriptname = "Gladia";
             //Runtime.PythonDLL = @"/Users/sathv/opt/anaconda3/lib/libpython3.9.dylib";
@@ -40,26 +40,17 @@ namespace REFWebApp.Server.Model.STTs
                 //            // var scriptCompiled = PythonEngine.Compile(code, file); 
                 var scriptCompiled = Py.Import(scriptname);
                 // string[] message = new string[] { "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\Model\\test.wav" };
-                string[] message = filenames;
+                string message = filename;
                 //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
-                var result = scriptCompiled.InvokeMethod("transcribe_all", message.ToPython());
+                var result = scriptCompiled.InvokeMethod("transcribe_one", message.ToPython());
                 Console.WriteLine("GLADIAOUTPUT: " + result);
                 
-                PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
+                PyObject pyobject = result.AsManagedObject(typeof(PyObject)) as PyObject;
 
-                List<string> transcriptions = new List<string>();
-
-                foreach (PyObject pyobject in pylist)
-                {
-                    string transcript = (string)pyobject.AsManagedObject(typeof(string));
-                    Console.WriteLine(transcript);
-                    transcriptions.Add(transcript);
-
-                }
-                Console.WriteLine(transcriptions);
-
-                return transcriptions;
+                string transcription = (string)pyobject.AsManagedObject(typeof(string));
+                Console.WriteLine(transcription);
+                return transcription;
             }
 
             Console.WriteLine("run works");

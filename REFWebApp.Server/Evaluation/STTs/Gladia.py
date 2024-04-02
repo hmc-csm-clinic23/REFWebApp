@@ -35,6 +35,15 @@ def gladiaTranscript(response):
       result += prediction[i]["words"][j]["word"]
   return result
 
+def transcribe_one(file): 
+    client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+    response = client.get_object(Bucket='nbl-audio-files', Key=file.strip(),)
+    data = response["Body"].read()
+    audio_io = io.BytesIO(data)
+    pcm, samplerate = sf.read(audio_io)
+    transcript_dict = runGladia(file, data)
+    print(transcript_dict)
+    return transcript_dict
 
 def transcribe_all(files_dir): 
   
