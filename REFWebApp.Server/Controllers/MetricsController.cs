@@ -12,6 +12,8 @@ using Microsoft.Identity.Client;
 using REFWebApp.Server.Model;
 using Azure.Core;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 
 
 namespace REFWebApp.Server.Controllers
@@ -41,10 +43,10 @@ namespace REFWebApp.Server.Controllers
                     //    ISTT AmazonTranscribe = new AmazonTranscribe();
                     //    refData.Add(runMetrics(request, AmazonTranscribe, 1));
                     //    break;
-                    //case "Google Cloud":
-                    //    ISTT GoogleCloud = new GoogleCloud();
-                    //    refData.Add(runMetrics(request, GoogleCloud, 2));
-                    //    break;
+                    case "Google Cloud":
+                        ISTT GoogleCloud = new GoogleCloud();
+                        refData.Add(runMetrics(request, GoogleCloud, 2));
+                        break;
                     //case "Deepgram":
                     //    ISTT DeepGram = new DeepGram();
                     //    refData.Add(runMetrics(request, DeepGram, 3));
@@ -97,6 +99,12 @@ namespace REFWebApp.Server.Controllers
                     List<string?> transcription = new List<string?>();
                     List<List<float>> metric = new List<List<float>>();
                     List<string> elapsed_times = new List<string>();
+                    List<float> wer = new List<float>();
+                    List<float> mer = new List<float>();
+                    List<float> wil = new List<float>();
+                    List<float> sim = new List<float>();
+                    List<float> dist = new List<float>();
+
 
                     for (int j = 0; j < 5; j++) // (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
                     {
@@ -120,21 +128,27 @@ namespace REFWebApp.Server.Controllers
 
                             metric.Add(metricResult);
                             transcription.Add(runResult);
-                            
-                            /*List<Transcription> transcription_objects = new List<Transcription>();
+
+                            wer.Add(metricResult[0]);
+                            mer.Add(metricResult[1]);
+                            wil.Add(metricResult[2]);
+                            sim.Add(metricResult[3]);
+                            dist.Add(metricResult[4]);
+
+                            List<Transcription> transcription_objects = new List<Transcription>();
                             transcription_objects.Add(new Transcription
                             {
                                 Timestamp = timestamp,
                                 Transcript = string.Join("", runResult),
                                 AudioId = request.ScenarioList?[i].Audios?[j].Id,
                                 SttId = sttId,
-                                //wer,
-                                //mer,
-                                //wil,
-                                //wip,
-                                //cer,
+                                //Wer = metricResult[0],
+                                Mer = metricResult[1],
+                                Wil = metricResult[2],
+                                Sim = metricResult[3],
+                                Dist = metricResult[4],
                                 //Rawtime = elapsedTime,
-                            });*/
+                            });
                         };
                     }
 
@@ -143,19 +157,19 @@ namespace REFWebApp.Server.Controllers
                     transcriptions.Add(transcription);
                     metrics.Add(metric);
 
-                    /*List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();
+                    List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();
                     aggregate.Add(new SttAggregateMetric
                     {
-                        ScenarioId = 0,
+                        ScenarioId = request.ScenarioList?[i].Id,
                         SttId = sttId,
                         Timestamp = timestamp,
-                        //wer = sum(metric) / Metrics.length,
-                        //mer,
-                        //wil,
-                        //wip,
-                        //cer,
-                        //Rawtime = 0,
-                    });*/
+                        Wer = wer.Sum()/wer.Count,
+                        Mer = mer.Sum() / mer.Count,
+                        Wil = wil.Sum() / wil.Count,
+                        Sim = sim.Sum() / sim.Count,
+                        Dist = dist.Sum() / dist.Count,
+                        //Rawtime = elapsed_times.Sum(),
+                    });
                 }
             }
             // Adding to the Database???
