@@ -13,6 +13,18 @@ public partial class SttAggregateMetric
 
     public DateTime? Timestamp { get; set; }
 
+    public double? Wer { get; set; }
+
+    public double? Mer { get; set; }
+
+    public double? Wil { get; set; }
+
+    public double? Sim { get; set; }
+
+    public double? Dist { get; set; }
+
+    public TimeSpan? Rawtime { get; set; }
+
     public virtual Scenario? Scenario { get; set; }
 
     public virtual Stt? Stt { get; set; }

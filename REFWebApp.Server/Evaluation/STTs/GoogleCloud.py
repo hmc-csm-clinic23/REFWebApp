@@ -63,6 +63,19 @@ def transcribe_file(file_content) -> speech.RecognizeResponse:
     return recognized_text
 #or write a similar function that uses a list of previous transcriptions to compare them to ground truth transcriptions
 
+def transcribe_one(file): 
+    client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+    response = client.get_object(Bucket='nbl-audio-files', Key=file.strip(),)
+    data = response["Body"].read()
+    audio_io = io.BytesIO(data)
+    pcm, samplerate = sf.read(audio_io)
+    if librosa.get_duration(y=pcm, sr=samplerate) < 60:
+            transcript = transcribe_file(data)
+            with open('transcriptions.csv', 'w') as csv_file:  
+                writer = csv.writer(csv_file)
+                writer.writerow(transcript)
+    print(transcript)
+    return transcript
 
 def transcribe_all(files_dir): 
 

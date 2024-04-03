@@ -14,7 +14,7 @@ namespace REFWebApp.Server.Model
             PythonEngine.Initialize();
         }
 
-        public List<List<float>> Run(List<string> transcriptions_file, List<string> groundtruth)
+        public List<float> Run(string transcriptions_file, string groundtruth)
         {
             string scriptname = "eval";
             Initialize();
@@ -41,25 +41,20 @@ namespace REFWebApp.Server.Model
 
                 var scriptCompiled = Py.Import(scriptname);
                 //string[] message = new string[] {transcriptions_file, "/Users/sathv/Desktop/REFApplication/REFApplication/ground_truth.csv"};
-                List<string> tra =transcriptions_file;
-                List<string> gt = groundtruth ;
+                string tra =transcriptions_file;
+                string gt = groundtruth;
                 //Console.WriteLine(message);
-                var result = scriptCompiled.InvokeMethod("evaluate", tra.ToPython(), gt.ToPython());
+                var result = scriptCompiled.InvokeMethod("metrics", gt.ToPython(), tra.ToPython());
                 Console.WriteLine("RESULT: " + result);
-                PyObject[] pyOuterlist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
+                PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
 
-                List<List<float>> metricslist = new List<List<float>>();
+                List<float> metricslist = new List<float>();
 
-                foreach(PyObject pyInnerlist in pyOuterlist){
-                    PyObject[] pyInnerObject = pyInnerlist.AsManagedObject(typeof(PyObject[])) as PyObject[];
-                    List<float> innerlist = new List<float>();
 
-                    foreach(PyObject pyobject in pyInnerObject)
-                    {
-                        float val = (float)pyobject.AsManagedObject(typeof(float));
-                        innerlist.Add(val);
-                    }
-                    metricslist.Add(innerlist);
+                foreach(PyObject pyobject in pylist)
+                {
+                    float val = (float)pyobject.AsManagedObject(typeof(float));
+                    metricslist.Add(val);
                 }
 
                 //List<float> metricslist = (List<float>)result;

@@ -24,6 +24,13 @@ def dgTranscript(response):
     result = tempalternative.transcript
     return result
 
+def transcribe_one(file): 
+    client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+    response = client.get_object(Bucket='nbl-audio-files', Key=file.strip(),)
+    data = response["Body"].read()
+    transcript = runDeepgram(data)
+    print(transcript)
+    return transcript
 
 def transcribe_all(files_dir): 
     client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")

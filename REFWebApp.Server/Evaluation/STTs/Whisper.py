@@ -18,6 +18,16 @@ def runWhisper(file_content):
     result = model.transcribe(audio=file_content)
     return result["text"]
 
+def transcribe_one(file): 
+    client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
+    response = client.get_object(Bucket='nbl-audio-files', Key=file.strip(),)
+    data = response["Body"].read()
+    audio_io = io.BytesIO(data)
+    audio_array, sample_rate = librosa.load(io.BytesIO(data), sr=None, mono=True)
+    transcript = runWhisper(audio_array)
+    print(transcript)
+    return transcript
+
 
 def transcribe_all(files_dir): 
     wavfiles = files_dir
