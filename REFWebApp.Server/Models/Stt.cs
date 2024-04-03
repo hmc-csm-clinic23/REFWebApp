@@ -9,6 +9,8 @@ public partial class Stt
 
     public string? Name { get; set; }
 
+    public double? Usability { get; set; }
+
     public virtual ICollection<SttAggregateMetric> SttAggregateMetrics { get; set; } = new List<SttAggregateMetric>();
 
     public virtual ICollection<Transcription> Transcriptions { get; set; } = new List<Transcription>();

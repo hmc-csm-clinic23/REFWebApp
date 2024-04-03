@@ -14,6 +14,7 @@ using Azure.Core;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
+using System.Linq;
 
 
 namespace REFWebApp.Server.Controllers
@@ -87,6 +88,8 @@ namespace REFWebApp.Server.Controllers
             List<List<string?>> groundTruths = new List<List<string?>>();
             List<List<string?>> transcriptions = new List<List<string?>>();
             List<List<List<float>>> metrics = new List<List<List<float>>>();
+            List<Transcription> transcription_objects = new List<Transcription>();
+            List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();
             DateTime timestamp = DateTime.Now;
 
             for (int i = 0; i < request.ScenarioList?.Length; i++) // (int i = 0; i < request.ScenarioList?.Length; i++)
@@ -98,7 +101,7 @@ namespace REFWebApp.Server.Controllers
                     List<string?> groundTruth = new List<string?>();
                     List<string?> transcription = new List<string?>();
                     List<List<float>> metric = new List<List<float>>();
-                    List<string> elapsed_times = new List<string>();
+                    List<TimeSpan> elapsedTimes = new List<TimeSpan>();
                     List<float> wer = new List<float>();
                     List<float> mer = new List<float>();
                     List<float> wil = new List<float>();
@@ -119,10 +122,10 @@ namespace REFWebApp.Server.Controllers
                             string runResult = STT.Run(request.ScenarioList?[i].Audios?[j].Path);
 
                             stopwatch.Stop();
-                            TimeSpan ts = stopwatch.Elapsed;
-                            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-                            elapsed_times.Add(elapsedTime);
-                            Console.WriteLine("time taken: " + elapsedTime);
+                            TimeSpan elapsedTime = stopwatch.Elapsed;
+                            string timePrint = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds, elapsedTime.Milliseconds / 10);
+                            elapsedTimes.Add(elapsedTime);
+                            Console.WriteLine("time taken: " + timePrint);
 
                             List<float> metricResult = STT.Metrics(runResult, request.ScenarioList?[i].Audios?[j].GroundTruth);
 
@@ -135,19 +138,18 @@ namespace REFWebApp.Server.Controllers
                             sim.Add(metricResult[3]);
                             dist.Add(metricResult[4]);
 
-                            List<Transcription> transcription_objects = new List<Transcription>();
                             transcription_objects.Add(new Transcription
                             {
                                 Timestamp = timestamp,
                                 Transcript = string.Join("", runResult),
                                 AudioId = request.ScenarioList?[i].Audios?[j].Id,
                                 SttId = sttId,
-                                //Wer = metricResult[0],
+                                Wer = metricResult[0],
                                 Mer = metricResult[1],
                                 Wil = metricResult[2],
                                 Sim = metricResult[3],
                                 Dist = metricResult[4],
-                                //Rawtime = elapsedTime,
+                                Rawtime = elapsedTime,
                             });
                         };
                     }
@@ -157,7 +159,6 @@ namespace REFWebApp.Server.Controllers
                     transcriptions.Add(transcription);
                     metrics.Add(metric);
 
-                    List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();
                     aggregate.Add(new SttAggregateMetric
                     {
                         ScenarioId = request.ScenarioList?[i].Id,
@@ -168,15 +169,16 @@ namespace REFWebApp.Server.Controllers
                         Wil = wil.Sum() / wil.Count,
                         Sim = sim.Sum() / sim.Count,
                         Dist = dist.Sum() / dist.Count,
-                        //Rawtime = elapsed_times.Sum(),
+                        Rawtime = elapsedTimes.Aggregate(new TimeSpan(0, 0, 0, 0), (x,y) => x+y),
                     });
                 }
             }
             // Adding to the Database???
-            //using (var context = new PostgresContext())
-            //{
-            //    context.BulkInsert(transcription_objects);
-            //}
+            using (var context = new PostgresContext())
+            {
+                context.BulkInsert(transcription_objects);
+                context.BulkInsert(aggregate);
+            }
             // ground truths should be a list from the database for the specific audio files
             //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
 

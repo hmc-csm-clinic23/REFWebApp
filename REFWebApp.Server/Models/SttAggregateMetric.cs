@@ -23,7 +23,7 @@ public partial class SttAggregateMetric
 
     public double? Dist { get; set; }
 
-    public long? Rawtime { get; set; }
+    public TimeSpan? Rawtime { get; set; }
 
     public virtual Scenario? Scenario { get; set; }
 

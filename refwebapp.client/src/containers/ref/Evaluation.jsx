@@ -5,7 +5,8 @@ import "./evaluation.css";
 
 function Evaluation() {
   const { selections } = useContext(Context);
-  const [metricsList, setMetricsList] = useState([]);
+    const [metricsList, setMetricsList] = useState([]);
+    const [loading, setLoading] = useState([]);
   async function postMetrics() {
     console.log("hi");
     console.log("hi");
@@ -20,8 +21,10 @@ function Evaluation() {
           ScenarioList: selections.ScenarioList
         })
       });
+    setLoading(true)
     const data = await response.json();
     setMetricsList(data);
+    setLoading(false);
     console.log(metricsList.map(metricsList => metricsList.sttName));
     console.log(metricsList.map(metricsList => metricsList.sttName.toString()));
     console.log(metricsList.map(metricsList => metricsList.refData.metrics.toString()));
@@ -53,7 +56,9 @@ function Evaluation() {
   */
   return (
     <div>
-      {metricsList.map(metricsList => (
+      {loading
+      ? <h1> Loading... This may take a while</h1>
+      : metricsList.map(metricsList => (
         <EvalDisplay
         stt={metricsList.sttName}
         metrics={metricsList.refData.metrics}
