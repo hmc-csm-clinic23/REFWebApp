@@ -6,6 +6,9 @@ import boto3
 import json
 import io
 
+#pip uninstall whisper
+#pip install openai-whisper
+
 file_paths = ["EV1-MAURER-2021-04-02_08-37-06-003/0_2_1-0_2_5.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_4-0_2_7.wav", "EV1-MAURER-2021-04-02_08-37-06-003/0_2_23-0_2_25.wav"]
 
 

@@ -34,7 +34,7 @@ import io
 
 
 def transcribe_file(file_content) -> speech.RecognizeResponse:
-    #print(wav_file)
+    
     client = speech.SpeechClient()
     # with open(wav_file, "rb") as audio_file:
     #     content = audio_file.read()
@@ -64,8 +64,14 @@ def transcribe_file(file_content) -> speech.RecognizeResponse:
 #or write a similar function that uses a list of previous transcriptions to compare them to ground truth transcriptions
 
 def transcribe_one(file): 
+    
+    print(file)
     client = boto3.client('s3',aws_access_key_id = "AKIA3XQL3GCMUFJ3ILUV", aws_secret_access_key = "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", region_name = "us-west-1")
-    response = client.get_object(Bucket='nbl-audio-files', Key=file.strip(),)
+    try:
+        response = client.get_object(Bucket='nbl-audio-files', Key=file)
+    except: 
+        print("file does not exist in S3")
+        return "could not find file"
     data = response["Body"].read()
     audio_io = io.BytesIO(data)
     pcm, samplerate = sf.read(audio_io)
