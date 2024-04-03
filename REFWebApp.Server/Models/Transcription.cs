@@ -21,11 +21,11 @@ public partial class Transcription
 
     public double? Wil { get; set; }
 
-    public double? Wip { get; set; }
+    public double? Wer { get; set; }
 
     public double? Dist { get; set; }
 
-    public long? Rawtime { get; set; }
+    public TimeSpan? Rawtime { get; set; }
 
     public virtual AudioFile? Audio { get; set; }
 

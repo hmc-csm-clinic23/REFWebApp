@@ -129,6 +129,7 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasColumnName("name");
+            entity.Property(e => e.Usability).HasColumnName("usability");
         });
 
         modelBuilder.Entity<SttAggregateMetric>(entity =>
@@ -176,8 +177,8 @@ public partial class PostgresContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("timestamp");
             entity.Property(e => e.Transcript).HasColumnName("transcript");
+            entity.Property(e => e.Wer).HasColumnName("wer");
             entity.Property(e => e.Wil).HasColumnName("wil");
-            entity.Property(e => e.Wip).HasColumnName("wip");
 
             entity.HasOne(d => d.Audio).WithMany(p => p.Transcriptions)
                 .HasForeignKey(d => d.AudioId)
