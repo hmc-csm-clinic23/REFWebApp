@@ -27,7 +27,8 @@ namespace REFWebApp.Server.Controllers
             List<Stt> stts = context.Stts.ToList();
             return Enumerable.Range(0, stts.Count).Select(index => new IndividualStt
             {
-                Name = stts[index].Name
+                Name = stts[index].Name,
+                Id = stts[index].Id
             })
             .ToArray();
         }
