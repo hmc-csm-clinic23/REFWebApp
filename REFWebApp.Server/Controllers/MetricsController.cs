@@ -48,14 +48,14 @@ namespace REFWebApp.Server.Controllers
                         ISTT GoogleCloud = new GoogleCloud();
                         refData.Add(runMetrics(request, GoogleCloud, 2));
                         break;
-                    //case "Deepgram":
-                    //    ISTT DeepGram = new DeepGram();
-                    //    refData.Add(runMetrics(request, DeepGram, 3));
-                    //    break;
-                    //case "Whisper":
-                    //    ISTT Whisper = new Whisper();
-                    //    refData.Add(runMetrics(request, Whisper, 4));
-                    //    break;
+                    case "Deepgram":
+                        ISTT DeepGram = new DeepGram();
+                        refData.Add(runMetrics(request, DeepGram, 3));
+                        break;
+                    case "Whisper":
+                        ISTT Whisper = new Whisper();
+                        refData.Add(runMetrics(request, Whisper, 4));
+                        break;
                     case "Gladia":
                         ISTT Gladia = new Gladia();
                         refData.Add(runMetrics(request, Gladia, 5));

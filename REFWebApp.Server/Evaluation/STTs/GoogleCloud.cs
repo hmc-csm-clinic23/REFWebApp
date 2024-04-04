@@ -26,7 +26,7 @@ namespace REFWebApp.Server.Model.STTs
 
             if (!PythonEngine.IsInitialized)// Since using asp.net, we may need to re-initialize
             {
-                Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python39\python39.dll";
+                Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python311\python311.dll";
                 PythonEngine.Initialize();
                 Py.GIL();
             }
@@ -43,7 +43,7 @@ namespace REFWebApp.Server.Model.STTs
                 // string[] message = new string[] { "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\Model\\test.wav" };
                 string message = filename;
                 //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
-
+                Console.WriteLine(filename);
                 var result = scriptCompiled.InvokeMethod("transcribe_one", message.ToPython());
                 Console.WriteLine("GOOGLECLOUD_OUTPUT: " + result);
 
