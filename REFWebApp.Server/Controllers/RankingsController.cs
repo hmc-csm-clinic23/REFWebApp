@@ -14,6 +14,7 @@ using Azure.Core;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.ConstrainedExecution;
 using System.Collections.Generic;
+using Castle.DynamicProxy;
 
 
 namespace REFWebApp.Server.Controllers
@@ -33,48 +34,68 @@ namespace REFWebApp.Server.Controllers
         [HttpPost(Name = "PostMetrics")]
         public IEnumerable<RankingsResponseModel> Post([FromBody] RankingsRequestModel request)
         {
+            using PostgresContext context = new PostgresContext();
+            List<Stt> stts = context.Stts.ToList();
             List<SttAggregateMetric> aggregates = new List<SttAggregateMetric>();
-            List<List<SttAggregateMetric>> scenarioAggregates = new List<List<SttAggregateMetric>>();
+            List<SttAggregateMetric> STTScenarioAggregates = new List<SttAggregateMetric>();
             int sttCount = 0; //do a query here to get the total number of stts in the database
+
+
+            
 
             for (int i = 0; i < request.ScenarioList?.Length; i++)
             {
                 if (request.ScenarioList?[i].Id != null)
                 {
-                    List<SttAggregateMetric> sttAggregates = new List<SttAggregateMetric>();
-                    for (int j = 0; j < sttCount; j++)
+                    //List<SttAggregateMetric> sttAggregates = new List<SttAggregateMetric>();
+                    foreach( Stt stt in stts)
                     {
-                        List<SttAggregateMetric> singleSttAggregateList = new List<SttAggregateMetric>();
+                        STTScenarioAggregates = context.SttAggregateMetrics.Where(s => s.ScenarioId == i)
+                                                                           .Where(s => s.SttId == stt.Id)
+                                                                           .ToList();
+                        // List<SttAggregateMetric> singleSttAggregateList = new List<SttAggregateMetric>();
+                        
                         //first collect all agregate metrics of the given scenario id and stt id with a sql query
                         //singleSttAggregateList.Add(query in here)
-                        SttAggregateMetric sttAggregate = new SttAggregateMetric();
-                        double? werVal = 0;
-                        double? merVal = 0;
-                        double? wilVal = 0;
-                        double? simVal = 0;
-                        double? distVal = 0;
-                        TimeSpan? speedVal = new TimeSpan?();
-                        foreach (SttAggregateMetric singleSttAggregate in singleSttAggregateList)
+                        SttAggregateMetric aggregateAvg = new SttAggregateMetric(); //cumulative by scenario
+                        double? avgWer = 0;
+                        double? avgMer = 0;
+                        double? avgWil = 0;
+                        double? avgSim = 0;
+                        double? avgDist = 0;
+                        TimeSpan? avgSpeed = new TimeSpan?();
+                        foreach (SttAggregateMetric aggregate in STTScenarioAggregates)
                         {
-                            werVal += singleSttAggregate.Wer;
-                            merVal += singleSttAggregate.Mer;
-                            wilVal += singleSttAggregate.Wil;
-                            simVal += singleSttAggregate.Sim;
-                            distVal += singleSttAggregate.Dist;
-                            speedVal += singleSttAggregate.Rawtime;
+                            avgWer += aggregate.Wer;
+                            avgMer += aggregate.Mer;
+                            avgWil += aggregate.Wil;
+                            avgSim += aggregate.Sim;
+                            avgDist += aggregate.Dist;
+                            avgSpeed += aggregate.Rawtime;
                         }
 
-                        sttAggregate.SttId = j;
-                        sttAggregate.Rawtime = speedVal / singleSttAggregateList.Count;
-                        sttAggregate.Wer = werVal / singleSttAggregateList.Count;
-                        sttAggregate.Mer = merVal / singleSttAggregateList.Count;
-                        sttAggregate.Wil = wilVal / singleSttAggregateList.Count;
-                        sttAggregate.Sim = simVal / singleSttAggregateList.Count;
-                        sttAggregate.Dist = distVal / singleSttAggregateList.Count;
-                        sttAggregates.Add(sttAggregate);
+                        int total = STTScenarioAggregates.Count;
+                        avgWer   /= total;
+                        avgMer   /= total;
+                        avgWil   /= total;
+                        avgSim   /= total;
+                        avgDist  /= total;
+                        avgSpeed /= total;
+                        
+                        aggregateAvg.SttId = stt.Id;
+                        aggregateAvg.ScenarioId = i;
+                        aggregateAvg.Rawtime = avgSpeed / total;
+                        aggregateAvg.Wer     = avgWer / total;
+                        aggregateAvg.Mer     = avgMer / total;
+                        aggregateAvg.Wil     = avgWil / total;
+                        aggregateAvg.Sim     = avgSim / total;
+                        aggregateAvg.Dist    = avgDist / total;
+                        //sttAggregates.Add(sttAggregate);
+                        STTScenarioAggregates.Add(aggregateAvg);
+
+                        
                     }
-                    scenarioAggregates.Add(sttAggregates);
-                };
+                }
             }
             for (int i = 0; i < sttCount; i++)
             {
@@ -84,29 +105,29 @@ namespace REFWebApp.Server.Controllers
                 double? sim = 0;
                 double? dist = 0;
                 TimeSpan? speed = new TimeSpan?();
-                SttAggregateMetric aggregate = new SttAggregateMetric();
-                foreach (List<SttAggregateMetric> scenarioAggregate in scenarioAggregates)
+                SttAggregateMetric aggregateAvg = new SttAggregateMetric();
+                foreach (SttAggregateMetric aggregate in STTScenarioAggregates)
                 {
-                    wer += scenarioAggregate[i].Wer;
-                    mer += scenarioAggregate[i].Mer;
-                    wil += scenarioAggregate[i].Wil;
-                    sim += scenarioAggregate[i].Sim;
-                    dist += scenarioAggregate[i].Dist;
-                    speed += scenarioAggregate[i].Rawtime;
+                    wer += aggregate.Wer; //* scenario weight (using aggregate.scenarioId)
+                    mer += aggregate.Mer;
+                    wil += aggregate.Wil;
+                    sim += aggregate.Sim;
+                    dist += aggregate.Dist;
+                    speed += aggregate.Rawtime;
                 }
-                aggregate.SttId = i;
-                aggregate.Rawtime = speed / scenarioAggregates.Count;
-                aggregate.Wer = wer / scenarioAggregates.Count;
-                aggregate.Mer = mer / scenarioAggregates.Count;
-                aggregate.Wil = wil / scenarioAggregates.Count;
-                aggregate.Sim = sim / scenarioAggregates.Count;
-                aggregate.Dist = dist / scenarioAggregates.Count;
-                aggregates.Add(aggregate);
+                aggregateAvg.SttId = i;
+                aggregateAvg.Rawtime = speed / STTScenarioAggregates.Count;
+                aggregateAvg.Wer = wer / STTScenarioAggregates.Count;
+                aggregateAvg.Mer = mer / STTScenarioAggregates.Count;
+                aggregateAvg.Wil = wil / STTScenarioAggregates.Count;
+                aggregateAvg.Sim = sim / STTScenarioAggregates.Count;
+                aggregateAvg.Dist = dist / STTScenarioAggregates.Count;
+                aggregates.Add(aggregateAvg);
             }
 
-            return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel
+            return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel 
             {
-                SttName = "hi", // query for name using aggregates[index].SttId
+                SttName = context.Stts.Find(aggregates[index].SttId).Name, // query for name using aggregates[index].SttId
                 TotalScore = 0, //this should be a complex line or function that combines our metrics, speed, usability, etc.
                 Speed = aggregates[index].Rawtime,
                 Wer = aggregates[index].Wer,
