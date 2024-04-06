@@ -7,7 +7,11 @@ function HistoryLine({
   score,
   accuracy,
   speed,
-  memory,
+  wer,
+  mer,
+  wil,
+  sim,
+  dist,
   list,
   closeToggle,
   setCloseToggle,
@@ -92,10 +96,13 @@ function HistoryLine({
     <>
       <div className="historyLine">
         <div className="rankingField">{scenario}</div>
-        <div className="rankingField">{score}</div>
-        <div className="rankingField">{accuracy}</div>
+        <div className="rankingField">{accuracy.toFixed(0)}</div>
         <div className="rankingField">{speed}</div>
-        <div className="rankingField">{memory}</div>
+        <div className="rankingField">{wer.toFixed(2)}</div>
+        <div className="rankingField">{mer.toFixed(2)}</div>
+        <div className="rankingField">{wil.toFixed(2)}</div>
+        <div className="rankingField">{sim.toFixed(2)}</div>
+        <div className="rankingField">{dist.toFixed(2)}</div>
         <div className="rankingField">
           {toggle ? (
             <>

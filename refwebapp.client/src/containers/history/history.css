@@ -3,7 +3,7 @@
   border-top: 0;
   background-color: #fff;
   display: grid;
-  grid-template-columns: repeat(6, 150px);
+  grid-template-columns: repeat(9, 150px);
   max-width: fit-content;
 }
 
