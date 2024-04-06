@@ -53,7 +53,7 @@
   border-top: 0;
   background-color: #fff;
   display: grid;
-  grid-template-columns: repeat(7, 150px);
+  grid-template-columns: repeat(9, 150px);
 }
 @media (max-width: 991px) {
   .rankingLine {

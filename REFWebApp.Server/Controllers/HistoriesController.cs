@@ -30,7 +30,7 @@ namespace REFWebApp.Server.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "PostMetrics")]
+        [HttpPost(Name = "PostHistories")]
         public IEnumerable<HistoriesResponseModel> Post([FromBody] HistoriesRequestModel request)
         {
             List<SttAggregateMetric> aggregates = new List<SttAggregateMetric>();

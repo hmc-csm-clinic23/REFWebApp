@@ -73,6 +73,10 @@ export default defineConfig({
             '^/rankings': {
                 target: 'https://localhost:7164/',
                 secure: false
+            },
+            '^/histories': {
+                target: 'https://localhost:7164/',
+                secure: false
             }
         },
         port: 5173,

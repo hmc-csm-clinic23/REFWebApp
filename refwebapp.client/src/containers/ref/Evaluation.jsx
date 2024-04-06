@@ -5,8 +5,8 @@ import "./evaluation.css";
 
 function Evaluation() {
   const { selections } = useContext(Context);
-    const [metricsList, setMetricsList] = useState([]);
-    const [loading, setLoading] = useState([]);
+  const [metricsList, setMetricsList] = useState([]);
+  const [loading, setLoading] = useState(true);
   async function postMetrics() {
     console.log("hi");
     console.log("hi");

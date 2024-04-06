@@ -18,7 +18,7 @@ function Tool() {
   const [sttList, setSttList] = useState([]);
   const [scenarioList, setScenarioList] = useState([]);
   const sttSubmit = sttList.filter((stt) => stt.checked === true).map(({checked, ...stt}) => stt);
-  const scenarioSubmit = scenarioList.filter((scenario) => scenario.checked === true,).map(({checked, ...stt}) => stt);
+  const scenarioSubmit = scenarioList.filter((scenario) => scenario.checked === true,).map(({checked, ...scenario}) => scenario);
 
   async function populateSttData() {
     const response = await fetch('sttlist');
