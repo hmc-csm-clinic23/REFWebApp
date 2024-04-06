@@ -11,6 +11,8 @@ function History() {
   const [sortToggle, setSortToggle] = useState(1);
   const [clickToggle, setClickToggle] = useState(null);
   const [closeToggle, setCloseToggle] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const sttSubmit = sttList.filter((stt) => stt.checked === true,).map(({checked, ...stt}) => stt);
 
   const scenarioEval1 = [
     {
@@ -66,58 +68,6 @@ function History() {
     },
   ];
 
-  const rankings = [
-    {
-      scenario: "Loud",
-      score: 92,
-      accuracy: 97,
-      speed: 2134,
-      memory: 152,
-      usability: "terrific",
-      api: "yes",
-      eval: scenarioEval1,
-    },
-    {
-      scenario: "Quiet",
-      score: 80,
-      accuracy: 85,
-      speed: 1581,
-      memory: 341,
-      usability: "great",
-      api: "yes",
-      eval: scenarioEval2,
-    },
-    {
-      scenario: "Noisy",
-      score: 78,
-      accuracy: 87,
-      speed: 1881,
-      memory: 293,
-      usability: "bad",
-      api: "no",
-      eval: scenarioEval1,
-    },
-    {
-      scenario: "Sparse",
-      score: 93,
-      accuracy: 98,
-      speed: 2023,
-      memory: 137,
-      usability: "terrific",
-      api: "no",
-      eval: scenarioEval1,
-    },
-    {
-      scenario: "Windy",
-      score: 64,
-      accuracy: 74,
-      speed: 1032,
-      memory: 562,
-      usability: "good",
-      api: "yes",
-      eval: scenarioEval3,
-    },
-  ];
   async function populateSttData() {
     const response = await fetch('sttlist');
     const data = await response.json();
@@ -128,22 +78,36 @@ function History() {
       })),
     );
   }
-  useEffect(() => {
-    // fetch call to API goes here, where you then get access to `stts`
-    // then set your sttList state
-    populateSttData();
-    setRankingList(
-      rankings.map((ranking) => ({
-        ...ranking,
-      })),
-    );
-  }, []);
+
+  async function populateHistoryData() {
+    const response = await fetch('histories',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            SttName: clickToggle
+        })
+      });
+    setLoading(true)
+    const data = await response.json();
+    setRankingList(data);
+    setLoading(false);
+  }
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `stts`
     // then set your sttList state
-    if (clickToggle !== null) {
-      console.log(clickToggle);
+    populateSttData();
+  }, []);
+
+  useEffect(() => {
+    // fetch call to API goes here, where you then get access to `rankings`
+    // set a fetch buffer so there isn't constant fetching while the checks and weightsliders are changing
+    // then set your rankingList state
+    if ((!loading) && (clickToggle)) {
+        populateHistoryData();
     }
   }, [clickToggle]);
 
@@ -154,7 +118,7 @@ function History() {
   };
 
   function compare(a, b) {
-    const bool = sort === "scenario" || sort === "speed" || sort === "memory";
+    const bool = sort === "scenario" || sort === "speed" || sort === "wer" || sort === "mer" || sort === "wil" || sort === "sim" || sort === "dist";
     if (a[sort] < b[sort]) {
       return bool ? -sortToggle : sortToggle;
     }
@@ -182,17 +146,26 @@ function History() {
           <div className="fieldHeader" onClick={() => updateSort("scenario")}>
             Scenario
           </div>
-          <div className="fieldHeader" onClick={() => updateSort("score")}>
-            Total Score
-          </div>
           <div className="fieldHeader" onClick={() => updateSort("accuracy")}>
             Accuracy
           </div>
           <div className="fieldHeader" onClick={() => updateSort("speed")}>
             Speed
           </div>
-          <div className="fieldHeader" onClick={() => updateSort("memory")}>
-            Memory
+          <div className="fieldHeader" onClick={() => updateSort("wer")}>
+            Wer
+          </div>
+          <div className="fieldHeader" onClick={() => updateSort("mer")}>
+            Mer
+          </div>
+          <div className="fieldHeader" onClick={() => updateSort("wil")}>
+            Wil
+          </div>
+          <div className="fieldHeader" onClick={() => updateSort("sim")}>
+            Sim
+          </div>
+          <div className="fieldHeader" onClick={() => updateSort("dist")}>
+            L-Dist
           </div>
           <div className="fieldHeader" onClick={() => setCloseToggle(true)}>
             History
@@ -200,12 +173,15 @@ function History() {
         </div>
         {rankingList.sort(compare).map((ranking) => (
           <HistoryLine
-            scenario={ranking.scenario}
-            score={ranking.score}
+            scenario={ranking.scenarioName}
             accuracy={ranking.accuracy}
-            speed={ranking.speed + "ms"}
-            memory={ranking.memory + "mb"}
-            list={ranking.eval}
+            speed={ranking.speed}
+            wer={ranking.wer}
+            mer={ranking.mer}
+            wil={ranking.wil}
+            sim={ranking.sim}
+            dist={ranking.dist}
+            list={scenarioEval1}
             closeToggle={closeToggle}
             setCloseToggle={setCloseToggle}
           />
