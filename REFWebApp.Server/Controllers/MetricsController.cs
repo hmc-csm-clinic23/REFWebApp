@@ -42,23 +42,23 @@ namespace REFWebApp.Server.Controllers
                 {
                     //case "Amazon Transcribe":
                     //    ISTT AmazonTranscribe = new AmazonTranscribe();
-                    //    refData.Add(runMetrics(request, AmazonTranscribe, 1));
+                    //    refData.Add(runMetrics(request, AmazonTranscribe, request.SttList?[i].Id));
                     //    break;
                     case "Google Cloud":
                         ISTT GoogleCloud = new GoogleCloud();
-                        refData.Add(runMetrics(request, GoogleCloud, 2));
+                        refData.Add(runMetrics(request, GoogleCloud, request.SttList?[i].Id));
                         break;
                     case "Deepgram":
                         ISTT DeepGram = new DeepGram();
-                        refData.Add(runMetrics(request, DeepGram, 3));
+                        refData.Add(runMetrics(request, DeepGram, request.SttList?[i].Id));
                         break;
                     case "Whisper":
                         ISTT Whisper = new Whisper();
-                        refData.Add(runMetrics(request, Whisper, 4));
+                        refData.Add(runMetrics(request, Whisper, request.SttList?[i].Id));
                         break;
                     case "Gladia":
                         ISTT Gladia = new Gladia();
-                        refData.Add(runMetrics(request, Gladia, 5));
+                        refData.Add(runMetrics(request, Gladia, request.SttList?[i].Id));
                         break;
                     default:
                         break;
@@ -81,7 +81,7 @@ namespace REFWebApp.Server.Controllers
         }
 
         [NonAction]
-        public MetricObject runMetrics(MetricsRequestModel request, ISTT STT, int sttId)
+        public MetricObject runMetrics(MetricsRequestModel request, ISTT STT, int? sttId)
         {
             List<string?> scenarioNames = new List<string?>();
             List<List<string?>> paths = new List<List<string?>>();

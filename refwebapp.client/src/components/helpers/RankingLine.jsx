@@ -1,13 +1,15 @@
-function RankingLine({ stt, score, accuracy, speed, memory, usability, api }) {
+function RankingLine({ stt, score, accuracy, speed, wer, mer, wil, sim, dist }) {
   return (
     <div className="rankingLine">
       <div className="rankingField">{stt}</div>
-      <div className="rankingField">{score}</div>
-      <div className="rankingField">{accuracy}</div>
+      <div className="rankingField">{score.toFixed(0)}</div>
+      <div className="rankingField">{accuracy.toFixed(0)}</div>
       <div className="rankingField">{speed}</div>
-      <div className="rankingField">{memory}</div>
-      <div className="rankingField">{usability}</div>
-      <div className="rankingField">{api}</div>
+      <div className="rankingField">{wer.toFixed(2)}</div>
+      <div className="rankingField">{mer.toFixed(2)}</div>
+      <div className="rankingField">{wil.toFixed(2)}</div>
+      <div className="rankingField">{sim.toFixed(2)}</div>
+      <div className="rankingField">{dist.toFixed(2)}</div>
     </div>
   );
 }

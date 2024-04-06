@@ -9,54 +9,9 @@ function Ranking() {
   const [scenarioSearch, setScenarioSearch] = useState("");
   const [sort, setSort] = useState("score");
   const [sortToggle, setSortToggle] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const scenarioSubmit = scenarioList.filter((scenario) => scenario.checked === true,).map(({checked, ...scenario}) => scenario).map(({weight, ...scenario}) => scenario);
 
-  const rankings = [
-    {
-      stt: "Whisper",
-      score: 92,
-      accuracy: 97,
-      speed: 2134,
-      memory: 152,
-      usability: "terrific",
-      api: "yes",
-    },
-    {
-      stt: "Chirp",
-      score: 80,
-      accuracy: 85,
-      speed: 1581,
-      memory: 341,
-      usability: "great",
-      api: "yes",
-    },
-    {
-      stt: "MMS",
-      score: 78,
-      accuracy: 87,
-      speed: 1881,
-      memory: 293,
-      usability: "bad",
-      api: "no",
-    },
-    {
-      stt: "Deepgram",
-      score: 93,
-      accuracy: 98,
-      speed: 2023,
-      memory: 137,
-      usability: "terrific",
-      api: "no",
-    },
-    {
-      stt: "Azure",
-      score: 64,
-      accuracy: 74,
-      speed: 1032,
-      memory: 562,
-      usability: "good",
-      api: "yes",
-    },
-  ];
   async function populateScenarioData() {
     const response = await fetch('scenariolist');
     const data = await response.json();
@@ -67,28 +22,37 @@ function Ranking() {
         weight: 0,
       })),
     );
+    }
+  async function populateRankingData() {
+    const response = await fetch('rankings',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            ScenarioList: scenarioSubmit
+        })
+      });
+    setLoading(true)
+    const data = await response.json();
+    setRankingList(data);
+    setLoading(false);
   }
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `scenarios`
     // then set your scenarioList state
     populateScenarioData();
-    setRankingList(
-      rankings.map((ranking) => ({
-        ...ranking,
-      })),
-    );
   }, []);
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `rankings`
     // set a fetch buffer so there isn't constant fetching while the checks and weightsliders are changing
     // then set your rankingList state
-    setRankingList(
-      rankings.map((ranking) => ({
-        ...ranking,
-      })),
-    );
+    if ((!loading) && (scenarioSubmit.length != 0)) {
+        populateRankingData();
+    }
   }, [scenarioList]);
 
   const updateSort = (field) => {
@@ -97,7 +61,7 @@ function Ranking() {
   };
 
   function compare(a, b) {
-    const bool = sort === "stt" || sort === "speed" || sort === "memory";
+      const bool = sort === "stt" || sort === "speed" | sort === "wer" || sort === "mer" || sort === "wil" || sort === "sim" || sort === "dist";
     if (a[sort] < b[sort]) {
       return bool ? -sortToggle : sortToggle;
     }
@@ -133,25 +97,33 @@ function Ranking() {
           <div className="fieldHeader" onClick={() => updateSort("speed")}>
             Speed
           </div>
-          <div className="fieldHeader" onClick={() => updateSort("memory")}>
-            Memory
+          <div className="fieldHeader" onClick={() => updateSort("wer")}>
+            Wer
           </div>
-          <div className="fieldHeader" onClick={() => updateSort("usability")}>
-            Usability
+          <div className="fieldHeader" onClick={() => updateSort("mer")}>
+            Mer
           </div>
-          <div className="fieldHeader" onClick={() => updateSort("api")}>
-            API
+          <div className="fieldHeader" onClick={() => updateSort("wil")}>
+            Wil
+          </div>
+          <div className="fieldHeader" onClick={() => updateSort("sim")}>
+            Sim
+          </div>
+          <div className="fieldHeader" onClick={() => updateSort("dist")}>
+            L-Dist
           </div>
         </div>
         {rankingList.sort(compare).map((ranking) => (
             <RankingLine
-            stt={ranking.stt}
-            score={ranking.score}
+            stt={ranking.sttName}
+            score={ranking.totalScore}
             accuracy={ranking.accuracy}
-            speed={ranking.speed + "ms"}
-            memory={ranking.memory + "mb"}
-            usability={ranking.usability}
-            api={ranking.api}
+            speed={ranking.speed}
+            wer={ranking.wer}
+            mer={ranking.mer}
+            wil={ranking.wil}
+            sim={ranking.sim}
+            dist={ranking.dist}
           />
         ))}
       </div>
