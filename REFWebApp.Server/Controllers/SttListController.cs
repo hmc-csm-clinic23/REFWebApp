@@ -8,10 +8,6 @@ namespace REFWebApp.Server.Controllers
     [Route("[controller]")]
     public class SttListController : ControllerBase
     {
-        private static readonly string[] Stts = new[]
-        {
-            "OpenAI Whisper", "Google Chirp", "Meta MMS", "DeepGram", "PaddleSpeech", "Amazon Transcribe", "Microsoft Azure"
-        };
 
         private readonly ILogger<SttListController> _logger;
 

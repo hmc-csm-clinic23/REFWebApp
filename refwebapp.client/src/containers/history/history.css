@@ -43,9 +43,10 @@
 
 .audioList {
   display: grid;
-  grid-template-columns: repeat(5, 174px);
+  grid-template-columns: repeat(8, 163px);
   max-width: fit-content;
   text-align: center;
+  align-items: center;
 }
 
 .audioList:hover {

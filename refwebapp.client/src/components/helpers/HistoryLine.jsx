@@ -4,7 +4,6 @@ import { AudioList } from "../.././components";
 
 function HistoryLine({
   scenario,
-  score,
   accuracy,
   speed,
   wer,
@@ -12,82 +11,74 @@ function HistoryLine({
   wil,
   sim,
   dist,
-  list,
+  stt,
   closeToggle,
   setCloseToggle,
 }) {
   const [toggle, setToggle] = useState(false);
   const [clickToggle, setClickToggle] = useState(null);
-  const [audioList, setAudioList] = useState([]);
+  const [evalList, setEvalList] = useState([]);
+  const [timestamp, setTimestamp] = useState();
+  const [transcriptionList, setTranscriptionList] = useState([]);
 
-  const updateSttToggle = (i) => {
+  const updateSttToggle = (time, i) => {
     setToggle((toggle) => !toggle);
-    setClickToggle(() => list[i].name);
+    setClickToggle(() => `Eval ${i}`);
+    setTimestamp(time);
   };
+  async function populateEvalData() {
+    const response = await fetch('evallist',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            SttName: stt,
+            ScenarioName: scenario
+        })
+      });
+    const data = await response.json();
+    setEvalList(data);
+  }
 
-  const audios = [
-    {
-      name: "space station test 1",
-      groundTruth: "hi how are you today",
-      transcription: "hi how are you tay",
-      wer: 84,
-    },
-    {
-      name: "space station test 2",
-      groundTruth: "hi how are you today",
-      transcription: "hi how are you tay",
-      wer: 93,
-    },
-    {
-      name: "mars test 5",
-      groundTruth: "woah what is up with you",
-      transcription: "woah what's up with you",
-      wer: 92,
-    },
-    {
-      name: "johnson space center 8",
-      groundTruth: "it is such a nice day",
-      transcription: "it's such a rice day",
-      wer: 81,
-    },
-    {
-      name: "mars test 7",
-      groundTruth: "I can't wait to go outside",
-      transcription: "I can't weight to go outside",
-      wer: 89,
-    },
-    {
-      name: "johnson space center 6",
-      groundTruth: "I can't believe how hot it is today",
-      transcription: "I can't believe how not it's today",
-      wer: 87,
-    },
-    {
-      name: "neutral buoyancy lab test 12",
-      groundTruth: "I don't want to do a dive till next week",
-      transcription: "I don't want to do a dive teal next week",
-      wer: 92,
-    },
-  ];
+  async function populateTranscriptionData() {
+    const response = await fetch('evalhistories',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            SttName: stt,
+            ScenarioName: scenario,
+            Timestamp: timestamp
+        })
+      });
+    const data = await response.json();
+    setTranscriptionList(data);
+  }
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `stts`
     // then set your sttList state
-    if (clickToggle !== null) {
-      setAudioList(
-        audios.map((audio) => ({
-          ...audio,
-        })),
-      );
+    populateEvalData()
+  }, [toggle]);
+
+  useEffect(() => {
+    // fetch call to API goes here, where you then get access to `stts`
+    // then set your sttList state
+    if (timestamp !== null) {
+      populateTranscriptionData()
     }
-  }, [clickToggle]);
+  }, [timestamp]);
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `stts`
     // then set your sttList state
     if (closeToggle) {
       setClickToggle(() => null);
-      setAudioList(() => []);
+      setTranscriptionList(() => []);
       setCloseToggle(() => false);
     }
   }, [closeToggle]);
@@ -135,17 +126,14 @@ function HistoryLine({
           )}
           {toggle && (
             <ul className="sttItems">
-              {list
-                .sort((a, b) =>
-                  a.name > b.name ? 1 : b.name > a.name ? -1 : 0,
-                )
-                .map((evaluation, i) => (
+              {evalList
+                .map((time, i) => (
                   <>
                     <li
                       className="dropdownItem"
-                      onClick={() => updateSttToggle(i)}
+                      onClick={() => updateSttToggle(time, i)}
                     >
-                      <span className="itemText">{evaluation.name}</span>
+                      <span className="itemText">Eval {i+1}</span>
                     </li>
                   </>
                 ))}
@@ -158,7 +146,7 @@ function HistoryLine({
           <button
             className="xButton"
             onClick={() => {
-              setAudioList(() => []);
+              setTranscriptionList(() => []);
               setClickToggle(() => false);
             }}
           >
@@ -166,23 +154,28 @@ function HistoryLine({
           </button>
           <ul className="historyItems">
             <li className="audioList">
-              <div className="evalsText">Name</div>
               <div className="evalsText">Ground Truth</div>
               <div className="evalsText">Transcription</div>
-              <div className="evalsText">WER</div>
+              <div className="evalsText">Wer</div>
+              <div className="evalsText">Mer</div>
+              <div className="evalsText">Wil</div>
+              <div className="evalsText">Sim</div>
+              <div className="evalsText">L-Dist</div>
               <div className="evalsText">Audio File</div>
             </li>
             <div className="evalsText" />
-            {audioList
+            {transcriptionList
               .sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
               .map((audio) => (
                 <>
                   <AudioList
-                    key={audio.name}
-                    name={audio.name}
                     groundTruth={audio.groundTruth}
                     transcription={audio.transcription}
                     wer={audio.wer}
+                    mer={audio.mer}
+                    wil={audio.wil}
+                    sim={audio.sim}
+                    dist={audio.dist}
                     audioFile={audio.audioFile}
                   />
                 </>

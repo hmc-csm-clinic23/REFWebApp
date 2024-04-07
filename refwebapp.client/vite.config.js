@@ -77,6 +77,14 @@ export default defineConfig({
             '^/histories': {
                 target: 'https://localhost:7164/',
                 secure: false
+            },
+            '^/evallist': {
+                target: 'https://localhost:7164/',
+                secure: false
+            },
+            '^/evalhistories': {
+                target: 'https://localhost:7164/',
+                secure: false
             }
         },
         port: 5173,

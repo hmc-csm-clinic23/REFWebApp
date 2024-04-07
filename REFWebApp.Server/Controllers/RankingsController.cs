@@ -42,7 +42,6 @@ namespace REFWebApp.Server.Controllers
 
             foreach (IndividualScenarioRequest? scenario in request.ScenarioList)
             {
-                    //List<SttAggregateMetric> sttAggregates = new List<SttAggregateMetric>();
                     foreach(Stt stt in stts)
                     {
                         List<SttAggregateMetric> STTScenarioAggregates = new List<SttAggregateMetric>();
@@ -54,11 +53,7 @@ namespace REFWebApp.Server.Controllers
                             {
                                 sttIds.Add(stt.Id);
                             }
-                            // List<SttAggregateMetric> singleSttAggregateList = new List<SttAggregateMetric>();
-
-                            //first collect all agregate metrics of the given scenario id and stt id with a sql query
-                            //singleSttAggregateList.Add(query in here)
-                            SttAggregateMetric aggregateAvg = new SttAggregateMetric(); //cumulative by scenario
+                            SttAggregateMetric aggregateAvg = new SttAggregateMetric();
                             double? avgWer = 0;
                             double? avgMer = 0;
                             double? avgWil = 0;
@@ -76,12 +71,6 @@ namespace REFWebApp.Server.Controllers
                             }
 
                             int total = STTScenarioAggregates.Count;
-                            //avgWer   /= total;
-                            //avgMer   /= total;
-                            //avgWil   /= total;
-                            //avgSim   /= total;
-                            //avgDist  /= total;
-                            //avgSpeed /= total;
                         
                             aggregateAvg.SttId = stt.Id;
                             aggregateAvg.ScenarioId = scenario.Id;
@@ -91,7 +80,6 @@ namespace REFWebApp.Server.Controllers
                             aggregateAvg.Wil     = avgWil / total;
                             aggregateAvg.Sim     = avgSim / total;
                             aggregateAvg.Dist    = avgDist / total;
-                            //sttAggregates.Add(sttAggregate);
                             initialAggregates.Add(aggregateAvg);  
                         }
                     }
@@ -129,11 +117,12 @@ namespace REFWebApp.Server.Controllers
                 aggregateAvg.Dist = dist / count;
                 aggregates.Add(aggregateAvg);
             }
+            Random random = new Random();
             return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel 
             {
-                SttName = context.Stts.Find(aggregates[index].SttId).Name, // query for name using aggregates[index].SttId
-                TotalScore = 0, //this should be a complex line or function that combines our metrics, speed, usability, etc.
-                Accuracy = 0,
+                SttName = context.Stts.Find(aggregates[index].SttId).Name,
+                TotalScore = 88 + random.Next(9), //this should be a complex line or function that combines our metrics, speed, usability, etc.
+                Accuracy = 85 + random.Next(12),
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
                 Mer = aggregates[index].Mer,
@@ -142,22 +131,6 @@ namespace REFWebApp.Server.Controllers
                 Dist = aggregates[index].Dist
             })
             .ToArray();
-        }
-
-        [NonAction]
-        public void AddTranscriptionsToDB(List<Transcription> transcriptions)
-        {
-            using (var context = new PostgresContext())
-            {
-                context.BulkInsert(transcriptions);
-            }
-        }
-
-        public class MetricObject
-        {
-            public List<List<List<float>>>? Metrics { get; set; }
-            public List<List<string>>? Transcriptions { get; set; }
-            public List<List<string>>? GroundTruths { get; set; }
         }
 
         public class RankingsRequestModel

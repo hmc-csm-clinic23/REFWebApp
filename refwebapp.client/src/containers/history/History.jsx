@@ -181,7 +181,7 @@ function History() {
             wil={ranking.wil}
             sim={ranking.sim}
             dist={ranking.dist}
-            list={scenarioEval1}
+            stt={clickToggle}
             closeToggle={closeToggle}
             setCloseToggle={setCloseToggle}
           />

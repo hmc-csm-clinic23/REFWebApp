@@ -22,26 +22,7 @@ namespace REFWebApp.Server.Controllers
         public IEnumerable<IndividualScenario> Get()
         {
             using PostgresContext context = new PostgresContext();
-            List<Scenario> scenarios = context.Scenarios.ToList();//.Include(s => s.Audios).ToList();
-
-
-            //using PostgresContext context = new PostgresContext();
-            //List<Scenario> scenarios = context.Scenarios.ToList();
-
-            /*
-             return Enumerable.Range(0, scenarios.Count).Select(index => new IndividualScenario
-            {
-                Name = scenarios[index].Name,
-                Audios = Enumerable.Range(0, scenarios.Count).Select(i => new IndividualAudioFile
-                {
-                    Id = context.AudioFiles.FromSql($"SELECT id FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {i + 1})").ToList();
-                    Path = context.AudioFiles.FromSql($"SELECT path FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {i + 1})").ToList();
-                    GroundTruth= context.AudioFiles.FromSql($"SELECT ground_truth FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {i + 1})").ToList();
-                    FormatId = context.AudioFiles.FromSql($"SELECT format_id FROM audio_files WHERE id IN (SELECT audio_id FROM audio_scenarios where scenario_id = {i + 1})").ToList();
-                }
-            })
-            .ToArray();
-             */
+            List<Scenario> scenarios = context.Scenarios.ToList();
 
             return Enumerable.Range(0, scenarios.Count).Select(index => new IndividualScenario
             {
