@@ -19,7 +19,7 @@ const NavMenu = () => {
         light
       >
         <NavbarBrand className="text-dark" tag={Link} to="/">
-          REFApplication
+          Recognition Evaluation Framework
         </NavbarBrand>
         <NavbarToggler className="mr-2" />
         <Collapse className="d-sm-inline-flex flex-sm-row-reverse">
@@ -31,7 +31,7 @@ const NavMenu = () => {
             </NavItem>
             <NavItem>
               <NavLink tag={Link} className="text-dark" to="/tool">
-                REF
+                Tool
               </NavLink>
             </NavItem>
             <NavItem>
