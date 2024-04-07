@@ -6,10 +6,6 @@ namespace REFWebApp.Server.Controllers
     [Route("[controller]")]
     public class AddScenarioController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
 
         private readonly ILogger<AddScenarioController> _logger;
 

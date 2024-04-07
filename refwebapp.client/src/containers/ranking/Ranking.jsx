@@ -61,7 +61,7 @@ function Ranking() {
   };
 
   function compare(a, b) {
-      const bool = sort === "stt" || sort === "speed" | sort === "wer" || sort === "mer" || sort === "wil" || sort === "sim" || sort === "dist";
+      const bool = sort === "sttName" || sort === "speed" | sort === "wer" || sort === "mer" || sort === "wil" || sort === "sim" || sort === "dist";
     if (a[sort] < b[sort]) {
       return bool ? -sortToggle : sortToggle;
     }
@@ -85,10 +85,10 @@ function Ranking() {
       </div>
       <div className="rankingContainer">
         <div className="rankingLine">
-          <div className="fieldHeader" onClick={() => updateSort("stt")}>
+          <div className="fieldHeader" onClick={() => updateSort("sttName")}>
             STT
           </div>
-          <div className="fieldHeader" onClick={() => updateSort("score")}>
+          <div className="fieldHeader" onClick={() => updateSort("totalScore")}>
             Total Score
           </div>
           <div className="fieldHeader" onClick={() => updateSort("accuracy")}>

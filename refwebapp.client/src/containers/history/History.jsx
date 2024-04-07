@@ -118,7 +118,7 @@ function History() {
   };
 
   function compare(a, b) {
-    const bool = sort === "scenario" || sort === "speed" || sort === "wer" || sort === "mer" || sort === "wil" || sort === "sim" || sort === "dist";
+    const bool = sort === "scenarioName" || sort === "speed" || sort === "wer" || sort === "mer" || sort === "wil" || sort === "sim" || sort === "dist";
     if (a[sort] < b[sort]) {
       return bool ? -sortToggle : sortToggle;
     }
@@ -143,7 +143,7 @@ function History() {
       </div>
       <div className="rankingContainer">
         <div className="historyLine">
-          <div className="fieldHeader" onClick={() => updateSort("scenario")}>
+          <div className="fieldHeader" onClick={() => updateSort("scenarioName")}>
             Scenario
           </div>
           <div className="fieldHeader" onClick={() => updateSort("accuracy")}>
@@ -181,7 +181,7 @@ function History() {
             wil={ranking.wil}
             sim={ranking.sim}
             dist={ranking.dist}
-            list={scenarioEval1}
+            stt={clickToggle}
             closeToggle={closeToggle}
             setCloseToggle={setCloseToggle}
           />

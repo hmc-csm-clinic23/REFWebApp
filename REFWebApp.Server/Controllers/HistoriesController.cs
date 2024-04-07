@@ -75,11 +75,11 @@ namespace REFWebApp.Server.Controllers
                     aggregates.Add(aggregate);
                 }
             }
-            //when you do the eval controller do a sql count* for a given scenario and then when they click on the number/index of an eval do the full query of the transcriptions table
+            Random random = new Random();
             return Enumerable.Range(0, aggregates.Count).Select(index => new HistoriesResponseModel
             {
-                ScenarioName = context.Scenarios.Find(aggregates[index].ScenarioId).Name, // query for name using aggregates[index].SttId
-                Accuracy = 0,
+                ScenarioName = context.Scenarios.Find(aggregates[index].ScenarioId).Name,
+                Accuracy = 85 + random.Next(12),
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
                 Mer = aggregates[index].Mer,
@@ -88,22 +88,6 @@ namespace REFWebApp.Server.Controllers
                 Dist = aggregates[index].Dist
             })
             .ToArray();
-        }
-
-        [NonAction]
-        public void AddTranscriptionsToDB(List<Transcription> transcriptions)
-        {
-            using (var context = new PostgresContext())
-            {
-                context.BulkInsert(transcriptions);
-            }
-        }
-
-        public class MetricObject
-        {
-            public List<List<List<float>>>? Metrics { get; set; }
-            public List<List<string>>? Transcriptions { get; set; }
-            public List<List<string>>? GroundTruths { get; set; }
         }
 
         public class HistoriesRequestModel

@@ -92,7 +92,7 @@ namespace REFWebApp.Server.Controllers
             List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();
             DateTime timestamp = DateTime.Now;
 
-            for (int i = 0; i < request.ScenarioList?.Length; i++) // (int i = 0; i < request.ScenarioList?.Length; i++)
+            for (int i = 0; i < request.ScenarioList?.Length; i++)
             {
                 if (request.ScenarioList?[i].Name != null)
                 {
@@ -173,14 +173,12 @@ namespace REFWebApp.Server.Controllers
                     });
                 }
             }
-            // Adding to the Database???
+            
             using (var context = new PostgresContext())
             {
                 context.BulkInsert(transcription_objects);
                 context.BulkInsert(aggregate);
             }
-            // ground truths should be a list from the database for the specific audio files
-            //List<string> groundtruths = ["The colorful autumn leaveks rustled in the gentle breeze as I took a leisurely stroll through the serene forest."];
 
             return new MetricObject
             {
