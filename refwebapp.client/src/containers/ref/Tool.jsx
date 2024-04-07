@@ -7,12 +7,8 @@ import "./tool.css";
 
 function Tool() {
   const { setSelections } = useContext(Context);
-  //const { setDisplay } = useContext(Context);
-  //const { selections, setSelections } = useState([]);
   const [sttToggle, setSttToggle] = useState(false);
   const [scenarioToggle, setScenarioToggle] = useState(false);
-  const [useStoreToggle, setUseStoreToggle] = useState(false);
-  const [updateStoreToggle, setUpdateStoreToggle] = useState(false);
   const [sttSearch, setSttSearch] = useState("");
   const [scenarioSearch, setScenarioSearch] = useState("");
   const [sttList, setSttList] = useState([]);
@@ -42,22 +38,6 @@ function Tool() {
     );
     }
 
-  /*async function postMetrics() {
-    const response = await fetch('metrics',
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                request: selections
-            })
-        });
-    const data = await response.json();
-    setDisplay(
-        "hello"
-    );
-  }*/
 
   useEffect(() => {
     populateSttData();
@@ -65,16 +45,11 @@ function Tool() {
   }, []);
 
     const updateSelections = () => {
-        //const {checked, ...sttSelections} = sttSubmit;
-        //const {checked, ...scenarioSelections} = scenarioSubmit;
-        //delete sttSubmit.checked;
-        //delete scenarioSubmit.checked;
     setSelections((prevState) => ({
       ...prevState,
         SttList: sttSubmit,
         ScenarioList: scenarioSubmit,
     }));
-    //postMetrics();
   };
 
   return (
@@ -98,26 +73,6 @@ function Tool() {
           list={scenarioList}
           setList={setScenarioList}
         />
-      </div>
-      <div className="buttonContainer">
-        <div className="storeOption">
-          <Checkbox
-            key={"useStore"}
-            toggle={useStoreToggle}
-            setToggle={() => setUseStoreToggle(!useStoreToggle)}
-            name={"Use Stored Metrics"}
-          />
-        </div>
-      </div>
-      <div className="buttonContainer">
-        <div className="storeOption">
-          <Checkbox
-            key={"updateStore"}
-            toggle={updateStoreToggle}
-            setToggle={() => setUpdateStoreToggle(!updateStoreToggle)}
-            name={"Update Stored Metrics"}
-          />
-        </div>
       </div>
       <div className="submitButton" onClick={() => updateSelections()}>
         <NavLink tag={Link} to="/evaluation">
