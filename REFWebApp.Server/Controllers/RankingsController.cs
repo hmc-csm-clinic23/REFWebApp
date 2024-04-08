@@ -39,9 +39,14 @@ namespace REFWebApp.Server.Controllers
             List<SttAggregateMetric> aggregates = new List<SttAggregateMetric>();
             List<SttAggregateMetric> initialAggregates = new List<SttAggregateMetric>();
             List<int> sttIds = new List<int>();
+            Dictionary<int?, int?> scenarioWeightMap = new Dictionary<int?, int?>();
+            int weightsIndex = 0;
+            float weightsAverage = request.WeightList.Sum();
 
             foreach (IndividualScenarioRequest? scenario in request.ScenarioList)
             {
+                scenarioWeightMap.Add(scenario.Id, request.WeightList[weightsIndex]);
+                weightsIndex += 1;
                     foreach(Stt stt in stts)
                     {
                         List<SttAggregateMetric> STTScenarioAggregates = new List<SttAggregateMetric>();
@@ -91,6 +96,7 @@ namespace REFWebApp.Server.Controllers
                 double? wil = 0;
                 double? sim = 0;
                 double? dist = 0;
+                double? multiplier = 1;
                 int count = 0;
                 TimeSpan? speed = new TimeSpan(0, 0, 0, 0);
                 SttAggregateMetric aggregateAvg = new SttAggregateMetric();
@@ -99,13 +105,14 @@ namespace REFWebApp.Server.Controllers
                 {
                     if (aggregate.SttId == i)
                     {
+                        multiplier = scenarioWeightMap[aggregate.ScenarioId] / weightsAverage;
                         count += 1;
-                        wer += aggregate.Wer; //* scenario weight (using aggregate.scenarioId)
-                        mer += aggregate.Mer;
-                        wil += aggregate.Wil;
-                        sim += aggregate.Sim;
-                        dist += aggregate.Dist;
-                        speed += aggregate.Rawtime;
+                        wer += aggregate.Wer * multiplier; //* scenario weight (using aggregate.scenarioId)
+                        mer += aggregate.Mer * multiplier;
+                        wil += aggregate.Wil * multiplier;
+                        sim += aggregate.Sim * multiplier;
+                        dist += aggregate.Dist * multiplier;
+                        speed += aggregate.Rawtime * multiplier;
                     }
                 }
                 aggregateAvg.SttId = i;
@@ -136,6 +143,7 @@ namespace REFWebApp.Server.Controllers
         public class RankingsRequestModel
         {
             public IndividualScenarioRequest[]? ScenarioList { get; set; }
+            public int[]? WeightList { get; set; }
         }
 
         public class RankingsResponseModel
