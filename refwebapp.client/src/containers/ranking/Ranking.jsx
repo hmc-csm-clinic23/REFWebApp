@@ -10,7 +10,9 @@ function Ranking() {
   const [sort, setSort] = useState("score");
   const [sortToggle, setSortToggle] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const scenarioSubmit = scenarioList.filter((scenario) => scenario.checked === true,).map(({checked, ...scenario}) => scenario).map(({weight, ...scenario}) => scenario);
+  const scenarioWeights = scenarioList.filter((scenario) => scenario.checked === true,).map(({weight, ...scenario}) => weight);
 
   async function populateScenarioData() {
     const response = await fetch('scenariolist');
@@ -23,21 +25,32 @@ function Ranking() {
       })),
     );
     }
-  async function populateRankingData() {
-    const response = await fetch('rankings',
+  async function populateRankingData(signal) {
+    try {
+      const response = await fetch('rankings',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            ScenarioList: scenarioSubmit
-        })
+            ScenarioList: scenarioSubmit,
+            WeightList: scenarioWeights
+        }),
+        signal: signal
       });
-    setLoading(true)
-    const data = await response.json();
-    setRankingList(data);
-    setLoading(false);
+      const data = await response.json();
+      setRankingList(data);
+      setError(null);
+    } catch (error) {
+        if (error.name === "AbortError") {
+            console.log("Fetch aborted"); // Log a message when the request is intentionally aborted
+            return; // Exit the function to prevent further error handling
+        }
+        setError(error.message);
+    } finally {
+        setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -50,9 +63,16 @@ function Ranking() {
     // fetch call to API goes here, where you then get access to `rankings`
     // set a fetch buffer so there isn't constant fetching while the checks and weightsliders are changing
     // then set your rankingList state
-    if ((!loading) && (scenarioSubmit.length != 0)) {
-        populateRankingData();
+    if (scenarioSubmit.length == 0) {
+      return;
     }
+    const controller = new AbortController();
+    const signal = controller.signal;
+    populateRankingData(signal);
+    return () => {
+      controller.abort(); // Cancel any ongoing requests
+      setLoading(true); // Reset loading state
+    };
   }, [scenarioList]);
 
   const updateSort = (field) => {

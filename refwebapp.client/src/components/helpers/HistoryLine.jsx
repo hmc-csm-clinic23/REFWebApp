@@ -25,6 +25,7 @@ function HistoryLine({
     setToggle((toggle) => !toggle);
     setClickToggle(() => `Eval ${i}`);
     setTimestamp(time);
+    setEvalList([])
   };
   async function populateEvalData() {
     const response = await fetch('evallist',
@@ -58,6 +59,13 @@ function HistoryLine({
     const data = await response.json();
     setTranscriptionList(data);
   }
+
+  useEffect(() => {
+    // fetch call to API goes here, where you then get access to `stts`
+    // then set your sttList state
+    setToggle(false)
+    setClickToggle(null)
+  }, [stt]);
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `stts`
