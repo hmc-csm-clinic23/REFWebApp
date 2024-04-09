@@ -6,48 +6,34 @@ function Scenario() {
   const [audioList, setAudioList] = useState([]);
   const [search, setSearch] = useState("");
   const [scenarioName, setScenarioName] = useState("");
-  const audioSubmit = audioList.filter((audio) => audio.checked === true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const audioSubmit = audioList.filter((audio) => audio.checked === true).map(({checked, ...scenario}) => scenario);
 
-  const audios = [
-    {
-      name: "space station test 1",
-      audioFile: "spacestationtest1.wav",
-    },
-    {
-      name: "space station test 2",
-      audioFile: "spacestationtest2.wav",
-    },
-    {
-      name: "mars test 5",
-      audioFile: "marstest5.wav",
-    },
-    {
-      name: "johnson space center test 8",
-      audioFile: "johnsonspacecentertest8.wav",
-    },
-    {
-      name: "mars test 7",
-      audioFile: "marstest7.wav",
-    },
-    {
-      name: "johnson space center test 6",
-      audioFile: "johnsonspacecentertest6.wav",
-    },
-    {
-      name: "neutral buoyancy lab test 12",
-      audioFile: "neutralbuoyancylabtest12.wav",
-    },
-  ];
+  async function populateAudioData(signal) {
+    try {
+      const response = await fetch('audiolist', { signal: signal });
+      const data = await response.json();
+      setAudioList(data.map((audio) => ({
+        ...audio,
+        checked: false,
+      })));
+      setError(null);
+    } catch (error) {
+        if (error.name === "AbortError") {
+            console.log("Fetch aborted"); // Log a message when the request is intentionally aborted
+            return; // Exit the function to prevent further error handling
+        }
+        setError(error.message);
+    } finally {
+        setLoading(false);
+    }
+  }
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `objects`
     // then set your toggles state
-    setAudioList(
-      audios.map((audio, i) => ({
-        ...audio,
-        checked: false,
-      })),
-    );
+    populateAudioData();
   }, []);
 
   const updateAudioToggle = (i) => {
@@ -62,24 +48,26 @@ function Scenario() {
   const updateScenarios = async () => {
     console.log(scenarioName);
     console.log(audioSubmit);
-    await fetch('addscenario',
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: scenarioName,
-                audios: audioSubmit.map((audioSubmit) => audioSubmit.name),
-            })
-        });
-    setAudioList(
-      audioList.map((audio) => ({
-        ...audio,
-        checked: false,
-      })),
-    );
-    setScenarioName("");
+    if ((audioSubmit.length != 0) && (scenarioName != "")){
+        await fetch('addscenario',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Name: scenarioName,
+                    Audios: audioSubmit,
+                })
+            });
+        setAudioList(
+          audioList.map((audio) => ({
+            ...audio,
+            checked: false,
+          })),
+        );
+        setScenarioName("");
+    }
     // fetch using setNewScenario here
   };
 
@@ -113,8 +101,8 @@ function Scenario() {
                 key={item.name}
                 toggle={item.checked}
                 setToggle={() => updateAudioToggle(i)}
-                name={item.name}
-                audioFile={item.audioFile}
+                name={item.path}
+                audioFile={item.path}
               />
             </>
           ))}

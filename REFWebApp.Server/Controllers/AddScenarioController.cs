@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EFCore.BulkExtensions;
+using Microsoft.AspNetCore.Mvc;
+using REFWebApp.Server.Data;
+using REFWebApp.Server.Models;
+using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 
 namespace REFWebApp.Server.Controllers
 {
@@ -17,12 +22,21 @@ namespace REFWebApp.Server.Controllers
         [HttpPost(Name = "PostScenario")]
         public void Post([FromBody] AddScenarioRequestModel request)
         {
+           using (var context = new PostgresContext())
+           {
+               Scenario scenario_object = new Scenario
+               {
+                   Name = request.Name,
+                   Audios = request.Audios,
+               };
+               context.Add(scenario_object);
+           }
         }
 
         public class AddScenarioRequestModel
         {
-            public string Name { get; set; }
-            public string[] Audios { get; set; }
+            public string? Name { get; set; }
+            public AudioFile[]? Audios { get; set; }
         }
     }
 }
