@@ -59,7 +59,8 @@ app.MapFallbackToFile("/index.html");
 
 app.Run();
 
-// be able to get data from database 
+// be able to get data from database
+/*
 Console.WriteLine("audio files:");
 
 /*
@@ -110,5 +111,19 @@ using (var context = new PostgresContext())
     context.BulkInsert(transcriptions);
     context.SaveChanges();
     */
+    //using PostgresContext context = new PostgresContext();
+    Console.WriteLine("adding scenario");
+    List<AudioFile> audiofiles = context.AudioFiles.Where(a => a.Id == 1818).ToList();
+    Scenario s = new Scenario() {
+        Name = "hello",
+        Audios = audiofiles
+    };
+
+    context.Scenarios.Add(s);
+    context.SaveChanges();
+    Console.WriteLine("scenario added");
+
 
 }
+
+

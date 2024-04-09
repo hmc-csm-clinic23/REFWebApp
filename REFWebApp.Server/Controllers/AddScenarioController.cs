@@ -29,7 +29,8 @@ namespace REFWebApp.Server.Controllers
                    Name = request.Name,
                    Audios = request.Audios,
                };
-               context.Add(scenario_object);
+               context.Scenarios.Add(scenario_object);
+               context.SaveChanges();
            }
         }
 
