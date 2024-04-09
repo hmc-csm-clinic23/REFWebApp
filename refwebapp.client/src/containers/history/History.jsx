@@ -12,61 +12,6 @@ function History() {
   const [clickToggle, setClickToggle] = useState(null);
   const [closeToggle, setCloseToggle] = useState(false);
   const [loading, setLoading] = useState(false);
-  const sttSubmit = sttList.filter((stt) => stt.checked === true,).map(({checked, ...stt}) => stt);
-
-  const scenarioEval1 = [
-    {
-      name: "Eval 1",
-    },
-    {
-      name: "Eval 2",
-    },
-    {
-      name: "Eval 3",
-    },
-    {
-      name: "Eval 4",
-    },
-    {
-      name: "Eval 5",
-    },
-    {
-      name: "Eval 6",
-    },
-    {
-      name: "Eval 7",
-    },
-  ];
-
-  const scenarioEval2 = [
-    {
-      name: "Eval 1",
-    },
-    {
-      name: "Eval 2",
-    },
-    {
-      name: "Eval 3",
-    },
-  ];
-
-  const scenarioEval3 = [
-    {
-      name: "Eval 1",
-    },
-    {
-      name: "Eval 2",
-    },
-    {
-      name: "Eval 3",
-    },
-    {
-      name: "Eval 4",
-    },
-    {
-      name: "Eval 5",
-    },
-  ];
 
   async function populateSttData() {
     const response = await fetch('sttlist');
