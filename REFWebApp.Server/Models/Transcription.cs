@@ -7,9 +7,9 @@ public partial class Transcription
 {
     public int Id { get; set; }
 
-    public int? AudioId { get; set; }
+    public int AudioId { get; set; }
 
-    public int? SttId { get; set; }
+    public int SttId { get; set; }
 
     public DateTime? Timestamp { get; set; }
 

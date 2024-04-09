@@ -37,10 +37,11 @@ namespace REFWebApp.Server.Controllers
             List<Stt> stts = context.Stts.Where(s => s.Name == request.SttName).ToList();
             Stt stt = stts[0];
             List<Scenario> scenarios = context.Scenarios.Where(s => s.Name == request.ScenarioName).ToList();
-            Scenario scenario = scenarios[0];
+            Scenario scenario_ = scenarios[0];
+            List<int> audioIdsByScenario = scenarios[0].Audios.Select(a => a.Id).ToList();
             List<Transcription> transcription = context.Transcriptions.Where(t => t.SttId == stt.Id)
-                                                            //.Where(t => t.ScenarioId == scenario.Id)
                                                             .Where(t => t.Timestamp == request.Timestamp)
+                                                            .Where(t => audioIdsByScenario.Contains(t.AudioId))
                                                             .ToList();
             return Enumerable.Range(0, transcription.Count).Select(index => new EvalHistoriesResponseModel
             {
