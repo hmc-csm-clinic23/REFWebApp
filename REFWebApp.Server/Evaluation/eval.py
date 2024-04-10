@@ -37,15 +37,26 @@ def evaluate(transcriptionlist, groundtruthlist):
     # df = pd.asDataFrame(transcriptions)
     # print(df)
 
-    def metrics(asr, ground_truth : str, transcr : str):
+    def metrics(ground_truth : str, transcr : str, weights):
         m_wer = round(wer(ground_truth, transcr),2)
         m_mer = round(mer(ground_truth, transcr),2)
         m_wil = round(wil(ground_truth, transcr),2)
         m_sim = round(SequenceMatcher(None, ground_truth, transcr).ratio(),2)
         m_dist = round(distance(transcr, ground_truth),2)
-        print(asr, '-','WER:',m_wer, 'MER:',m_mer,'WIL:',m_wil,'SIM:',m_sim,'L-DIST:',m_dist)
-        print(m_wer, m_mer, m_wil, m_sim, m_dist)
-        return m_wer, m_mer, m_wil, m_sim, m_dist
+        all = [m_wer, m_mer, m_wil, m_sim, m_dist]
+        n_dist = [1 - (all[4]/len(ground_truth))]
+        metrics = [1 - m for m in all[0:3]] + [all[3]] + n_dist
+        return weight(weights, metrics)
+    
+
+    def weight(weights, metrics):
+        weighted_metrics = []
+        if sum(weights) != 1:
+            raise Exception("Weight not balanced properly") 
+        for i in len(metrics):
+            weighted_metrics += [weights[i]*metrics[i]]
+        weighted_metrics += [sum(weighted_metrics)]
+        return weighted_metrics
 
     def avg(metrics):
         return str(round(sum(metrics) / len(metrics), 2))
@@ -66,6 +77,7 @@ def evaluate(transcriptionlist, groundtruthlist):
         model_wil = []
         model_sim = []
         model_dist = []
+        model_final = []
 
         for i in range(len(groundtruths)):
             # print(key)
@@ -86,7 +98,7 @@ def evaluate(transcriptionlist, groundtruthlist):
             print('Model Transcription:', model_transcription_text, '\n')
 
             #print ASR metrics
-            wer, mer, wil, sim, dist = metrics('Model', groundtruth, model_transcription_text)
+            wer, mer, wil, sim, dist, final = metrics('Model', groundtruth, model_transcription_text)
 
             #append metrics to ASR score lists
 
@@ -95,6 +107,8 @@ def evaluate(transcriptionlist, groundtruthlist):
             model_wil.append(wil)
             model_sim.append(sim)
             model_dist.append(dist)
+            model_final.append(final)
+
             print('\n')
 
 
@@ -104,7 +118,7 @@ def evaluate(transcriptionlist, groundtruthlist):
         metrics_avg_list = [float(avg(model_wer)), float(avg(model_mer)), float(avg(model_wil)), float(avg(model_sim)), float(avg(model_dist))]
         metrics_list = []
         for i in range(len(model_dist)):
-            metrics_list.append([model_wer[i], model_mer[i], model_mer[i], model_sim[i], model_dist[i]])
+            metrics_list.append([model_wer[i], model_mer[i], model_mer[i], model_sim[i], model_dist[i], model_final[i]])
         print('METRICS FROM PYTHON: ', metrics_list)
         return metrics_list
 
