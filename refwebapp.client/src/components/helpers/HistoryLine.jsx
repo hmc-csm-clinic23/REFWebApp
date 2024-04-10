@@ -23,7 +23,7 @@ function HistoryLine({
 
   const updateSttToggle = (time, i) => {
     setToggle((toggle) => !toggle);
-    setClickToggle(() => `Eval ${i}`);
+    setClickToggle(() => `Eval ${i+1}`);
     setTimestamp(time);
     setEvalList([])
   };
