@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.ConstrainedExecution;
 using System.Collections.Generic;
 using Castle.DynamicProxy;
+using System.ComponentModel;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 
 
 namespace REFWebApp.Server.Controllers
@@ -116,28 +118,54 @@ namespace REFWebApp.Server.Controllers
                     }
                 }
                 aggregateAvg.SttId = i;
-                aggregateAvg.Rawtime = speed / count;
-                aggregateAvg.Wer = wer / count;
-                aggregateAvg.Mer = mer / count;
-                aggregateAvg.Wil = wil / count;
-                aggregateAvg.Sim = sim / count;
-                aggregateAvg.Dist = dist / count;
+                aggregateAvg.Rawtime = speed;// / count;
+                aggregateAvg.Wer = wer;// / count;
+                aggregateAvg.Mer = mer;// / count;
+                aggregateAvg.Wil = wil;// / count;
+                aggregateAvg.Sim = sim;// / count;
+                aggregateAvg.Dist = dist;// / count;
                 aggregates.Add(aggregateAvg);
             }
-            Random random = new Random();
             return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel 
             {
                 SttName = context.Stts.Find(aggregates[index].SttId).Name,
-                TotalScore = 88 + random.Next(9), //this should be a complex line or function that combines our metrics, speed, usability, etc.
-                Accuracy = 85 + random.Next(12),
+                TotalScore = FinalScore(FinalAccuracy(aggregates[index].Wer, aggregates[index].Mer, aggregates[index].Wil, aggregates[index].Sim, aggregates[index].Dist), TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)), context.Stts.Find(aggregates[index].SttId).Usability),
+                Accuracy = FinalAccuracy(aggregates[index].Wer, aggregates[index].Mer, aggregates[index].Wil, aggregates[index].Sim, aggregates[index].Dist),
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
                 Mer = aggregates[index].Mer,
                 Wil = aggregates[index].Wil,
                 Sim = aggregates[index].Sim,
-                Dist = aggregates[index].Dist
+                Dist = aggregates[index].Dist,
+
             })
             .ToArray();
+        }
+
+        // If using weights, use this function. TODO: Add usability
+        // public double? Weight(List<double?> weights, List<double?> metrics, TimeSpan speed)
+        // {   
+        //     double finalSpeed = Math.Min(1, 1/speed.TotalSeconds);
+        //     List<double?> weighted = new List<double?>();
+        //     for (int i = 0;  i < weights.Count; i++)
+        //     {
+        //         weighted.Add(weights[i]*metrics[i]);
+        //     }
+        //     return (weighted.Sum(x => x) + finalSpeed)/2;
+        // }
+
+        [NonAction]
+        public double? FinalScore(double? accuracy, TimeSpan speed, double? usability)
+        {
+            double finalSpeed = Math.Min(100, (1 / speed.TotalSeconds * 800));
+            return (accuracy + finalSpeed + (usability * 100)) / 3;
+        }
+
+        [NonAction]
+        public double? FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
+        {
+            var newAccuracy = (4 - (wer + mer + wil + dist) + sim) / 5;
+            return newAccuracy * 100;
         }
 
         public class RankingsRequestModel

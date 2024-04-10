@@ -75,11 +75,10 @@ namespace REFWebApp.Server.Controllers
                     aggregates.Add(aggregate);
                 }
             }
-            Random random = new Random();
             return Enumerable.Range(0, aggregates.Count).Select(index => new HistoriesResponseModel
             {
                 ScenarioName = context.Scenarios.Find(aggregates[index].ScenarioId).Name,
-                Accuracy = 85 + random.Next(12),
+                Accuracy = FinalAccuracy(aggregates[index].Wer, aggregates[index].Mer, aggregates[index].Wil, aggregates[index].Sim, aggregates[index].Dist),
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
                 Mer = aggregates[index].Mer,
@@ -88,6 +87,13 @@ namespace REFWebApp.Server.Controllers
                 Dist = aggregates[index].Dist
             })
             .ToArray();
+        }
+
+        [NonAction]
+        public double? FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
+        {
+            var newAccuracy = (4 - (wer + mer + wil + dist) + sim) / 5;
+            return newAccuracy * 100;
         }
 
         public class HistoriesRequestModel
