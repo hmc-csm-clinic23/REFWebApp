@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.ConstrainedExecution;
 using System.Collections.Generic;
 using Castle.DynamicProxy;
+using System.ComponentModel;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 
 
 namespace REFWebApp.Server.Controllers
@@ -124,20 +126,37 @@ namespace REFWebApp.Server.Controllers
                 aggregateAvg.Dist = dist / count;
                 aggregates.Add(aggregateAvg);
             }
-            Random random = new Random();
             return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel 
             {
                 SttName = context.Stts.Find(aggregates[index].SttId).Name,
-                TotalScore = 88 + random.Next(9), //this should be a complex line or function that combines our metrics, speed, usability, etc.
-                Accuracy = 85 + random.Next(12),
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
                 Mer = aggregates[index].Mer,
                 Wil = aggregates[index].Wil,
                 Sim = aggregates[index].Sim,
-                Dist = aggregates[index].Dist
+                Dist = aggregates[index].Dist,
+                Accuracy = 4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist/ groundTruth.Length,
+                TotalScore = FinalScore(4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist/ groundTruth.Length, TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds))),
+
             })
             .ToArray();
+        }
+
+        public double? Weight(List<double?> weights, List<double?> metrics, TimeSpan speed)
+        {   
+            double finalSpeed = Math.Min(1, 1/speed.TotalSeconds);
+            List<double?> weighted = new List<double?>();
+            for (int i = 0;  i < weights.Count; i++)
+            {
+                weighted.Add(weights[i]*metrics[i]);
+            }
+            return (weighted.Sum(x => x) + finalSpeed)/2;
+        }
+
+        public double? FinalScore(TimeSpan speed, double accuracy)
+        {
+            double finalSpeed = Math.Min(1, 1/speed.TotalSeconds);
+            return (accuracy + finalSpeed)/2;
         }
 
         public class RankingsRequestModel
