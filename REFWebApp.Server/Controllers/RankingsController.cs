@@ -129,8 +129,8 @@ namespace REFWebApp.Server.Controllers
             return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel 
             {
                 SttName = context.Stts.Find(aggregates[index].SttId).Name,
-                TotalScore = FinalScore(4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist/ groundTruth.Length, TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds))),
-                Accuracy = 4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist/ groundTruth.Length,
+                TotalScore = FinalScore(4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist, TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds))),
+                Accuracy = 4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist,
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
                 Mer = aggregates[index].Mer,
@@ -154,7 +154,7 @@ namespace REFWebApp.Server.Controllers
         //     return (weighted.Sum(x => x) + finalSpeed)/2;
         // }
 
-        public double? FinalScore(TimeSpan speed, double accuracy)
+        public double? FinalScore(double? accuracy, TimeSpan speed)
         {
             double finalSpeed = Math.Min(1, 1/speed.TotalSeconds);
             return (accuracy + finalSpeed)/2;
