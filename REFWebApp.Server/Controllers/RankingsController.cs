@@ -164,10 +164,7 @@ namespace REFWebApp.Server.Controllers
         [NonAction]
         public int FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
         {
-            var newWer = Math.Min(1, (double) wer);
-            var newSim = Math.Min(1, (double) sim);
-            var newDist = Math.Min(1, (double) dist);
-            var newAccuracy = (4 - newWer + mer + wil + newSim + newDist)/5;
+            var newAccuracy = (4 - (wer + mer + wil + dist) + sim) /5;
             return (int) (newAccuracy * 100);
         }
 
