@@ -95,7 +95,7 @@ function HistoryLine({
     <>
       <div className="historyLine">
         <div className="rankingField">{scenario}</div>
-        <div className="rankingField">{accuracy.toFixed(0)}</div>
+        <div className="rankingField">{accuracy.toFixed(2)}</div>
         <div className="rankingField">{speed}</div>
         <div className="rankingField">{wer.toFixed(2)}</div>
         <div className="rankingField">{mer.toFixed(2)}</div>

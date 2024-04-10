@@ -17,6 +17,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using static REFWebApp.Server.Controllers.RankingsController;
+using System.Net.NetworkInformation;
 
 
 namespace REFWebApp.Server.Controllers
@@ -90,6 +91,7 @@ namespace REFWebApp.Server.Controllers
             List<List<string?>> groundTruths = new List<List<string?>>();
             List<List<string?>> transcriptions = new List<List<string?>>();
             List<MetricObject> metrics = new List<MetricObject>();
+            List<MetricObject> weightedMetrics = new List<MetricObject>();
             List<Transcription> transcription_objects = new List<Transcription>();
             List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();
             DateTime timestamp = DateTime.Now;
@@ -174,7 +176,6 @@ namespace REFWebApp.Server.Controllers
 
                     MetricObject metric = new MetricObject
                     {
-                        Weight = request.WeightList[i] / weightsAverage,
                         Wer = wer,
                         Mer = mer,
                         Wil = wil,
@@ -183,6 +184,18 @@ namespace REFWebApp.Server.Controllers
                         Rawtime = elapsedTimes,
                     };
                     metrics.Add(metric);
+
+                    MetricObject weightedMetric = new MetricObject
+                    {
+                        Weight = weightsAverage,
+                        Wer = wer.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
+                        Mer = mer.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
+                        Wil = wil.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
+                        Sim = sim.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
+                        Dist = dist.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
+                        Rawtime = elapsedTimes,
+                    };
+                    weightedMetrics.Add(weightedMetric);
                 }
             }
             
@@ -191,7 +204,7 @@ namespace REFWebApp.Server.Controllers
                 context.BulkInsert(transcription_objects);
                 context.BulkInsert(aggregate);
             }
-
+            using PostgresContext newContext = new PostgresContext();
             //return new MetricObject
             //{
             //    Metrics = metrics,
@@ -201,8 +214,8 @@ namespace REFWebApp.Server.Controllers
 
             return Enumerable.Range(0, metrics.Count).Select(index => new runMetricsObject
             {
-                TotalScore = metrics[index].Wer, //this should be a complex line or function that combines our metrics, speed, usability, etc.
-                Accuracy = metrics[index].Wer,
+                TotalScore = FinalScore(FinalAccuracy(weightedMetrics[index].Wer.Sum() / metrics[index].Wer.Count(), weightedMetrics[index].Mer.Sum() / metrics[index].Mer.Count(), weightedMetrics[index].Wil.Sum() / metrics[index].Wil.Count(), weightedMetrics[index].Sim.Sum() / metrics[index].Sim.Count(), weightedMetrics[index].Dist.Sum() / metrics[index].Dist.Count()), TimeSpan.FromSeconds(Math.Round(((TimeSpan)weightedMetrics[index].Rawtime.Aggregate(new TimeSpan(0, 0, 0, 0), (x, y) => x + y)).TotalSeconds)), newContext.Stts.Find(sttId).Usability),
+                Accuracy = FinalAccuracy(weightedMetrics[index].Wer.Sum() / metrics[index].Wer.Count(), weightedMetrics[index].Mer.Sum() / metrics[index].Mer.Count(), weightedMetrics[index].Wil.Sum() / metrics[index].Wil.Count(), weightedMetrics[index].Sim.Sum() / metrics[index].Sim.Count(), weightedMetrics[index].Dist.Sum() / metrics[index].Dist.Count()),
                 Speed = metrics[index].Rawtime,
                 Wer = metrics[index].Wer,
                 Mer = metrics[index].Mer,
@@ -214,6 +227,20 @@ namespace REFWebApp.Server.Controllers
             })
             .ToArray();
 
+        }
+
+        [NonAction]
+        public double? FinalScore(double? accuracy, TimeSpan speed, double? usability)
+        {
+            double finalSpeed = Math.Min(100, (1 / speed.TotalSeconds * 800));
+            return (accuracy + finalSpeed + (usability * 100)) / 3;
+        }
+
+        [NonAction]
+        public double? FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
+        {
+            var newAccuracy = (4 - (wer + mer + wil + dist) + sim) / 5;
+            return newAccuracy * 100;
         }
 
         public class MetricObject
@@ -229,8 +256,8 @@ namespace REFWebApp.Server.Controllers
 
         public class runMetricsObject
         {
-            public List<double>? TotalScore { get; set; }
-            public List<double>? Accuracy { get; set; }
+            public double? TotalScore { get; set; }
+            public double? Accuracy { get; set; }
             public List<TimeSpan>? Speed { get; set; }
             public List<double>? Wer { get; set; }
             public List<double>? Mer { get; set; }

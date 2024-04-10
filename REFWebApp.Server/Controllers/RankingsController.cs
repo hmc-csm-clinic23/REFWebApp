@@ -118,18 +118,18 @@ namespace REFWebApp.Server.Controllers
                     }
                 }
                 aggregateAvg.SttId = i;
-                aggregateAvg.Rawtime = speed / count;
-                aggregateAvg.Wer = wer / count;
-                aggregateAvg.Mer = mer / count;
-                aggregateAvg.Wil = wil / count;
-                aggregateAvg.Sim = sim / count;
-                aggregateAvg.Dist = dist / count;
+                aggregateAvg.Rawtime = speed;// / count;
+                aggregateAvg.Wer = wer;// / count;
+                aggregateAvg.Mer = mer;// / count;
+                aggregateAvg.Wil = wil;// / count;
+                aggregateAvg.Sim = sim;// / count;
+                aggregateAvg.Dist = dist;// / count;
                 aggregates.Add(aggregateAvg);
             }
             return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel 
             {
                 SttName = context.Stts.Find(aggregates[index].SttId).Name,
-                TotalScore = FinalScore(FinalAccuracy(aggregates[index].Wer, aggregates[index].Mer, aggregates[index].Wil, aggregates[index].Sim, aggregates[index].Dist), TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds))),
+                TotalScore = FinalScore(FinalAccuracy(aggregates[index].Wer, aggregates[index].Mer, aggregates[index].Wil, aggregates[index].Sim, aggregates[index].Dist), TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)), context.Stts.Find(aggregates[index].SttId).Usability),
                 Accuracy = FinalAccuracy(aggregates[index].Wer, aggregates[index].Mer, aggregates[index].Wil, aggregates[index].Sim, aggregates[index].Dist),
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
@@ -155,17 +155,17 @@ namespace REFWebApp.Server.Controllers
         // }
 
         [NonAction]
-        public int FinalScore(int? accuracy, TimeSpan speed)
+        public double? FinalScore(double? accuracy, TimeSpan speed, double? usability)
         {
-            double finalSpeed = Math.Min(100, (1/speed.TotalSeconds * 100));
-            return (int) ((accuracy + finalSpeed)/2);
+            double finalSpeed = Math.Min(100, (1 / speed.TotalSeconds * 800));
+            return (accuracy + finalSpeed + (usability * 100)) / 3;
         }
 
         [NonAction]
-        public int FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
+        public double? FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
         {
-            var newAccuracy = (4 - (wer + mer + wil + dist) + sim) /5;
-            return (int) (newAccuracy * 100);
+            var newAccuracy = (4 - (wer + mer + wil + dist) + sim) / 5;
+            return newAccuracy * 100;
         }
 
         public class RankingsRequestModel
