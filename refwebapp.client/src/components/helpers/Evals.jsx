@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-function Evals({ metrics, transcriptions, groundTruths, scenarios }) {
+function Evals({ wer, mer, wil, sim, dist, transcriptions, groundTruths, scenarios }) {
   const metricLabels = ["WER: ", "MER: ", "WIL: ", "SIM: ", "L-DIST: "];
   const [search, setSearch] = useState("");
   return (
@@ -26,7 +26,7 @@ function Evals({ metrics, transcriptions, groundTruths, scenarios }) {
       )
       .map(({ groundTruths, i }) => 
       <div className="evalItem">
-        <div className="evalText">[{metrics[i].map((metric, index) => [metricLabels[index], metric, index < 4 && ", "])}]</div>
+        <div className="evalText">[{`WER: ${wer[i].toFixed(2)}, MER: ${mer[i].toFixed(2)}, WIL: ${wil[i].toFixed(2)}, SIM: ${sim[i].toFixed(2)}, L-DIST: ${dist[i].toFixed(0)}`}]</div>
         <div className="evalText">{transcriptions[i]}</div>
         <div className="evalText">{groundTruths}</div>
       </div>

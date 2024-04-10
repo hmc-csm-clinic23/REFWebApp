@@ -9,7 +9,7 @@ function AudioList({ groundTruth, transcription, wer, mer, wil, sim, dist, audio
       <div className="evalsText">{mer.toFixed(2)}</div>
       <div className="evalsText">{wil.toFixed(2)}</div>
       <div className="evalsText">{sim.toFixed(2)}</div>
-      <div className="evalsText">{dist.toFixed(0)}</div>
+      <div className="evalsText">{dist.toFixed(2)}</div>
       <audio controls src={audioFile} className="audioPlayer"></audio>
     </li>
   );
