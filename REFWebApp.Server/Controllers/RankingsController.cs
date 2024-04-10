@@ -155,19 +155,20 @@ namespace REFWebApp.Server.Controllers
         // }
 
         [NonAction]
-        public double? FinalScore(double? accuracy, TimeSpan speed)
+        public int FinalScore(int? accuracy, TimeSpan speed)
         {
-            double finalSpeed = Math.Min(1, 1/speed.TotalSeconds);
-            return (accuracy + finalSpeed)/2;
+            double finalSpeed = Math.Min(100, (1/speed.TotalSeconds * 100));
+            return (int) ((accuracy + finalSpeed)/2);
         }
 
         [NonAction]
-        public double? FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
+        public int FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
         {
             var newWer = Math.Min(1, (double) wer);
             var newSim = Math.Min(1, (double) sim);
             var newDist = Math.Min(1, (double) dist);
-            return 4 - newWer + mer + wil + newSim + newDist;
+            var newAccuracy = (4 - newWer + mer + wil + newSim + newDist)/5;
+            return (int) (newAccuracy * 100);
         }
 
         public class RankingsRequestModel
