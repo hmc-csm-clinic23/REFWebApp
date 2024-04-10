@@ -25,7 +25,7 @@ def metrics(ground_truth : str, transcr : str):
         m_wil = round(wil(ground_truth, transcr),2)
         m_sim = round(SequenceMatcher(None, ground_truth, transcr).ratio(),2)
         m_dist = round(distance(transcr, ground_truth),2)
-        m_dist = min(1, m_dist/len(ground_truth))
+        m_dist = m_dist/len(ground_truth)
         print('-','WER:',m_wer, 'MER:',m_mer,'WIL:',m_wil,'SIM:',m_sim,'L-DIST:',m_dist)
         print(m_wer, m_mer, m_wil, m_sim, m_dist)
         return [m_wer, m_mer, m_wil, m_sim, m_dist]

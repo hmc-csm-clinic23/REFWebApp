@@ -129,8 +129,8 @@ namespace REFWebApp.Server.Controllers
             return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel 
             {
                 SttName = context.Stts.Find(aggregates[index].SttId).Name,
-                TotalScore = FinalScore(4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist, TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds))),
-                Accuracy = 4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist,
+                TotalScore = FinalScore(FinalAccuracy(aggregates[index].Wer, aggregates[index].Mer, aggregates[index].Wil, aggregates[index].Sim, aggregates[index].Dist), TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds))),
+                Accuracy = FinalAccuracy(aggregates[index].Wer, aggregates[index].Mer, aggregates[index].Wil, aggregates[index].Sim, aggregates[index].Dist),
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
                 Mer = aggregates[index].Mer,
@@ -154,10 +154,20 @@ namespace REFWebApp.Server.Controllers
         //     return (weighted.Sum(x => x) + finalSpeed)/2;
         // }
 
+        [NonAction]
         public double? FinalScore(double? accuracy, TimeSpan speed)
         {
             double finalSpeed = Math.Min(1, 1/speed.TotalSeconds);
             return (accuracy + finalSpeed)/2;
+        }
+
+        [NonAction]
+        public double? FinalAccuracy(double? wer, double? mer, double? wil, double? sim, double? dist)
+        {
+            var newWer = Math.Min(1, (double) wer);
+            var newSim = Math.Min(1, (double) sim);
+            var newDist = Math.Min(1, (double) dist);
+            return 4 - newWer + mer + wil + newSim + newDist;
         }
 
         public class RankingsRequestModel
