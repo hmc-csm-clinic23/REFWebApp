@@ -1,8 +1,6 @@
 import { React, useState } from "react";
 import { Evals } from "../.././components";
-function EvalDisplay({ stt, metrics, transcriptions, groundTruths, scenarios }) {
-  const metricsList = metrics.reduceRight((all, item) => ({[item]: all}), {});
-  const transcriptionsList = transcriptions.reduceRight((all, item) => ({[item]: all}), {});
+function EvalDisplay({ stt, refData, scenarios }) {
   const [search, setSearch] = useState("");
   return (
     <div>
@@ -19,18 +17,22 @@ function EvalDisplay({ stt, metrics, transcriptions, groundTruths, scenarios }) 
           <div className="evalText">Transcriptions</div>
           <div className="evalText">Ground Truths</div>
         </div>
-        {metrics
-        .map((metrics, i) => ({ metrics, i }))
+        {refData
+        .map((data, i) => ({ data, i }))
         .filter(({ i }) =>
           search.toLowerCase() === ""
             ? scenarios[i]
             : scenarios[i].name.toLowerCase().includes(search.toLowerCase()),
         )
-        .map(({ metrics, i }) => 
+        .map(({ data, i }) => 
         <Evals
-        metrics={metrics}
-        transcriptions={transcriptions[i]}
-        groundTruths={groundTruths[i]}
+        wer={data.wer}
+        mer={data.mer}
+        wil={data.wil}
+        sim={data.sim}
+        dist={data.dist}
+        transcriptions={data.transcriptions}
+        groundTruths={data.groundTruths}
         scenarios={scenarios[i]}
         />
         )}

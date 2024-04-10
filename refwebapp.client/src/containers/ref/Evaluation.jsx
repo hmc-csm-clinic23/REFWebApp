@@ -18,7 +18,8 @@ function Evaluation() {
         },
         body: JSON.stringify({
           SttList: selections.SttList,
-          ScenarioList: selections.ScenarioList
+          ScenarioList: selections.ScenarioList,
+          WeightList: selections.WeightList,
         })
       });
     setLoading(true)
@@ -27,8 +28,8 @@ function Evaluation() {
     setLoading(false);
     console.log(metricsList.map(metricsList => metricsList.sttName));
     console.log(metricsList.map(metricsList => metricsList.sttName.toString()));
-    console.log(metricsList.map(metricsList => metricsList.refData.metrics.toString()));
-    console.log(metricsList.map(metricsList => metricsList.refData.transcriptions.toString()));
+    //console.log(metricsList.map(metricsList => metricsList.refData.metrics.toString()));
+    //console.log(metricsList.map(metricsList => metricsList.refData.transcriptions.toString()));
 
   }
   useEffect(() => {
@@ -61,9 +62,7 @@ function Evaluation() {
       : metricsList.map(metricsList => (
         <EvalDisplay
         stt={metricsList.sttName}
-        metrics={metricsList.refData.metrics}
-        transcriptions={metricsList.refData.transcriptions}
-        groundTruths={metricsList.refData.groundTruths}
+        refData={metricsList.refData}
         scenarios={selections.ScenarioList}
         />
       ))}

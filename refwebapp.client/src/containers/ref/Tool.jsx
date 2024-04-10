@@ -14,7 +14,8 @@ function Tool() {
   const [sttList, setSttList] = useState([]);
   const [scenarioList, setScenarioList] = useState([]);
   const sttSubmit = sttList.filter((stt) => stt.checked === true).map(({checked, ...stt}) => stt);
-  const scenarioSubmit = scenarioList.filter((scenario) => scenario.checked === true,).map(({checked, ...scenario}) => scenario);
+  const scenarioSubmit = scenarioList.filter((scenario) => scenario.checked === true,).map(({checked, ...scenario}) => scenario).map(({weight, ...scenario}) => scenario);
+  const scenarioWeights = scenarioList.filter((scenario) => scenario.checked === true,).map(({weight, ...scenario}) => weight);
 
   async function populateSttData() {
     const response = await fetch('sttlist');
@@ -44,11 +45,12 @@ function Tool() {
     populateScenarioData();
   }, []);
 
-    const updateSelections = () => {
+  const updateSelections = () => {
     setSelections((prevState) => ({
       ...prevState,
         SttList: sttSubmit,
         ScenarioList: scenarioSubmit,
+        WeightList: scenarioWeights,
     }));
   };
 
