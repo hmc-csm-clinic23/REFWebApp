@@ -129,29 +129,30 @@ namespace REFWebApp.Server.Controllers
             return Enumerable.Range(0, aggregates.Count).Select(index => new RankingsResponseModel 
             {
                 SttName = context.Stts.Find(aggregates[index].SttId).Name,
+                TotalScore = FinalScore(4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist/ groundTruth.Length, TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds))),
+                Accuracy = 4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist/ groundTruth.Length,
                 Speed = TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds)),
                 Wer = aggregates[index].Wer,
                 Mer = aggregates[index].Mer,
                 Wil = aggregates[index].Wil,
                 Sim = aggregates[index].Sim,
                 Dist = aggregates[index].Dist,
-                Accuracy = 4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist/ groundTruth.Length,
-                TotalScore = FinalScore(4 - aggregates[index].Wer + aggregates[index].Mer + aggregates[index].Wil + aggregates[index].Sim + aggregates[index].Dist/ groundTruth.Length, TimeSpan.FromSeconds(Math.Round(((TimeSpan)aggregates[index].Rawtime).TotalSeconds))),
 
             })
             .ToArray();
         }
 
-        public double? Weight(List<double?> weights, List<double?> metrics, TimeSpan speed)
-        {   
-            double finalSpeed = Math.Min(1, 1/speed.TotalSeconds);
-            List<double?> weighted = new List<double?>();
-            for (int i = 0;  i < weights.Count; i++)
-            {
-                weighted.Add(weights[i]*metrics[i]);
-            }
-            return (weighted.Sum(x => x) + finalSpeed)/2;
-        }
+        // If using weights, use this function. TODO: Add usability
+        // public double? Weight(List<double?> weights, List<double?> metrics, TimeSpan speed)
+        // {   
+        //     double finalSpeed = Math.Min(1, 1/speed.TotalSeconds);
+        //     List<double?> weighted = new List<double?>();
+        //     for (int i = 0;  i < weights.Count; i++)
+        //     {
+        //         weighted.Add(weights[i]*metrics[i]);
+        //     }
+        //     return (weighted.Sum(x => x) + finalSpeed)/2;
+        // }
 
         public double? FinalScore(TimeSpan speed, double accuracy)
         {
