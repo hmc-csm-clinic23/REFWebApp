@@ -22,12 +22,18 @@ namespace REFWebApp.Server.Controllers
         [HttpPost(Name = "PostScenario")]
         public void Post([FromBody] AddScenarioRequestModel request)
         {
+           
            using (var context = new PostgresContext())
            {
-               Scenario scenario_object = new Scenario
+               List<AudioFile?> files = new List<AudioFile?>();
+               foreach(AudioFile audioFile in request.Audios) //Makes no sense why you need this for each, but it breaks if you don't have it (see below comment)
+               {
+                    files.Add(context.AudioFiles.Find(audioFile.Id));
+               }
+               Scenario scenario_object = new Scenario()
                {
                    Name = request.Name,
-                   Audios = request.Audios,
+                   Audios = files //Breaks if you do request.Audios for some reason
                };
                context.Scenarios.Add(scenario_object);
                context.SaveChanges();
@@ -37,7 +43,7 @@ namespace REFWebApp.Server.Controllers
         public class AddScenarioRequestModel
         {
             public string? Name { get; set; }
-            public AudioFile[]? Audios { get; set; }
+            public List<AudioFile>? Audios { get; set; }
         }
     }
 }
