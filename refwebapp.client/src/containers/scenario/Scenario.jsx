@@ -88,17 +88,17 @@ function Scenario() {
       />
       <ul className="audioItems">
         {audioList
-          .sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
+          .sort((a, b) => (a.path > b.path ? 1 : b.path > a.path ? -1 : 0))
           .map((item, i) => ({ item, i }))
           .filter(({ item }) =>
             search.toLowerCase() === ""
               ? item
-              : item.name.toLowerCase().includes(search.toLowerCase()),
+              : item.path.toLowerCase().includes(search.toLowerCase()),
           )
           .map(({ item, i }) => (
             <>
               <AddScenarioCheckbox
-                key={item.name}
+                key={item.path}
                 toggle={item.checked}
                 setToggle={() => updateAudioToggle(i)}
                 name={item.path}
