@@ -14,6 +14,7 @@ using Azure.Core;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.ConstrainedExecution;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace REFWebApp.Server.Controllers
@@ -34,13 +35,14 @@ namespace REFWebApp.Server.Controllers
         public IEnumerable<EvalHistoriesResponseModel> Post([FromBody] EvalHistoriesRequestModel request)
         {
             using PostgresContext context = new PostgresContext();
-            List<Stt> stts = context.Stts.Where(s => s.Name == request.SttName).ToList();
-            Stt stt = stts[0];
-            List<Scenario> scenarios = context.Scenarios.Where(s => s.Name == request.ScenarioName).ToList();
-            Scenario scenario = scenarios[0];
+            Stt stt = context.Stts.Where(s => s.Name == request.SttName).ToList()[0];
+            Scenario scenario = context.Scenarios.Where(s => s.Name == request.ScenarioName)
+                                                 .Include(s => s.Audios)
+                                                 .ToList()[0];
+            List<int> audioIdsByScenario = scenario.Audios.Select(a => a.Id).ToList();
             List<Transcription> transcription = context.Transcriptions.Where(t => t.SttId == stt.Id)
-                                                            //.Where(t => t.ScenarioId == scenario.Id)
                                                             .Where(t => t.Timestamp == request.Timestamp)
+                                                            .Where(t => audioIdsByScenario.Contains(t.AudioId.Value))
                                                             .ToList();
             return Enumerable.Range(0, transcription.Count).Select(index => new EvalHistoriesResponseModel
             {
