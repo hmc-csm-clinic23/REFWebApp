@@ -91,7 +91,7 @@ namespace REFWebApp.Server.Controllers
             List<List<string?>> groundTruths = new List<List<string?>>();
             List<List<string?>> transcriptions = new List<List<string?>>();
             List<MetricObject> metrics = new List<MetricObject>();
-            List<MetricObject> weightedMetrics = new List<MetricObject>();
+            List<SttAggregateMetric> weightedMetrics = new List<SttAggregateMetric>();
             List<Transcription> transcription_objects = new List<Transcription>();
             List<SttAggregateMetric> aggregate = new List<SttAggregateMetric>();
             DateTime timestamp = DateTime.Now;
@@ -171,7 +171,7 @@ namespace REFWebApp.Server.Controllers
                         Wil = wil.Sum() / wil.Count,
                         Sim = sim.Sum() / sim.Count,
                         Dist = dist.Sum() / dist.Count,
-                        Rawtime = elapsedTimes.Aggregate(new TimeSpan(0, 0, 0, 0), (x,y) => x+y),
+                        Rawtime = elapsedTimes.Aggregate(new TimeSpan(0, 0, 0, 0), (x, y) => x + y),
                     });
 
                     MetricObject metric = new MetricObject
@@ -184,16 +184,14 @@ namespace REFWebApp.Server.Controllers
                         Rawtime = elapsedTimes,
                     };
                     metrics.Add(metric);
-
-                    MetricObject weightedMetric = new MetricObject
+                    SttAggregateMetric weightedMetric = new SttAggregateMetric
                     {
-                        Weight = weightsAverage,
-                        Wer = wer.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
-                        Mer = mer.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
-                        Wil = wil.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
-                        Sim = sim.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
-                        Dist = dist.Select(val => val * request.WeightList[i] / weightsAverage).ToList(),
-                        Rawtime = elapsedTimes,
+                        Wer = wer.Select(val => val * request.WeightList[i] / weightsAverage).Sum() / wer.Count,
+                        Mer = mer.Select(val => val * request.WeightList[i] / weightsAverage).Sum() / mer.Count,
+                        Wil = wil.Select(val => val * request.WeightList[i] / weightsAverage).Sum() / wil.Count,
+                        Sim = sim.Select(val => val * request.WeightList[i] / weightsAverage).Sum() / sim.Count,
+                        Dist = dist.Select(val => val * request.WeightList[i] / weightsAverage).Sum() / dist.Count,
+                        Rawtime = elapsedTimes.Select(val => val * request.WeightList[i] / weightsAverage).Aggregate(new TimeSpan(0, 0, 0, 0), (x, y) => x + y),
                     };
                     weightedMetrics.Add(weightedMetric);
                 }
@@ -214,8 +212,8 @@ namespace REFWebApp.Server.Controllers
 
             return Enumerable.Range(0, metrics.Count).Select(index => new runMetricsObject
             {
-                TotalScore = FinalScore(FinalAccuracy(weightedMetrics[index].Wer.Sum() / metrics[index].Wer.Count(), weightedMetrics[index].Mer.Sum() / metrics[index].Mer.Count(), weightedMetrics[index].Wil.Sum() / metrics[index].Wil.Count(), weightedMetrics[index].Sim.Sum() / metrics[index].Sim.Count(), weightedMetrics[index].Dist.Sum() / metrics[index].Dist.Count()), TimeSpan.FromSeconds(Math.Round(((TimeSpan)weightedMetrics[index].Rawtime.Aggregate(new TimeSpan(0, 0, 0, 0), (x, y) => x + y)).TotalSeconds)), newContext.Stts.Find(sttId).Usability),
-                Accuracy = FinalAccuracy(weightedMetrics[index].Wer.Sum() / metrics[index].Wer.Count(), weightedMetrics[index].Mer.Sum() / metrics[index].Mer.Count(), weightedMetrics[index].Wil.Sum() / metrics[index].Wil.Count(), weightedMetrics[index].Sim.Sum() / metrics[index].Sim.Count(), weightedMetrics[index].Dist.Sum() / metrics[index].Dist.Count()),
+                TotalScore = FinalScore(FinalAccuracy(weightedMetrics[index].Wer * request.ScenarioList?.Length, weightedMetrics[index].Mer * request.ScenarioList?.Length, weightedMetrics[index].Wil * request.ScenarioList?.Length, weightedMetrics[index].Sim * request.ScenarioList?.Length, weightedMetrics[index].Dist * request.ScenarioList?.Length), TimeSpan.FromSeconds((Math.Round(((TimeSpan)weightedMetrics[index].Rawtime).TotalSeconds) * (double)(request.ScenarioList?.Length))), newContext.Stts.Find(sttId).Usability),
+                Accuracy = FinalAccuracy(weightedMetrics[index].Wer * request.ScenarioList?.Length, weightedMetrics[index].Mer * request.ScenarioList?.Length, weightedMetrics[index].Wil * request.ScenarioList?.Length, weightedMetrics[index].Sim * request.ScenarioList?.Length, weightedMetrics[index].Dist * request.ScenarioList?.Length),
                 Speed = metrics[index].Rawtime,
                 Wer = metrics[index].Wer,
                 Mer = metrics[index].Mer,
