@@ -30,47 +30,49 @@ namespace REFWebApp.Server.Model.STTs
                 PythonEngine.Initialize();
                 Py.GIL();
             }
-
-            using (var scope = Py.CreateScope())
+            using (var gil = Py.GIL())
             {
-                dynamic sys = Py.Import("sys");
-                sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Evaluation\STTs\");
-                //sys.path.append(@"/Users/sathv/Desktop/REFApplication/REFApplication/Model/STTs");
+                using (var scope = Py.CreateScope())
+                {
+                    dynamic sys = Py.Import("sys");
+                    sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Evaluation\STTs\");
+                    //sys.path.append(@"/Users/sathv/Desktop/REFApplication/REFApplication/Model/STTs");
 
-                //            // string code = File.ReadAllText(file); // Get the python file as raw text
-                //            // var scriptCompiled = PythonEngine.Compile(code, file); 
-                var scriptCompiled = Py.Import(scriptname);
-                // string[] message = new string[] { "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\Model\\test.wav" };
-                string message = filename;
-                //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
+                    //            // string code = File.ReadAllText(file); // Get the python file as raw text
+                    //            // var scriptCompiled = PythonEngine.Compile(code, file); 
+                    var scriptCompiled = Py.Import(scriptname);
+                    // string[] message = new string[] { "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\Model\\test.wav" };
+                    string message = filename;
+                    //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
-                var result = scriptCompiled.InvokeMethod("transcribe_one", message.ToPython());
-                Console.WriteLine("WHISPEROUTPUT: " + result);
+                    var result = scriptCompiled.InvokeMethod("transcribe_one", message.ToPython());
+                    Console.WriteLine("WHISPEROUTPUT: " + result);
 
 
-                PyObject pyobject = result.AsManagedObject(typeof(PyObject)) as PyObject;
+                    PyObject pyobject = result.AsManagedObject(typeof(PyObject)) as PyObject;
 
-                string transcription = (string)pyobject.AsManagedObject(typeof(string));
-                Console.WriteLine(transcription);
-                return transcription;
+                    string transcription = (string)pyobject.AsManagedObject(typeof(string));
+                    Console.WriteLine(transcription);
+                    return transcription;
 
-                //PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
+                    //PyObject[] pylist = result.AsManagedObject(typeof(PyObject[])) as PyObject[];
 
-                //List<string> transcriptions = new List<string>();
+                    //List<string> transcriptions = new List<string>();
 
-                //foreach (PyObject pyobject in pylist)
-                //{
-                //    string transcript = (string)pyobject.AsManagedObject(typeof(string));
-                //    Console.WriteLine(transcript);
-                //    transcriptions.Add(transcript);
+                    //foreach (PyObject pyobject in pylist)
+                    //{
+                    //    string transcript = (string)pyobject.AsManagedObject(typeof(string));
+                    //    Console.WriteLine(transcript);
+                    //    transcriptions.Add(transcript);
 
-                //}
-                //Console.WriteLine(transcriptions);
-                ////PythonEngine.Shutdown();
+                    //}
+                    //Console.WriteLine(transcriptions);
+                    ////PythonEngine.Shutdown();
 
-                //return transcriptions;
+                    //return transcriptions;
+                }
+                Console.WriteLine("run works");
             }
-            Console.WriteLine("run works");
         }
 
         public List<float> Metrics(string transcriptions, string groundtruths)

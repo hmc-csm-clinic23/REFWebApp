@@ -28,34 +28,36 @@ namespace REFWebApp.Server.Model.STTs
             {
                 Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python311\python311.dll";
                 PythonEngine.Initialize();
-                Py.GIL();
+                //Py.GIL();
             }
-
-            using (var scope = Py.CreateScope())
+            using (var gil = Py.GIL())
             {
-                dynamic sys = Py.Import("sys");
-                sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Evaluation\STTs\");
+                using (var scope = Py.CreateScope())
+                {
+                    dynamic sys = Py.Import("sys");
+                    sys.path.append(@"C:\Users\micro\source\repos\REFWebApp\REFWebApp.Server\Evaluation\STTs\");
 
-                //sys.path.append(@"/Users/sathv/Desktop/REFApplication/REFApplication/Model/STTs");
+                    //sys.path.append(@"/Users/sathv/Desktop/REFApplication/REFApplication/Model/STTs");
 
-                //            // string code = File.ReadAllText(file); // Get the python file as raw text
-                //            // var scriptCompiled = PythonEngine.Compile(code, file); 
-                var scriptCompiled = Py.Import(scriptname);
-                // string[] message = new string[] { "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\Model\\test.wav" };
-                string message = filename;
-                //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
+                    //            // string code = File.ReadAllText(file); // Get the python file as raw text
+                    //            // var scriptCompiled = PythonEngine.Compile(code, file); 
+                    var scriptCompiled = Py.Import(scriptname);
+                    // string[] message = new string[] { "C:\\Users\\micro\\Desktop\\oldREF\\REFApplication\\REFApplication\\Model\\test.wav" };
+                    string message = filename;
+                    //string[] message = new string[] {"/Users/sathv/Desktop/REFApplication/REFApplication/Model/test.wav"};
 
-                var result = scriptCompiled.InvokeMethod("transcribe_one", message.ToPython());
-                Console.WriteLine("DEEPGRAM OUTPUT: " + result);
+                    var result = scriptCompiled.InvokeMethod("transcribe_one", message.ToPython());
+                    Console.WriteLine("DEEPGRAM OUTPUT: " + result);
 
-                PyObject pyobject = result.AsManagedObject(typeof(PyObject)) as PyObject;
+                    PyObject pyobject = result.AsManagedObject(typeof(PyObject)) as PyObject;
 
-                string transcription = (string)pyobject.AsManagedObject(typeof(string));
-                Console.WriteLine(transcription);
-                return transcription;
+                    string transcription = (string)pyobject.AsManagedObject(typeof(string));
+                    Console.WriteLine(transcription);
+                    return transcription;
 
+                }
+                Console.WriteLine("run works");
             }
-            Console.WriteLine("run works");
         }
 
         public List<float> Metrics(string transcriptions, string groundtruths)
