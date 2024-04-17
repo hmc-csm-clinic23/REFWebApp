@@ -12,6 +12,7 @@ function History() {
   const [clickToggle, setClickToggle] = useState(null);
   const [closeToggle, setCloseToggle] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [dropdownToggle, setDropdownToggle] = useState(null);
 
   async function populateSttData() {
     const response = await fetch('sttlist');
@@ -71,7 +72,7 @@ function History() {
       return bool ? sortToggle : -sortToggle;
     }
     return 0;
-  }
+    }
 
   return (
     <div className="rankingPage">
@@ -116,8 +117,9 @@ function History() {
             History
           </div>
         </div>
-        {rankingList.sort(compare).map((ranking) => (
+        {rankingList.sort(compare).map((ranking, i) => (
           <HistoryLine
+            lineKey={i}
             scenario={ranking.scenarioName}
             accuracy={ranking.accuracy}
             speed={ranking.speed}
@@ -129,6 +131,8 @@ function History() {
             stt={clickToggle}
             closeToggle={closeToggle}
             setCloseToggle={setCloseToggle}
+            dropdownToggle={dropdownToggle}
+            setDropdownToggle={setDropdownToggle}
           />
         ))}
       </div>

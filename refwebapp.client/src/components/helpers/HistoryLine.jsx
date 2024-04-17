@@ -3,6 +3,7 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { AudioList } from "../.././components";
 
 function HistoryLine({
+  lineKey,
   scenario,
   accuracy,
   speed,
@@ -14,6 +15,8 @@ function HistoryLine({
   stt,
   closeToggle,
   setCloseToggle,
+  dropdownToggle,
+  setDropdownToggle,
 }) {
   const [toggle, setToggle] = useState(false);
   const [clickToggle, setClickToggle] = useState(null);
@@ -22,7 +25,8 @@ function HistoryLine({
   const [transcriptionList, setTranscriptionList] = useState([]);
 
   const updateSttToggle = (time, i) => {
-    setToggle((toggle) => !toggle);
+    setToggle(false);
+    setDropdownToggle(null);
     setClickToggle(() => `Eval ${i+1}`);
     setTimestamp(time);
     setEvalList([])
@@ -63,21 +67,22 @@ function HistoryLine({
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `stts`
     // then set your sttList state
-    setToggle(false)
-    setClickToggle(null)
+    setToggle(false);
+    setDropdownToggle(null);
+    setClickToggle(null);
   }, [stt]);
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `stts`
     // then set your sttList state
-    populateEvalData()
+    populateEvalData();
   }, [toggle]);
 
   useEffect(() => {
     // fetch call to API goes here, where you then get access to `stts`
     // then set your sttList state
     if (timestamp !== null) {
-      populateTranscriptionData()
+      populateTranscriptionData();
     }
   }, [timestamp]);
 
@@ -103,7 +108,7 @@ function HistoryLine({
         <div className="rankingField">{sim.toFixed(2)}</div>
         <div className="rankingField">{dist.toFixed(2)}</div>
         <div className="rankingField">
-          {toggle ? (
+          {toggle && (dropdownToggle===lineKey) ? (
             <>
               <span>
                 {toggle
@@ -113,7 +118,7 @@ function HistoryLine({
                     : "Select Eval"}
               </span>
               <AiOutlineMinus
-                onClick={() => setToggle(false)}
+                onClick={() => {setToggle(false); setDropdownToggle(null);}}
                 className="historyPlusMinus"
               />
             </>
@@ -127,12 +132,12 @@ function HistoryLine({
                     : "Select Eval"}
               </span>
               <AiOutlinePlus
-                onClick={() => setToggle(true)}
+                onClick={() => {setToggle(true); setDropdownToggle(lineKey);} }
                 className="historyPlusMinus"
               />
             </>
           )}
-          {toggle && (
+          {toggle && (dropdownToggle===lineKey) && (
             <ul className="sttItems">
               {evalList
                 .map((time, i) => (
