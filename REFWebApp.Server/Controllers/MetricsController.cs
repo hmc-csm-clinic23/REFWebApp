@@ -214,7 +214,7 @@ namespace REFWebApp.Server.Controllers
             {
                 TotalScore = FinalScore(FinalAccuracy(weightedMetrics[index].Wer * request.ScenarioList?.Length, weightedMetrics[index].Mer * request.ScenarioList?.Length, weightedMetrics[index].Wil * request.ScenarioList?.Length, weightedMetrics[index].Sim * request.ScenarioList?.Length, weightedMetrics[index].Dist * request.ScenarioList?.Length), TimeSpan.FromSeconds((Math.Round(((TimeSpan)weightedMetrics[index].Rawtime).TotalSeconds) * (double)(request.ScenarioList?.Length))), newContext.Stts.Find(sttId).Usability),
                 Accuracy = FinalAccuracy(weightedMetrics[index].Wer * request.ScenarioList?.Length, weightedMetrics[index].Mer * request.ScenarioList?.Length, weightedMetrics[index].Wil * request.ScenarioList?.Length, weightedMetrics[index].Sim * request.ScenarioList?.Length, weightedMetrics[index].Dist * request.ScenarioList?.Length),
-                Speed = metrics[index].Rawtime,
+                Speed = Math.Round(((TimeSpan)weightedMetrics[index].Rawtime).TotalSeconds) * (double)(request.ScenarioList?.Length),
                 Wer = metrics[index].Wer,
                 Mer = metrics[index].Mer,
                 Wil = metrics[index].Wil,
@@ -256,7 +256,7 @@ namespace REFWebApp.Server.Controllers
         {
             public double? TotalScore { get; set; }
             public double? Accuracy { get; set; }
-            public List<TimeSpan>? Speed { get; set; }
+            public double? Speed { get; set; }
             public List<double>? Wer { get; set; }
             public List<double>? Mer { get; set; }
             public List<double>? Wil { get; set; }

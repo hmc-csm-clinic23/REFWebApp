@@ -5,8 +5,12 @@ function EvalDisplay({ stt, refData, scenarios }) {
   return (
     <div>
       <h1>{stt}</h1>
+        <div className="importantScores">
           <h2>Total Score: {(refData.map(data => data.totalScore).reduce((x, y) => x + y, 0) / refData.map(data => data.totalScore).length).toFixed(2)}</h2>
           <h2>Accuracy: {(refData.map(data => data.accuracy).reduce((x, y) => x + y, 0) / refData.map(data => data.accuracy).length).toFixed(2)}</h2>
+          <h2>Speed: {(refData.map(data => data.speed).reduce((x, y) => x + y, 0) / refData.map(data => data.speed).length).toFixed(0)}s</h2>
+        </div>
+
       <input
         type="text"
         className="searchAudio"
