@@ -17,7 +17,7 @@
 
 .audioItems {
   align-self: center;
-  width: 60%;
+  width: 100%;
   margin-top: 15px;
   border-radius: 8px;
   padding: 16px;
@@ -25,6 +25,11 @@
   background-color: #fff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   overflow: scroll;
+}
+.addScenarioContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 250px);
+    max-width: fit-content;
 }
 
 .addScenarioItem {

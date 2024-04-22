@@ -95,17 +95,21 @@ function Scenario() {
               ? item
               : item.path.toLowerCase().includes(search.toLowerCase()),
           )
-          .map(({ item, i }) => (
-            <>
-              <AddScenarioCheckbox
-                key={item.path}
-                toggle={item.checked}
-                setToggle={() => updateAudioToggle(i)}
-                name={item.path}
-                audioFile={item.path}
-              />
-            </>
-          ))}
+          .map(({ item, i }) => {
+          if (item.groundTruth != null) {
+              return (
+                <AddScenarioCheckbox
+                  key={item.path}
+                  toggle={item.checked}
+                  setToggle={() => updateAudioToggle(i)}
+                  name={item.path}
+                  groundTruth={item.groundTruth}
+                  audioFile={item.path}
+                />
+              );
+          }
+          })
+        }
       </ul>
       <div className="submitButton" onClick={() => updateScenarios()}>
         <div className="submit">

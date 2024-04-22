@@ -32,6 +32,7 @@ function EvalDisplay({ stt, refData, scenarios }) {
         )
         .map(({ data, i }) => 
         <Evals
+        key={i}
         wer={data.wer}
         mer={data.mer}
         wil={data.wil}
