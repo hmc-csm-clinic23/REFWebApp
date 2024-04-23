@@ -29,8 +29,8 @@ namespace REFWebApp.Server.Model.STTs
                 Runtime.PythonDLL = @"C:\Users\micro\AppData\Local\Programs\Python\Python311\python311.dll";
                 PythonEngine.Initialize();
             }
-           // using (var gil = Py.GIL())
-           // {
+            using (var gil = Py.GIL())
+            {
                 using (var scope = Py.CreateScope())
                 {
                     dynamic sys = Py.Import("sys");
@@ -61,7 +61,7 @@ namespace REFWebApp.Server.Model.STTs
                 }
 
                 Console.WriteLine("run works");
-           // }
+           }
 
         }
            

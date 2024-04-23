@@ -25,7 +25,9 @@ namespace REFTests
         [Test]
         public void TestGoogleCloud()
         {
-            Assert.Pass();
+            var output = _googleCloud.Run("C:\\Users\\micro\\source\\repos\\REFWebApp\\REFTests\\REFTest.wav");
+            Assert.IsNotNull(output);
         }
+
     }
 }
