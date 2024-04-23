@@ -65,7 +65,7 @@
   list-style: none;
   cursor: pointer;
   transition: 0.3s;
-  padding: 0 15px;
+  padding: 16px 15px;
   border-radius: 8px;
   gap: 16px;
 }
