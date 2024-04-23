@@ -8,10 +8,12 @@ function AddScenarioCheckbox({ toggle, setToggle, name, groundTruth, audioFile, 
         <span className="checkbox">
           <AiOutlineCheck />
         </span>
-        <span className="itemText">{name}</span>
       </div>
-      <span className="itemText">{groundTruth}</span>
-      <audio controls src={audioFile} className=""></audio>
+      <div className="addScenarioContainer">
+        <span className="itemText">{name}</span>
+        <span className="itemText">{groundTruth}</span>
+        <audio controls src={audioFile} className=""></audio>
+      </div>
     </li>
   ) : (
     <li className="addScenarioItem" onClick={setToggle}>

@@ -28,24 +28,50 @@
 }
 .addScenarioContainer {
     display: grid;
-    grid-template-columns: repeat(3, 250px);
+    grid-template-columns: repeat(3, 360px);
     max-width: fit-content;
+    align-items: center;
+    justify-items: center;
+    gap: 16px;
+}
+
+.checkboxHidden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  width: 16px;
+  border-radius: 4px;
+  margin-right: 12px;
+  border: 1.5px solid #c0c0c0;
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
 }
 
 .addScenarioItem {
   display: flex;
   align-items: center;
   list-style: none;
-  height: 50px;
   cursor: pointer;
   transition: 0.3s;
   padding: 0 15px;
   border-radius: 8px;
-  justify-content: space-between;
+  gap: 16px;
+}
+
+.addScenarioItemHeader {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 0 15px;
+  border-radius: 8px;
+  gap: 16px;
 }
 
 .addScenarioItem:hover {
-  background-color: #e7edfe;
+    background-color: #e7edfe;
 }
 
 .leftSide {

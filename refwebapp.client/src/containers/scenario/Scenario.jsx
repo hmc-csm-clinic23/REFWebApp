@@ -87,6 +87,17 @@ function Scenario() {
         onChange={(e) => setSearch(e.target.value)}
       />
       <ul className="audioItems">
+        <li className="addScenarioItemHeader">
+          <div className="leftSide">
+            <span className="checkboxHidden">
+            </span>
+          </div>
+          <div className="addScenarioContainer">
+            <span className="itemText">Path</span>
+            <span className="itemText">Ground Truth</span>
+            <span className="itemText">Audio</span>
+          </div>
+        </li>
         {audioList
           .sort((a, b) => (a.path > b.path ? 1 : b.path > a.path ? -1 : 0))
           .map((item, i) => ({ item, i }))
