@@ -133,8 +133,9 @@ function Ranking() {
             L-Dist
           </div>
         </div>
-        {rankingList.sort(compare).map((ranking) => (
+        {rankingList.sort(compare).map((ranking, i) => (
             <RankingLine
+            key={i}
             stt={ranking.sttName}
             score={ranking.totalScore}
             accuracy={ranking.accuracy}

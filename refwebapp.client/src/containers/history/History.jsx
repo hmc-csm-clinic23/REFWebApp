@@ -116,8 +116,9 @@ function History() {
             History
           </div>
         </div>
-        {rankingList.sort(compare).map((ranking) => (
+        {rankingList.sort(compare).map((ranking, i) => (
           <HistoryLine
+            key={i}
             scenario={ranking.scenarioName}
             accuracy={ranking.accuracy}
             speed={ranking.speed}

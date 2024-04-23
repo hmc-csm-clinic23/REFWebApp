@@ -57,6 +57,7 @@ function ScenarioDropdown({
                   name={scenario.name}
                 />
                 <WeightSlider
+                  key={scenario.weight}
                   toggle={scenario.checked}
                   weight={scenario.weight}
                   setWeight={updateScenarioWeight}

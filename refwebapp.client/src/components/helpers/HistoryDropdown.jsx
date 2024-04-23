@@ -37,7 +37,7 @@ function HistoryDropdown({
             )
             .map(({ stt, i }) => (
               <>
-                <li className="dropdownItem" onClick={() => updateSttToggle(i)}>
+                <li className="dropdownItem" onClick={() => updateSttToggle(i)} key={stt.name}>
                   <span className="itemText">{stt.name}</span>
                 </li>
               </>

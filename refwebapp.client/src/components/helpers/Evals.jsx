@@ -24,7 +24,7 @@ function Evals({ wer, mer, wil, sim, dist, transcriptions, groundTruths, scenari
           : groundTruths.toLowerCase().includes(search.toLowerCase()),
       )
       .map(({ groundTruths, i }) => 
-      <div className="evalItem">
+      <div className="evalItem" key={i}>
         <div className="evalText">[{`WER: ${wer[i].toFixed(2)}, MER: ${mer[i].toFixed(2)}, WIL: ${wil[i].toFixed(2)}, SIM: ${sim[i].toFixed(2)}, L-DIST: ${dist[i].toFixed(2)}`}]</div>
         <div className="evalText">{transcriptions[i]}</div>
         <div className="evalText">{groundTruths}</div>

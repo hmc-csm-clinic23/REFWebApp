@@ -87,6 +87,17 @@ function Scenario() {
         onChange={(e) => setSearch(e.target.value)}
       />
       <ul className="audioItems">
+        <li className="addScenarioItemHeader">
+          <div className="leftSide">
+            <span className="checkboxHidden">
+            </span>
+          </div>
+          <div className="addScenarioContainer">
+            <span className="itemText">Path</span>
+            <span className="itemText">Ground Truth</span>
+            <span className="itemText">Audio</span>
+          </div>
+        </li>
         {audioList
           .sort((a, b) => (a.path > b.path ? 1 : b.path > a.path ? -1 : 0))
           .map((item, i) => ({ item, i }))
@@ -95,17 +106,21 @@ function Scenario() {
               ? item
               : item.path.toLowerCase().includes(search.toLowerCase()),
           )
-          .map(({ item, i }) => (
-            <>
-              <AddScenarioCheckbox
-                key={item.path}
-                toggle={item.checked}
-                setToggle={() => updateAudioToggle(i)}
-                name={item.path}
-                audioFile={item.path}
-              />
-            </>
-          ))}
+          .map(({ item, i }) => {
+          if (item.groundTruth != null) {
+              return (
+                <AddScenarioCheckbox
+                  key={item.path}
+                  toggle={item.checked}
+                  setToggle={() => updateAudioToggle(i)}
+                  name={item.path}
+                  groundTruth={item.groundTruth}
+                  audioFile={item.path}
+                />
+              );
+          }
+          })
+        }
       </ul>
       <div className="submitButton" onClick={() => updateScenarios()}>
         <div className="submit">
