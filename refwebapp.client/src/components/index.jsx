@@ -11,3 +11,4 @@ export { default as HistoryLine } from "./helpers/HistoryLine";
 export { default as WeightSlider } from "./helpers/WeightSlider";
 export { default as EvalDisplay } from "./helpers/EvalDisplay";
 export { default as Evals } from "./helpers/Evals";
+export { default as Eval } from "./helpers/Eval";

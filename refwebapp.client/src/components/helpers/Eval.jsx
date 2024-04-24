@@ -1,8 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
-function AudioList({ groundTruth, transcription, wer, mer, wil, sim, dist, audioFile }) {
+function Eval({ wer, mer, wil, sim, dist, transcriptions, groundTruths, audioFile }) {
   const [toggle, setToggle] = useState(false);
   const [data, setData] = useState(null);
 
@@ -32,17 +31,13 @@ function AudioList({ groundTruth, transcription, wer, mer, wil, sim, dist, audio
   }, []);
 
   return (
-    <li className="audioList" onClick={() => setToggle(!toggle)}>
-      <div className="evalsText">{groundTruth}</div>
-      <div className="evalsText">{transcription}</div>
-      <div className="evalsText">{wer.toFixed(2)}</div>
-      <div className="evalsText">{mer.toFixed(2)}</div>
-      <div className="evalsText">{wil.toFixed(2)}</div>
-      <div className="evalsText">{sim.toFixed(2)}</div>
-      <div className="evalsText">{dist.toFixed(2)}</div>
-      {toggle ? <audio controls src={data} className="audioPlayer"></audio> : <audio controls className="audioPlayer"></audio>}
-    </li>
+      <div className="evalItem" onClick={() => setToggle(!toggle)}>
+        <div className="evalText">[{`WER: ${wer.toFixed(2)}, MER: ${mer.toFixed(2)}, WIL: ${wil.toFixed(2)}, Similarity: ${sim.toFixed(2)}, Lev-Distance: ${dist.toFixed(2)}`}]</div>
+        <div className="evalText">{transcriptions}</div>
+        <div className="evalText">{groundTruths}</div>
+        {toggle ? <audio controls src={data} className=""></audio> : <audio controls className=""></audio>}
+      </div>
   );
 }
 
-export default AudioList;
+export default Eval;

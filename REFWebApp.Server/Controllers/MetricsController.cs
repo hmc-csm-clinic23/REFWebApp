@@ -113,7 +113,7 @@ namespace REFWebApp.Server.Controllers
                     List<double> dist = new List<double>();
 
 
-                    for (int j = 0; j < 5; j++) // (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
+                    for (int j = 0; j < request.ScenarioList?[i].Audios?.Count; j++)
                     {
                         if (request.ScenarioList?[i].Audios?[j].Path != null && request.ScenarioList?[i].Audios?[j].GroundTruth != null)
                         {
@@ -225,7 +225,8 @@ namespace REFWebApp.Server.Controllers
                 Sim = metrics[index].Sim,
                 Dist = metrics[index].Dist,
                 Transcriptions = transcriptions[index],
-                GroundTruths = groundTruths[index]
+                GroundTruths = groundTruths[index],
+                Paths = paths[index]
             })
             .ToArray();
 
@@ -268,6 +269,7 @@ namespace REFWebApp.Server.Controllers
             public List<double>? Dist { get; set; }
             public List<string>? Transcriptions { get; set; }
             public List<string>? GroundTruths { get; set; }
+            public List<string>? Paths { get; set; }
         }
 
         public class MetricsRequestModel

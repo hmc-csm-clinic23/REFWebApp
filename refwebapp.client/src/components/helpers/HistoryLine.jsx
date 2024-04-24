@@ -184,7 +184,7 @@ function HistoryLine({
                     wil={audio.wil}
                     sim={audio.sim}
                     dist={audio.dist}
-                    audioFile={audio.audioFile}
+                    audioFile={audio.path}
                   />
                 </>
               ))}
