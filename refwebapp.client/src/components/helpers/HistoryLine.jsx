@@ -164,12 +164,12 @@ function HistoryLine({
             <li className="audioList">
               <div className="evalsText">Ground Truth</div>
               <div className="evalsText">Transcription</div>
-              <div className="evalsText">Wer</div>
-              <div className="evalsText">Mer</div>
-              <div className="evalsText">Wil</div>
-              <div className="evalsText">Sim</div>
-              <div className="evalsText">L-Dist</div>
-              <div className="evalsText">Audio File</div>
+              <div className="evalsText">WER</div>
+              <div className="evalsText">MER</div>
+              <div className="evalsText">WIL</div>
+              <div className="evalsText">Similarity</div>
+              <div className="evalsText">Lev-Distance</div>
+              <div className="evalsText">Audio</div>
             </li>
             <div className="evalsText" />
             {transcriptionList

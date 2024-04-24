@@ -118,19 +118,19 @@ function Ranking() {
             Speed
           </div>
           <div className="fieldHeader" onClick={() => updateSort("wer")}>
-            Wer
+            WER
           </div>
           <div className="fieldHeader" onClick={() => updateSort("mer")}>
-            Mer
+            MER
           </div>
           <div className="fieldHeader" onClick={() => updateSort("wil")}>
-            Wil
+            WIL
           </div>
           <div className="fieldHeader" onClick={() => updateSort("sim")}>
-            Sim
+            Similarity
           </div>
           <div className="fieldHeader" onClick={() => updateSort("dist")}>
-            L-Dist
+            Lev-Distance
           </div>
         </div>
         {rankingList.sort(compare).map((ranking, i) => (

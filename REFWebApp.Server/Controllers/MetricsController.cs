@@ -156,6 +156,10 @@ namespace REFWebApp.Server.Controllers
                             });
                         };
                     }
+                    if (groundTruth.Count == 0)
+                    {
+                        continue;
+                    }
 
                     paths.Add(path);
                     groundTruths.Add(groundTruth);
