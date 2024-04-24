@@ -1,9 +1,8 @@
 import { React, useState, useEffect } from "react";
-import { AiOutlineCheck } from "react-icons/ai";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
-function AddScenarioCheckbox({ toggle, setToggle, name, groundTruth, audioFile,  }) {
+function Eval({ wer, mer, wil, sim, dist, transcriptions, groundTruths, audioFile }) {
+  const [toggle, setToggle] = useState(false);
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -30,32 +29,15 @@ function AddScenarioCheckbox({ toggle, setToggle, name, groundTruth, audioFile, 
       getObjectFromS3(audioFile);
 
   }, []);
-  
-  return toggle ? (
-    <li className="addScenarioItem" onClick={setToggle}>
-      <div className="leftSide">
-        <span className="checkbox">
-          <AiOutlineCheck />
-        </span>
+
+  return (
+      <div className="evalItem" onClick={() => setToggle(!toggle)}>
+        <div className="evalText">[{`WER: ${wer.toFixed(2)}, MER: ${mer.toFixed(2)}, WIL: ${wil.toFixed(2)}, Similarity: ${sim.toFixed(2)}, Lev-Distance: ${dist.toFixed(2)}`}]</div>
+        <div className="evalText">{transcriptions}</div>
+        <div className="evalText">{groundTruths}</div>
+        {toggle ? <audio controls src={data} className=""></audio> : <audio controls className=""></audio>}
       </div>
-      <div className="addScenarioContainer">
-        <span className="itemText">{name}</span>
-        <span className="itemText">{groundTruth}</span>
-        <audio controls src={data} className=""></audio>
-      </div>
-    </li>
-  ) : (
-    <li className="addScenarioItem" onClick={setToggle}>
-      <div className="leftSide">
-        <span className="checkbox" />
-      </div>
-      <div className="addScenarioContainer">
-        <span className="itemText">{name}</span>
-        <span className="itemText">{groundTruth}</span>
-        <audio controls className=""></audio>
-      </div>
-    </li>
   );
 }
 
-export default AddScenarioCheckbox;
+export default Eval;

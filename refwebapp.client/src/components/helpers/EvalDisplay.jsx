@@ -20,8 +20,9 @@ function EvalDisplay({ stt, refData, scenarios }) {
       <div className="evalContainer">
         <div className="evalItem">
           <div className="evalText">Metrics</div>
-          <div className="evalText">Transcriptions</div>
-          <div className="evalText">Ground Truths</div>
+          <div className="evalText">Transcription</div>
+          <div className="evalText">Ground Truth</div>
+          <div className="evalText">Audio</div>
         </div>
         {refData
         .map((data, i) => ({ data, i }))
@@ -40,6 +41,7 @@ function EvalDisplay({ stt, refData, scenarios }) {
         dist={data.dist}
         transcriptions={data.transcriptions}
         groundTruths={data.groundTruths}
+        audioFiles={data.paths}
         scenarios={scenarios[i]}
         />
         )}

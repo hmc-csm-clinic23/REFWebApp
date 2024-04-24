@@ -107,18 +107,16 @@ function Scenario() {
               : item.path.toLowerCase().includes(search.toLowerCase()),
           )
           .map(({ item, i }) => {
-          if (item.groundTruth != null) {
-              return (
-                <AddScenarioCheckbox
-                  key={item.path}
-                  toggle={item.checked}
-                  setToggle={() => updateAudioToggle(i)}
-                  name={item.path}
-                  groundTruth={item.groundTruth}
-                  audioFile={item.path}
-                />
-              );
-          }
+          return (
+          <AddScenarioCheckbox
+              key={item.path}
+              toggle={item.checked}
+              setToggle={() => updateAudioToggle(i)}
+              name={item.path}
+              groundTruth={item.groundTruth}
+              audioFile={item.path}
+          />
+          );
           })
         }
       </ul>

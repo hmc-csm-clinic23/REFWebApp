@@ -46,6 +46,7 @@ namespace REFWebApp.Server.Controllers
                                                             .ToList();
             return Enumerable.Range(0, transcription.Count).Select(index => new EvalHistoriesResponseModel
             {
+                Path = context.AudioFiles.Find(transcription[index].AudioId)?.Path,
                 GroundTruth = context.AudioFiles.Find(transcription[index].AudioId)?.GroundTruth,
                 Transcription = transcription[index].Transcript,
                 Wer = transcription[index].Wer,
@@ -66,6 +67,7 @@ namespace REFWebApp.Server.Controllers
 
         public class EvalHistoriesResponseModel
         {
+            public string? Path { get; set; }
             public string? GroundTruth { get; set; }
             public string? Transcription { get; set; }
             public double? Wer { get; set; }
